@@ -13,7 +13,7 @@ import java.time.Instant;
 public class Disponibilite {
     @Id
     @Column(name = "idDisponibilite", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "semaine")
     private Integer semaine;

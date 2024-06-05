@@ -1,4 +1,4 @@
-package tn.esprit.spring.controller;
+package tn.esprit.spring.controllers;
 
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Matiere;

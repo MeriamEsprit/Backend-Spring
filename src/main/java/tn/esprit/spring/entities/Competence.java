@@ -11,7 +11,7 @@ import lombok.Setter;
 public class Competence {
     @Id
     @Column(name = "idCompetence", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "nomCompetence")
     private String nomCompetence;

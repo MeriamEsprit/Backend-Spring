@@ -15,7 +15,7 @@ import java.util.List;
 public class Classe {
     @Id
     @Column(name = "idClasse", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "nomClasse")
     private String nomClasse;

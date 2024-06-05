@@ -1,4 +1,4 @@
-package tn.esprit.spring.services.impl;
+package tn.esprit.spring.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,15 +30,16 @@ public class NoteServicesImpl implements INoteServices {
 
     private void checkRole(Long userId, String requiredRole) {
         Optional<Utilisateur> user = utilisateurRepository.findById(userId);
-        if (user.isEmpty() || !user.get().getRole().getNomRole().equals(requiredRole)) {
+        if (user.isEmpty() || !user.get().getRole().equals(requiredRole)) {
             throw new SecurityException("Unauthorized");
         }
     }
-
+@Autowired
+UserService userService;
     @Override
     public Note saveNote(Note note, Long userId) {
         checkRole(userId, "enseignant");
-
+            userService.getAuthenticatedUser();
         // Ensure the Matiere exists
         Optional<Matiere> matiere = matiereRepository.findById(note.getMatiere().getId());
         if (matiere.isEmpty()) {

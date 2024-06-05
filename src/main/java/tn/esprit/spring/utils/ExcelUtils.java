@@ -31,7 +31,7 @@ public class ExcelUtils {
                 // Handle the case where the user does not exist
                 throw new IllegalArgumentException("Utilisateur with ID " + utilisateurId + " does not exist");
             }
-            note.setUtilisateur(utilisateur);
+//            note.setUtilisateur(utilisateur);
 
             // Retrieve Matiere by ID
             Long matiereId = (long) row.getCell(4).getNumericCellValue();
