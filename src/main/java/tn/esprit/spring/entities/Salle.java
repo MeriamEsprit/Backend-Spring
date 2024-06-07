@@ -21,7 +21,7 @@ public class Salle {
     private String nom_salle;
 
     @Column(name = "capacite")
-    private Integer capacite_salle;
+    private Integer capacite;
 
 
 }
