@@ -8,7 +8,7 @@ import tn.esprit.spring.services.DisponibiliteServicesImpl;
 import java.util.List;
 
 @RestController
-@RequestMapping("/disponibilites")
+@RequestMapping("/api/disponibilites")
 public class DisponibiliteController {
 
     @Autowired

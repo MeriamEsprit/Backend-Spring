@@ -1,15 +1,22 @@
 package tn.esprit.spring.entities;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "competence")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class Competence {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     @Column(name = "idCompetence", nullable = false)
     private Long id;
 

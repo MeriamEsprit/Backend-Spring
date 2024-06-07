@@ -1,10 +1,8 @@
 package tn.esprit.spring.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
@@ -12,10 +10,14 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "classe")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class Classe {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     @Column(name = "idClasse", nullable = false)
-    private Long id;
+    private Long idClasse;
 
     @Column(name = "nomClasse")
     private String nomClasse;

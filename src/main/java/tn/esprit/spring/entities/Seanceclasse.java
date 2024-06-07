@@ -1,8 +1,11 @@
 package tn.esprit.spring.entities;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
 
@@ -10,10 +13,14 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "seanceclasse")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class Seanceclasse {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     @Column(name = "idSeance", nullable = false)
-    private Integer id;
+    private Long idSeance;
 
     @Column(name = "annee")
     private Integer annee;
@@ -45,8 +52,6 @@ public class Seanceclasse {
     @JoinColumn(name = "salle_id")
     private Salle salle;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "emploiDuTemps_id")
-    private Emploidutemp emploiDuTemps;
+
 
 }

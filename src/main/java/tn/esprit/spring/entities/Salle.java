@@ -1,25 +1,27 @@
 package tn.esprit.spring.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "salle")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class Salle {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     @Column(name = "idSalle", nullable = false)
-    private Integer id;
+    private Long idSalle;
 
     @Column(name = "nom")
-    private String nom;
+    private String nom_salle;
 
     @Column(name = "capacite")
-    private Integer capacite;
+    private Integer capacite_salle;
+
 
 }
