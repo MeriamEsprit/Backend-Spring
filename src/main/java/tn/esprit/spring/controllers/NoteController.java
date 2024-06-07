@@ -1,9 +1,11 @@
 package tn.esprit.spring.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import tn.esprit.spring.services.impl.NoteServicesImpl;
 import tn.esprit.spring.entities.Note;
+import tn.esprit.spring.repositories.NoteRepository;
+import tn.esprit.spring.services.NoteServicesImpl;
 
 import java.util.List;
 
@@ -35,6 +37,13 @@ public class NoteController {
     @GetMapping
     public List<Note> getAllNotes(@RequestParam Long userId) {
         return noteService.getAllNotes(userId);
+    }
+
+    @Autowired
+    NoteRepository noteRepository;
+    @GetMapping("/test")
+    public List<Note> getAllNotesz() {
+        return noteRepository.findAll();
     }
 
     @PostMapping("/upload")

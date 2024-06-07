@@ -10,13 +10,21 @@ import lombok.Setter;
 @Entity
 @Table(name = "role")
 public class Role {
+
     @Id
-    @Setter(AccessLevel.NONE)
-    @Column(name = "nomRole", nullable = false)
-    private String nomRole;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "role_id", nullable = false)
+    private Long id;
 
-    @Lob
-    @Column(name = "permissions")
-    private String permissions;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "nom_role", nullable = false, unique = true)
+    private ERole nomRole;
 
+    // Constructors, getters, and setters
+
+    public Role() {}
+
+    public Role(ERole nomRole) {
+        this.nomRole = nomRole;
+    }
 }
