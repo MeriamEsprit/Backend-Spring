@@ -1,4 +1,4 @@
-package tn.esprit.spring.controller;
+package tn.esprit.spring.controllers;
 
 
 import lombok.AllArgsConstructor;

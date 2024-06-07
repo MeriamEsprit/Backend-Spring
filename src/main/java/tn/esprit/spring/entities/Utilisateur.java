@@ -1,10 +1,11 @@
 package tn.esprit.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.HashSet;
@@ -13,9 +14,12 @@ import java.util.Set;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @Entity
 @Table(name = "utilisateur")
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 public class Utilisateur {
 
     @Id
@@ -36,16 +40,14 @@ public class Utilisateur {
 
     private ERole role ;
 
-    @OneToMany(mappedBy = "utilisateur")
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("utilisateur")
     List<Note> notes;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classe_id")
-    private Classe classe;
-
-    @OneToMany(mappedBy = "enseignant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SeanceClasse> seances;
-
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "utilisateurs"})
+    Classe classe;
 
     public Utilisateur(String email, String motDePasse) {
         this.motDePasse = motDePasse;
