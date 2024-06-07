@@ -2,25 +2,25 @@ package tn.esprit.spring.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.spring.entities.Seanceclasse;
+import tn.esprit.spring.entities.SeanceClasse;
 import tn.esprit.spring.services.SeanceclasseServicesImpl;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/seanceclasses")
+@RequestMapping("/api/seanceclasses")
 public class SeanceclasseController {
 
     @Autowired
     private SeanceclasseServicesImpl seanceclasseService;
 
     @PostMapping
-    public Seanceclasse saveSeanceclasse(@RequestBody Seanceclasse seanceclasse) {
+    public SeanceClasse saveSeanceclasse(@RequestBody SeanceClasse seanceclasse) {
         return seanceclasseService.saveSeanceclasse(seanceclasse);
     }
 
     @PutMapping
-    public Seanceclasse updateSeanceclasse(@RequestBody Seanceclasse seanceclasse) {
+    public SeanceClasse updateSeanceclasse(@RequestBody SeanceClasse seanceclasse) {
         return seanceclasseService.updateSeanceclasse(seanceclasse);
     }
 
@@ -30,12 +30,12 @@ public class SeanceclasseController {
     }
 
     @GetMapping("/{id}")
-    public Seanceclasse getSeanceclasseById(@PathVariable Long id) {
+    public SeanceClasse getSeanceclasseById(@PathVariable Long id) {
         return seanceclasseService.getSeanceclasseById(id);
     }
 
     @GetMapping
-    public List<Seanceclasse> getAllSeanceclasses() {
+    public List<SeanceClasse> getAllSeanceclasses() {
         return seanceclasseService.getAllSeanceclasses();
     }
 }

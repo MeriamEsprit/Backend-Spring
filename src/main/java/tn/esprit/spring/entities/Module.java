@@ -24,4 +24,4 @@ public class Module {
 
     @OneToMany(mappedBy = "module")
     List<Matiere> matieres;
-}
+  }

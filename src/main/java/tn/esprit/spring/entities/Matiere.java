@@ -37,5 +37,4 @@ public class Matiere {
     @JoinColumn(name = "module_id")
     Module module;
 
-
 }

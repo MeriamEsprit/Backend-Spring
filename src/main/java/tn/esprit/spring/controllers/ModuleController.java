@@ -7,7 +7,7 @@ import tn.esprit.spring.services.ModuleServicesImpl;
 import java.util.List;
 
 @RestController
-@RequestMapping("/modules")
+@RequestMapping("/api/modules")
 public class ModuleController {
     private ModuleServicesImpl moduleService;
 

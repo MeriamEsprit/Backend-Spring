@@ -2,7 +2,7 @@ package tn.esprit.spring.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tn.esprit.spring.entities.Seanceclasse;
+import tn.esprit.spring.entities.SeanceClasse;
 import tn.esprit.spring.repositories.SeanceclasseRepository;
 
 import java.util.List;
@@ -14,12 +14,12 @@ public class SeanceclasseServicesImpl implements ISeanceclasseServices {
     private SeanceclasseRepository seanceclasseRepository;
 
     @Override
-    public Seanceclasse saveSeanceclasse(Seanceclasse seanceclasse) {
+    public SeanceClasse saveSeanceclasse(SeanceClasse seanceclasse) {
         return seanceclasseRepository.save(seanceclasse);
     }
 
     @Override
-    public Seanceclasse updateSeanceclasse(Seanceclasse seanceclasse) {
+    public SeanceClasse updateSeanceclasse(SeanceClasse seanceclasse) {
         return seanceclasseRepository.save(seanceclasse);
     }
 
@@ -29,12 +29,12 @@ public class SeanceclasseServicesImpl implements ISeanceclasseServices {
     }
 
     @Override
-    public Seanceclasse getSeanceclasseById(Long id) {
+    public SeanceClasse getSeanceclasseById(Long id) {
         return seanceclasseRepository.findById(id).orElse(null);
     }
 
     @Override
-    public List<Seanceclasse> getAllSeanceclasses() {
+    public List<SeanceClasse> getAllSeanceclasses() {
         return seanceclasseRepository.findAll();
     }
 }

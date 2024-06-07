@@ -1,13 +1,13 @@
 package tn.esprit.spring.services;
 
-import tn.esprit.spring.entities.Seanceclasse;
+import tn.esprit.spring.entities.SeanceClasse;
 
 import java.util.List;
 
 public interface ISeanceclasseServices {
-    Seanceclasse saveSeanceclasse(Seanceclasse seanceclasse);
-    Seanceclasse updateSeanceclasse(Seanceclasse seanceclasse);
+    SeanceClasse saveSeanceclasse(SeanceClasse seanceclasse);
+    SeanceClasse updateSeanceclasse(SeanceClasse seanceclasse);
     void deleteSeanceclasse(Long id);
-    Seanceclasse getSeanceclasseById(Long id);
-    List<Seanceclasse> getAllSeanceclasses();
+    SeanceClasse getSeanceclasseById(Long id);
+    List<SeanceClasse> getAllSeanceclasses();
 }

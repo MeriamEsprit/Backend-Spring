@@ -7,7 +7,7 @@ import tn.esprit.spring.services.MatiereServicesImp;
 import java.util.List;
 
 @RestController
-@RequestMapping("/matieres")
+@RequestMapping("/api/matieres")
 public class MatiereController {
     private MatiereServicesImp matiereService;
     @PostMapping

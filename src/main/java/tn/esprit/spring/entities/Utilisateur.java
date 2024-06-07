@@ -39,9 +39,13 @@ public class Utilisateur {
     @OneToMany(mappedBy = "utilisateur")
     List<Note> notes;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "classe_id")
-    Classe classe;
+    private Classe classe;
+
+    @OneToMany(mappedBy = "enseignant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SeanceClasse> seances;
+
 
     public Utilisateur(String email, String motDePasse) {
         this.motDePasse = motDePasse;
