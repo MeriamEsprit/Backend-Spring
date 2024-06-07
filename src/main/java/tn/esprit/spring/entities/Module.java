@@ -19,7 +19,7 @@ public class Module {
     @Column(name = "idModule", nullable = false)
     Long id;
 
-    @Column(name = "nom")
+    @Column(name = "nom",unique = true)
     String nom;
 
     @OneToMany(mappedBy = "module")
