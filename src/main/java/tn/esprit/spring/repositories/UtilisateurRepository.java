@@ -17,4 +17,12 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
 
     Boolean existsByEmail(String email);
 //    List<Utilisateur> findAllByRolesContainingAndIsHiddenFalse(Set<Role> roles);
+
+
+    //Start Modification Nassreddine
+    List<Utilisateur> findByClasseId(Long classeId);
+    List<Utilisateur> findUsersByRoleAndClasseId(ERole role, Long classeId);
+    Utilisateur findUserByRoleAndAndIdAndClasseId(ERole role, Long id, Long ClasseId);
+
+    //End Modification Nassreddine
 }
