@@ -3,6 +3,7 @@ package tn.esprit.spring.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.spring.Dto.emploiDuTemps.SeanceClasseSummaryDto;
 import tn.esprit.spring.entities.SeanceClasse;
 import tn.esprit.spring.services.SeanceclasseServicesImpl;
 
@@ -39,5 +40,10 @@ public class SeanceclasseController {
     @GetMapping
     public List<SeanceClasse> getAllSeanceclasses() {
         return seanceclasseService.getAllSeanceclasses();
+    }
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/summaries")
+    public List<SeanceClasseSummaryDto> getAllSeanceClasseSummaries() {
+        return seanceclasseService.getAllSeanceClasseSummaries();
     }
 }

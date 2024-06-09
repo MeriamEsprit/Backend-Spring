@@ -1,6 +1,10 @@
 package tn.esprit.spring.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tn.esprit.spring.Dto.emploiDuTemps.ClasseSummaryDto;
+import tn.esprit.spring.Dto.emploiDuTemps.MatiereSummaryDto;
+import tn.esprit.spring.Dto.emploiDuTemps.SalleSummaryDto;
+import tn.esprit.spring.Dto.emploiDuTemps.SeanceClasseSummaryDto;
 import tn.esprit.spring.entities.SeanceClasse;
 import tn.esprit.spring.repositories.SeanceclasseRepository;
 //import tn.esprit.spring.Dto.emploiDuTemps.seanceClasseDto;
@@ -39,35 +43,41 @@ public class SeanceclasseServicesImpl implements ISeanceclasseServices {
     public List<SeanceClasse> getAllSeanceclasses() {
         return seanceclasseRepository.findAll();
     }
-/*
+
     @Override
-    public List<seanceClasseDto> getAllSeanceclasses2() {
+    public List<SeanceClasseSummaryDto> getAllSeanceClasseSummaries() {
         List<SeanceClasse> seanceClasses = seanceclasseRepository.findAll();
-        return seanceClasses.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        return seanceClasses.stream()
+                .map(seanceClasse -> {
+                    SeanceClasseSummaryDto dto = new SeanceClasseSummaryDto();
+                    dto.setIdSeance(seanceClasse.getIdSeance());
+                    dto.setHeureDebut(seanceClasse.getHeureDebut().toString());
+                    dto.setHeureFin(seanceClasse.getHeureFin().toString());
+
+                    if (seanceClasse.getSalle() != null) {
+                        SalleSummaryDto salleDto = new SalleSummaryDto(seanceClasse.getSalle().getNom_salle());
+                        dto.setSalle(salleDto);
+                    }
+
+                    if (seanceClasse.getMatiere() != null) {
+                        MatiereSummaryDto matiereDto = new MatiereSummaryDto(seanceClasse.getMatiere().getNomMatiere());
+                        dto.setMatiere(matiereDto);
+                    }
+
+                    if (seanceClasse.getClasse() != null) {
+                        ClasseSummaryDto classeDto = new ClasseSummaryDto(seanceClasse.getClasse().getNomClasse());
+                        dto.setClasse(classeDto);
+                    }
+
+                    if (seanceClasse.getEnseignant() != null) {
+                        String nomPrenom = seanceClasse.getEnseignant().getNom() + " " + seanceClasse.getEnseignant().getPrenom();
+                        dto.setEnseignantNomPrenom(nomPrenom);
+                    }
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
-
-    private seanceClasseDto convertToDTO(SeanceClasse seanceClasse) {
-        seanceClasseDto dto = new seanceClasseDto();
-        dto.setIdSeance(seanceClasse.getIdSeance());
-        dto.setHeureDebut(seanceClasse.getHeureDebut());
-        dto.setHeureFin(seanceClasse.getHeureFin());
-
-        seanceClasseDto.SalleDTO salleDTO = new seanceClasseDto.SalleDTO();
-        salleDTO.setNom_salle(seanceClasse.getSalle().getNom_salle());
-        dto.setSalle(salleDTO);
-
-        seanceClasseDto.MatiereDTO matiereDTO = new seanceClasseDto.MatiereDTO();
-        matiereDTO.setNomMatiere(seanceClasse.getMatiere().getNomMatiere());
-        dto.setMatiere(matiereDTO);
-
-        seanceClasseDto.ClasseDTO classeDTO = new seanceClasseDto.ClasseDTO();
-        classeDTO.setNomClasse(seanceClasse.getClasse().getNomClasse());
-        dto.setClasse(classeDTO);
-
-        String enseignantFullName = seanceClasse.getEnseignant().getPrenom() + " " + seanceClasse.getEnseignant().getNom();
-        dto.setEnseignant(enseignantFullName);
-
-        return dto;
-    }*/
 }
 
