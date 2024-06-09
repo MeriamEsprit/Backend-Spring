@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -22,6 +24,5 @@ public class Salle {
 
     @Column(name = "capacite")
     private Integer capacite;
-
 
 }

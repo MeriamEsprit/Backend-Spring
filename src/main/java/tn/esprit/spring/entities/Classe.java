@@ -53,4 +53,5 @@ public class Classe {
 
     @OneToMany(mappedBy = "classe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Utilisateur> utilisateurs;
+
 }

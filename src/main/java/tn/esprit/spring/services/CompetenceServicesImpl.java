@@ -18,6 +18,7 @@ public class CompetenceServicesImpl implements ICompetenceServices {
         return competenceRepository.save(competence);
     }
 
+
     @Override
     public Competence updateCompetence(Competence competence) {
         return competenceRepository.save(competence);

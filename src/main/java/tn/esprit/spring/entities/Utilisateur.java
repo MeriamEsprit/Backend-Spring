@@ -49,6 +49,10 @@ public class Utilisateur {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "utilisateurs"})
     Classe classe;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idCompetence")
+    Competence competence;
+
     public Utilisateur(String email, String motDePasse) {
         this.motDePasse = motDePasse;
         this.email = email;
