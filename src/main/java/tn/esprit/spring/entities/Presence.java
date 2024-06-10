@@ -1,6 +1,8 @@
 package tn.esprit.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -14,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@ToString
+@ToString(exclude = {"utilisateur", "justification"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,17 +35,17 @@ public class Presence implements Serializable {
     private LocalTime heureFin;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "classe_id")
-    private Classe classe;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "utilisateur_id")
-    @JsonIgnoreProperties({"notes", "classe","presences"})
+    @JsonIgnoreProperties({"notes","presences"})
     Utilisateur utilisateur;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "justification_id")
     private Justification justification;
+
+
 
 }

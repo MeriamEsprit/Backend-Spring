@@ -16,7 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@ToString
+@ToString(exclude = {"notes", "classe", "presences"})
 @Table(name = "utilisateur")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -48,13 +48,13 @@ public class Utilisateur {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classe_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "utilisateurs"})
-    Classe classe;
+    @JsonIgnore
+    private Classe classe;
 
-
-    @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"utilisateur"})
     private List<Presence> presences;
+
 
     public Utilisateur(String email, String motDePasse) {
         this.motDePasse = motDePasse;

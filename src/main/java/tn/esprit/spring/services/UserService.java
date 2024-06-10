@@ -130,20 +130,9 @@ public class UserService implements IUserService {
         return userRepository.findAllByRole(role);
     }
 
-
-    //Start Modification Nassreddine
-    public List<Utilisateur> findByClasseId(Long classeId){
-        return userRepository.findByClasseId(classeId);
+    public List<Utilisateur> getUtilisateursByRoleAndClasse(ERole role, Classe classe) {
+        return userRepository.findByRoleAndClasse(role, classe);
+    }
     }
 
-    public List<Utilisateur>findUsersByRoleAndClasseId(ERole role, Long classeId){
-        return userRepository.findUsersByRoleAndClasseId(role,classeId);
-    }
 
-    public Utilisateur findUserByRoleAndIdAndClasseId(ERole role,Long id, Long classeId){
-        return userRepository.findUserByRoleAndAndIdAndClasseId(role,id,classeId);
-    }
-
-    //End Modification Nassreddine
-
-}

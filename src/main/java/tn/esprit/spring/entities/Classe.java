@@ -1,11 +1,11 @@
 package tn.esprit.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,7 +13,12 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@ToString(exclude = {"utilisateurs"})
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "classe")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Classe  implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,11 +30,10 @@ public class Classe  implements Serializable {
     @Column(name = "nomClasse")
     private String nomClasse;
 
-    @OneToMany(mappedBy = "classe")
-    @JsonIgnoreProperties("classe")
+    @OneToMany(mappedBy = "classe", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("")
     private List<Utilisateur> utilisateurs;
 
-    @OneToMany(mappedBy = "classe")
-    @JsonIgnoreProperties("classe")
-    private List<Presence> presences;
-}
+
+
+    }

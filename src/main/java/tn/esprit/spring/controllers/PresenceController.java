@@ -6,20 +6,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Classe;
+import tn.esprit.spring.entities.ERole;
 import tn.esprit.spring.entities.Presence;
 import tn.esprit.spring.entities.Utilisateur;
+import tn.esprit.spring.services.ClasseServicesImpl;
 import tn.esprit.spring.services.PresenceServiceImpl;
 import tn.esprit.spring.services.UserService;
 
 import java.util.List;
 
 
-@RequiredArgsConstructor
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/presences")
 public class PresenceController {
 
     private PresenceServiceImpl presenceService;
+    @Autowired
+    private ClasseServicesImpl classeService;
 
     @Autowired
     public PresenceController(PresenceServiceImpl presenceService) {
@@ -32,23 +37,23 @@ public class PresenceController {
         return presenceService.addPresence(presence);
     }
 
-    @GetMapping("/findUsersByRoleAndClasse")
-    public List<Utilisateur> findUsersByRoleAndClasse(@RequestParam String role, @RequestParam Long id) {
-        return presenceService.getUsersByRoleAndClassId(role, id);
-    }
-
-    @GetMapping("/findUserByRoleAndIdAndClasse")
-    public Utilisateur findUserByRoleAndIdAndClasseId(@RequestParam String role,@RequestParam Long id_Utilisateur, @RequestParam Long id) {
-        return presenceService.getUserByRoleAndIdAndClasseId(role,id_Utilisateur,id);
-    }
-    @GetMapping("/findAllPresences")
+    @GetMapping("/getAllPresence")
     public List<Presence> findAllPresences() {
         return presenceService.getAllPresences();
     }
+
     @PostMapping("/addPresenceForEtudiant")
     public Presence addPresenceForEtudiant(@RequestParam Long studentId, @RequestBody Presence presenceDetails) {
-        return presenceService.addPresenceForEtudiant(studentId, presenceDetails);
+        return presenceService.addPresenceForEtudiant(studentId,presenceDetails);
     }
+
+    @GetMapping("/listutilisateursbyclasse/{idClass}")
+    public List<Utilisateur>findStudentByClasse(@PathVariable Long classId)
+    {
+        return presenceService.findStudentByClasse(classId);
+    }
+
+
 
 
 }
