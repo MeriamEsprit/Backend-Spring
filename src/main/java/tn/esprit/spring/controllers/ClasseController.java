@@ -8,7 +8,7 @@ import tn.esprit.spring.services.ClasseServicesImpl;
 import java.util.List;
 
 @RestController
-@RequestMapping("/classes")
+@RequestMapping("/api/classes")
 public class ClasseController {
 
     @Autowired
@@ -34,7 +34,7 @@ public class ClasseController {
         return classeService.getClasseById(id);
     }
 
-    @GetMapping
+    @GetMapping("/allClasses")
     public List<Classe> getAllClasses() {
         return classeService.getAllClasses();
     }

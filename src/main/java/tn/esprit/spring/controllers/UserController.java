@@ -10,7 +10,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.spring.entities.Classe;
 import tn.esprit.spring.entities.ERole;
+import tn.esprit.spring.entities.Utilisateur;
+import tn.esprit.spring.services.ClasseServicesImpl;
+import tn.esprit.spring.services.PresenceServiceImpl;
 import tn.esprit.spring.services.UserService;
 
 import java.util.List;
@@ -23,6 +27,12 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    private PresenceServiceImpl presenceService;
+
+    @Autowired
+    private ClasseServicesImpl classeService;
     @GetMapping("/all-enseignant")
     // /user/all-enseignant
     public ResponseEntity<?> getAllEnseignant() {
@@ -48,4 +58,22 @@ public class UserController {
             return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-}
+
+    @GetMapping("/findByRoleAndClass")
+    public List<Utilisateur> findByRoleAndClass (@RequestParam ERole role, @RequestParam Long classId){
+        Classe classe = classeService.getClasseById(classId);
+        return userService.getUtilisateursByRoleAndClasse(role,classe);
+    }
+
+    //Start Modification Nassreddine
+//    @GetMapping("/findAllByClasse")
+//    public List<Utilisateur> findUsersByClasseId(@RequestParam Long id) {
+//        return userService.findByClasseId(id);
+//    }
+//
+//    @GetMapping("/findUsersByRoleAndClasse")
+//    public List<Utilisateur>findUsersByRoleAndClasseId(@RequestParam ERole role, @RequestParam Long id){
+//        return userService.findUsersByRoleAndClasseId(role,id);
+    }
+    //End Modification Nassreddine
+
