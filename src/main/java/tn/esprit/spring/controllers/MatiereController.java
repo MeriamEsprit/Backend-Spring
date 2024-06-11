@@ -1,6 +1,5 @@
 package tn.esprit.spring.controllers;
 
-import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Matiere;
 import tn.esprit.spring.services.MatiereServicesImp;
@@ -8,8 +7,7 @@ import tn.esprit.spring.services.MatiereServicesImp;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
-@RequestMapping("/api/matieres")
+@RequestMapping("/matieres")
 public class MatiereController {
     private MatiereServicesImp matiereService;
     @PostMapping

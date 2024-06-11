@@ -1,10 +1,7 @@
 package tn.esprit.spring.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import tn.esprit.spring.entities.Classe;
 import tn.esprit.spring.entities.ERole;
 import tn.esprit.spring.entities.Role;
 import tn.esprit.spring.entities.Utilisateur;
@@ -18,9 +15,7 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
 
     List<Utilisateur> findAllByRole(ERole role);
 
+    Utilisateur getUtilisateurByEmail(String email);
     Boolean existsByEmail(String email);
-
-    @Query("SELECT u FROM Utilisateur u WHERE u.role = :role AND u.classe.id = :classeId")
-    List<Utilisateur> findByRoleAndClasse(@Param("role") ERole role, @Param("classe") Classe classe);
-
+//    List<Utilisateur> findAllByRolesContainingAndIsHiddenFalse(Set<Role> roles);
 }
