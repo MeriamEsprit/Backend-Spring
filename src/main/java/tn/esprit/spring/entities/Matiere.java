@@ -1,14 +1,8 @@
 package tn.esprit.spring.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.io.Serializable;
-import java.util.List;
 
 @Getter
 @Setter
@@ -17,12 +11,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-
-public class Matiere implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class Matiere {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
@@ -46,12 +35,7 @@ public class Matiere implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "module_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "matieres"})
     Module module;
-
-    @OneToMany(mappedBy = "matiere", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("matiere")
-    List<Note> notes;
 
 
 }

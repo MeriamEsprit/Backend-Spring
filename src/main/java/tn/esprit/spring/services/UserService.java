@@ -130,9 +130,4 @@ public class UserService implements IUserService {
         return userRepository.findAllByRole(role);
     }
 
-    public List<Utilisateur> getUtilisateursByRoleAndClasse(ERole role, Classe classe) {
-        return userRepository.findByRoleAndClasse(role, classe);
-    }
-    }
-
-
+}
