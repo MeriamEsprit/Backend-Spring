@@ -133,5 +133,4 @@ public class UserService implements IUserService {
     public Utilisateur getUserByRole(long id , ERole role) {
         return userRepository.findUtilisateurByIdAndRole(id,role);
     }
-
 }

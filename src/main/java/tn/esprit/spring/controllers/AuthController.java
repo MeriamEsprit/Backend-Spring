@@ -28,7 +28,6 @@ public class AuthController {
     @Autowired
     UtilisateurRepository userRepository;
 
-
     @Autowired
     PasswordEncoder encoder;
 
@@ -42,6 +41,7 @@ public class AuthController {
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(service.authenticate(loginRequest.getEmail(), loginRequest.getPassword()));
     }
+
 
 //    @PostMapping("/signup")
 //    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
@@ -69,7 +69,6 @@ public class AuthController {
 //            return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 //    }
-
 
     @PostMapping("/refresh-token")
     public ResponseEntity<String> refreshAccessToken(@RequestBody RefreshRequestDTO request) {

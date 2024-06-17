@@ -4,9 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import tn.esprit.spring.entities.ERole;
 import tn.esprit.spring.entities.Utilisateur;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> {
@@ -15,7 +15,7 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
     List<Utilisateur> findAllByRole(ERole role);
 
     Utilisateur findUtilisateurByIdAndRole(Long id , ERole role);
-
+    
     Boolean existsByEmail(String email);
 //    List<Utilisateur> findAllByRolesContainingAndIsHiddenFalse(Set<Role> roles);
 }
