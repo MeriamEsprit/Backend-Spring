@@ -2,6 +2,7 @@ package tn.esprit.spring.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -79,11 +80,15 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         .requestMatchers("/reglement/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/facture/**").permitAll()
                         .requestMatchers("/database/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+
 
                         .anyRequest().authenticated())
 
@@ -98,8 +103,11 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
+                        .allowedOriginPatterns("*")  // This allows all origins when using patterns
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD","OPTIONS")
                        .allowedOriginPatterns("*")// This allows all origins when using patterns
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD")
+
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }
