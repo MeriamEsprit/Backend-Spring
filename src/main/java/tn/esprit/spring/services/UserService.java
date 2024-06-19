@@ -127,7 +127,9 @@ public class UserService implements IUserService {
 
     @Override
     public List<Utilisateur> getAllUserByRole(ERole role) {
+
         return userRepository.findAllByRole(role);
     }
+
 
 }

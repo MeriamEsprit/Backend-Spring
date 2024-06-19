@@ -35,7 +35,7 @@ public class SeanceClasse {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idMatiere")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "seanceClasses"})
-    Matiere matiere;
+    private Matiere matiere;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idClasse")
