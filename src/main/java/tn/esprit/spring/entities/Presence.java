@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@ToString(exclude = {"utilisateur", "justification"})
+@ToString(exclude = {"utilisateur", "justification","classe"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,18 +34,14 @@ public class Presence implements Serializable {
     private LocalTime heureDebut;
     private LocalTime heureFin;
 
-
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "utilisateur_id")
     @JsonIgnoreProperties({"notes","presences"})
     Utilisateur utilisateur;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "justification_id")
+    @JsonBackReference
     private Justification justification;
-
-
 
 }

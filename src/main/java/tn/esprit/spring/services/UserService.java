@@ -133,6 +133,11 @@ public class UserService implements IUserService {
     public List<Utilisateur> getUtilisateursByRoleAndClasse(ERole role, Classe classe) {
         return userRepository.findByRoleAndClasse(role, classe);
     }
+
+    @Override
+    public Classe getClasseByUserId(Long id) {
+        return userRepository.findClasseByUtilisateurId(id);
+    }
     }
 
 

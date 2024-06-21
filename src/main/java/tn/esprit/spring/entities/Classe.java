@@ -24,7 +24,8 @@ public class Classe  implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "idClasse", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "nomClasse")
@@ -33,7 +34,5 @@ public class Classe  implements Serializable {
     @OneToMany(mappedBy = "classe", fetch = FetchType.LAZY)
     @JsonIgnoreProperties("")
     private List<Utilisateur> utilisateurs;
-
-
 
     }

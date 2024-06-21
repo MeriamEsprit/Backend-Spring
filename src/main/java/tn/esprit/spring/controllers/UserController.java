@@ -33,6 +33,7 @@ public class UserController {
 
     @Autowired
     private ClasseServicesImpl classeService;
+
     @GetMapping("/all-enseignant")
     // /user/all-enseignant
     public ResponseEntity<?> getAllEnseignant() {
@@ -60,20 +61,15 @@ public class UserController {
     }
 
     @GetMapping("/findByRoleAndClass")
-    public List<Utilisateur> findByRoleAndClass (@RequestParam ERole role, @RequestParam Long classId){
+    public List<Utilisateur> findByRoleAndClass(@RequestParam ERole role, @RequestParam Long classId) {
         Classe classe = classeService.getClasseById(classId);
-        return userService.getUtilisateursByRoleAndClasse(role,classe);
+        return userService.getUtilisateursByRoleAndClasse(role, classe);
     }
 
-    //Start Modification Nassreddine
-//    @GetMapping("/findAllByClasse")
-//    public List<Utilisateur> findUsersByClasseId(@RequestParam Long id) {
-//        return userService.findByClasseId(id);
-//    }
-//
-//    @GetMapping("/findUsersByRoleAndClasse")
-//    public List<Utilisateur>findUsersByRoleAndClasseId(@RequestParam ERole role, @RequestParam Long id){
-//        return userService.findUsersByRoleAndClasseId(role,id);
+    @GetMapping("/findClassByUser")
+    public Classe findClassByUser(@RequestParam Long UserId) {
+        return userService.getClasseByUserId(UserId);
     }
-    //End Modification Nassreddine
+
+}
 

@@ -27,7 +27,6 @@ public class Utilisateur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    @Column(name = "idUtilisateur", nullable = false)
     Long id;
 
     private String nom;
