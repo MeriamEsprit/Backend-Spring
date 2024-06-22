@@ -48,6 +48,11 @@ public class Utilisateur {
     @JoinColumn(name = "classe_id")
     @JsonIgnore
     Classe classe;
+/*
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "utilisateur")
+    Set<Reglement> reglements;
+*/
 
     public Utilisateur(String email, String motDePasse) {
         this.motDePasse = motDePasse;
