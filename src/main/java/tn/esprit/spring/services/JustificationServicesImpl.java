@@ -8,6 +8,7 @@ import tn.esprit.spring.entities.Justification;
 import tn.esprit.spring.repositories.JustificationRepository;
 import tn.esprit.spring.repositories.PresenceRepository;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,6 +22,9 @@ public class JustificationServicesImpl implements IJustificationServices {
 
     @Override
     public Justification addJustification(Justification justification) {
+        if (justification.getSubmissionDate() == null) {
+            justification.setSubmissionDate(new Date());
+        }
         return justificationRepository.save(justification);
     }
 
@@ -38,7 +42,6 @@ public class JustificationServicesImpl implements IJustificationServices {
             existingJustification.setStatus(justification.getStatus());
             existingJustification.setSubmissionDate(justification.getSubmissionDate());
             existingJustification.setValidationDate(justification.getValidationDate());
-            // update other fields as necessary
             return justificationRepository.save(existingJustification);
         }).orElseThrow(() -> new EntityNotFoundException("Justification not found with id " + idJustification));
     }

@@ -60,9 +60,13 @@ public class PresenceController {
     }
 
     @GetMapping("/utilisateur/{userId}/month/{month}/year/{year}")
-    public ResponseEntity<Map<String, List<Presence>>> getMonthlyAttendance(@PathVariable Long userId, @PathVariable int month, @PathVariable int year) {
-        Map<String, List<Presence>> attendance = presenceService.getMonthlyAttendance(userId, month, year);
-        return ResponseEntity.ok(attendance);
+    public Map<String, List<Presence>> getMonthlyAttendance(@PathVariable Long userId, @PathVariable int month, @PathVariable int year) {
+        return  presenceService.getMonthlyAttendance(userId, month, year);
+    }
+
+    @GetMapping("getAllPresencesByUserId/user/{id}")
+    public List<Presence> getAllPresencesByUserId(@PathVariable Long id) {
+       return presenceService.getAllPresencesByUserId(id);
     }
 
 }

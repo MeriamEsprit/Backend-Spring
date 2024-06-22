@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,12 +23,13 @@ public class Justification implements Serializable {
     private String name;
     private String reason;
     private int status;
-    private String submissionDate;
+    private Date submissionDate;
     private Date validationDate;
-    private String filePath; // New field to store the file path
+    private String filePath;
 
     @OneToMany(mappedBy = "justification", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Presence> presences = new ArrayList<>();
+
 }
 

@@ -13,4 +13,6 @@ public interface IPresenceService {
     Presence getPresenceById(Long id);
 
     Presence getPresenceByIdAndDate(Long idPresence, LocalDate date);
+
+    List<Presence> getAllPresencesByUserId(Long id);
 }

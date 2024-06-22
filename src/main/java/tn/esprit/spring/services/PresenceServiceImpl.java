@@ -58,20 +58,27 @@ public class PresenceServiceImpl implements IPresenceService{
     }
 
     @Override
+    public List<Presence> getAllPresencesByUserId(Long id) {
+            Utilisateur user = utilisateurRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id));
+            return user.getPresences();
+    }
+
+    @Override
     public Presence updatePresence(Presence presence) {
         return presenceRepository.save(presence);
     }
-@Override
-    public List<Presence> getAllPresences() {
-        List<Presence> presences = presenceRepository.findAll();
-        for (Presence presence : presences) {
-            if (presence.getUtilisateur() != null) {
-                Utilisateur utilisateur = utilisateurRepository.findById(presence.getUtilisateur().getId()).orElse(null);
-                presence.setUtilisateur(utilisateur);
+    @Override
+        public List<Presence> getAllPresences() {
+            List<Presence> presences = presenceRepository.findAll();
+            for (Presence presence : presences) {
+                if (presence.getUtilisateur() != null) {
+                    Utilisateur utilisateur = utilisateurRepository.findById(presence.getUtilisateur().getId()).orElse(null);
+                    presence.setUtilisateur(utilisateur);
+                }
             }
+            return presences;
         }
-        return presences;
-    }
     public Presence addPresenceForEtudiant(Long studentId, Presence presenceDetails) {
         Utilisateur student = utilisateurRepository.findById(studentId).orElse(null);
         System.out.println(student.getId());
