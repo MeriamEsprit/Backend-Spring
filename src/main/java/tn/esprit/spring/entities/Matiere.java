@@ -46,5 +46,9 @@ public class Matiere {
     Module module;
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "competence_id")
+    Competence competence;
+
 
 }

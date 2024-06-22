@@ -54,6 +54,10 @@ public class Utilisateur {
     Set<Reglement> reglements;
 */
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idCompetence")
+    Competence competence;
+
     public Utilisateur(String email, String motDePasse) {
         this.motDePasse = motDePasse;
         this.email = email;

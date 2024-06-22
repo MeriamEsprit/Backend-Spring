@@ -15,7 +15,6 @@ import tn.esprit.spring.entities.Classe;
 import tn.esprit.spring.entities.ERole;
 import tn.esprit.spring.entities.Utilisateur;
 import tn.esprit.spring.repositories.ClasseRepository;
-import tn.esprit.spring.repositories.UtilisateurRepository;
 import tn.esprit.spring.services.UserService;
 
 import java.time.LocalDate;
@@ -28,9 +27,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.ERole;
+import tn.esprit.spring.entities.Utilisateur;
+import tn.esprit.spring.repositories.UtilisateurRepository;
 import tn.esprit.spring.services.UserService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -40,6 +44,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+   
+
+
 
     @Autowired
     UtilisateurRepository userRepository;
@@ -129,7 +136,22 @@ public class UserController {
         }
     }
 
-    @GetMapping("/enseignant/{id}")
+    @GetMapping("/all-enseignant2")
+    public ResponseEntity<?> getAllEnseignant2() {
+        try {
+            List<Utilisateur> enseignants2 = userService.getAllUserByRole(ERole.ROLE_TEACHER);
+            List<Map<String, Object>> transformedEnseignants = enseignants2.stream()
+                    .map(enseignant2 -> {
+                        Map<String, Object> transformed = new HashMap<>();
+                        transformed.put("id", enseignant2.getId());
+                        transformed.put("nomPrenom", enseignant2.getNom() + " " + enseignant2.getPrenom());
+                        return transformed;
+                    })
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(transformedEnseignants);
+
+     @GetMapping("/enseignant/{id}")
     // /user/all-enseignant
     public ResponseEntity<?> getEnseignant(@PathVariable Long id) {
         try {

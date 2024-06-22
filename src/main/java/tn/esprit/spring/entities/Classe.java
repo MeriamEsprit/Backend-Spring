@@ -1,8 +1,8 @@
 package tn.esprit.spring.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
@@ -10,16 +10,20 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "classe")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Classe {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "idClasse", nullable = false)
-    private Long id;
+    private Long idClasse;
 
-    @Column(name = "nomClasse")
+    @Column(name = "nomClasse", nullable = false)
     private String nomClasse;
 
-    @OneToMany(mappedBy = "classe")
-    List<Utilisateur> utilisateurs;
+    @OneToMany(mappedBy = "classe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Utilisateur> utilisateurs;
 }
