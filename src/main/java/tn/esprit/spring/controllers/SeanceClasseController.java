@@ -48,5 +48,17 @@ public class SeanceClasseController {
         return seanceClasseService.getAllSeanceclasses();
     }
 
+    @GetMapping("/enseignant/{idEnseignant}")
+    public ResponseEntity<List<SeanceClasse>> getSeanceClassesByEnseignant(@PathVariable Long idEnseignant) {
+        List<SeanceClasse> seances = seanceClasseService.getSeanceClassesByEnseignant(idEnseignant);
+        return ResponseEntity.ok(seances);
+    }
+
+    @GetMapping("/classe/{idClasse}")
+    public ResponseEntity<List<SeanceClasse>> getSeanceClassesByClasse(@PathVariable Long idClasse) {
+        List<SeanceClasse> seances = seanceClasseService.getSeanceClassesByClasse(idClasse);
+        return ResponseEntity.ok(seances);
+    }
+
 
 }

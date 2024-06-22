@@ -15,6 +15,10 @@ public interface ISeanceclasseServices {
 
     SeanceClasse updateSeanceClasse(Long idSeance, SeanceClasseDTO dto);
 
+    List<SeanceClasse> getSeanceClassesByEnseignant(Long idEnseignant);
+
+    List<SeanceClasse> getSeanceClassesByClasse(Long idClasse);
+
     void deleteSeanceclasse(Long id);
     SeanceClasse getSeanceclasseById(Long id);
     List<SeanceClasse> getAllSeanceclasses();

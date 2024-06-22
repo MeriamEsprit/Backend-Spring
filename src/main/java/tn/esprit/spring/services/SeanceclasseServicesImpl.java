@@ -82,7 +82,14 @@ public class SeanceclasseServicesImpl implements ISeanceclasseServices {
         return seanceClasseRepository.save(seanceClasse);
     }
 
-
+    @Override
+    public List<SeanceClasse> getSeanceClassesByEnseignant(Long idEnseignant) {
+        return seanceClasseRepository.findByEnseignantId(idEnseignant);
+    }
+    @Override
+    public List<SeanceClasse> getSeanceClassesByClasse(Long idClasse) {
+        return seanceClasseRepository.findByClasseId(idClasse);
+    }
 
     @Override
     public void deleteSeanceclasse(Long id) {

@@ -1,5 +1,5 @@
 package tn.esprit.spring.entities;
-
+import java.time.Instant;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,10 +22,10 @@ public class SeanceClasse {
     private Long idSeance;
 
     @Column(name = "heureDebut", nullable = false)
-    private LocalDateTime heureDebut;
+    private Instant heureDebut;
 
     @Column(name = "heureFin", nullable = false)
-    private LocalDateTime heureFin;
+    private Instant heureFin;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idSalle")

@@ -1,6 +1,7 @@
 package tn.esprit.spring.Dto.emploiDuTemps;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -8,8 +9,8 @@ import java.time.LocalDateTime;
 @Data
 
 public class SeanceClasseDTO {
-                private LocalDateTime heureDebut;
-                private LocalDateTime heureFin;
+                private Instant heureDebut;
+                private Instant heureFin;
                 private EnseignantDTO enseignant;
                 private SalleDTO salle;
                 private ClasseDTO classe;
