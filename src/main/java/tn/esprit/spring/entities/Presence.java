@@ -1,17 +1,10 @@
 package tn.esprit.spring.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -20,11 +13,9 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "presence")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Presence implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+@Table(name = "presence")
+public class Presence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
@@ -39,6 +30,7 @@ public class Presence implements Serializable {
     @JsonIgnoreProperties({"notes","presences"})
     Utilisateur utilisateur;
 
+  
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "justification_id")
     @JsonBackReference

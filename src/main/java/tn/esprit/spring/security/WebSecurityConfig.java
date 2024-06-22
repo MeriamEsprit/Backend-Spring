@@ -1,5 +1,4 @@
 package tn.esprit.spring.security;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +14,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import tn.esprit.spring.security.jwt.AuthEntryPointJwt;
 import tn.esprit.spring.security.jwt.AuthTokenFilter;
 import tn.esprit.spring.security.services.UserDetailsServiceImpl;
+
+import java.util.Arrays;
 
 
 @Configuration
@@ -61,12 +66,21 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
     }
 
 
+
+
+    @Bean
+    public MultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/auth/**", "/error", "/api/seanceClasses/summaries","/api/salle", "/api/classe", "/api/matieres", "/api/user/all-enseignant", "/api/seanceClasses", "/api/salle", "/api/seanceClasses/**").permitAll()
+                        .requestMatchers("/database/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -90,4 +104,5 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
             }
         };
     }
+
 }

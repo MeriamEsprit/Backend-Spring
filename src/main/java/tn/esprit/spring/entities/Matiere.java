@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Getter
@@ -19,10 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 
-public class Matiere implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class Matiere {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
@@ -49,9 +45,10 @@ public class Matiere implements Serializable {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "matieres"})
     Module module;
 
-    @OneToMany(mappedBy = "matiere", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("matiere")
-    List<Note> notes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "competence_id")
+    Competence competence;
 
 
 }

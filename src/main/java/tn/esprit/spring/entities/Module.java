@@ -1,5 +1,6 @@
 package tn.esprit.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,9 +20,14 @@ public class Module {
     @Column(name = "idModule", nullable = false)
     Long id;
 
-    @Column(name = "nom",unique = true)
+    @Column(unique = true)
     String nom;
 
     @OneToMany(mappedBy = "module")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "competence"})
+    String description;
+
+    @OneToMany(mappedBy = "module",cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("module")
     List<Matiere> matieres;
 }

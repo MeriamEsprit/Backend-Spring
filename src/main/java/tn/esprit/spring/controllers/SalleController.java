@@ -8,7 +8,7 @@ import tn.esprit.spring.services.SalleServicesImpl;
 import java.util.List;
 
 @RestController
-@RequestMapping("/salles")
+@RequestMapping("/api/salle")
 public class SalleController {
 
     @Autowired
