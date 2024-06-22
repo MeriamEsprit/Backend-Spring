@@ -1,9 +1,12 @@
 package tn.esprit.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,12 +24,12 @@ public class Justification implements Serializable {
     private String reason;
     private int status;
     private Date submissionDate;
-    private Date ValidationDate;
+    private Date validationDate;
+    private String filePath;
 
-//    @ManyToOne
-//    private Utilisateur utilisateur;
+    @OneToMany(mappedBy = "justification", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Presence> presences = new ArrayList<>();
 
-  /*  @OneToMany(mappedBy = "justification")
-    private List<Attendance> attendances;*/
 }
 

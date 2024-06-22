@@ -55,6 +55,8 @@ public class UserController {
     ClasseRepository classeRepository;
 
     @Autowired
+    private ClasseServicesImpl classeService;
+
     PasswordEncoder encoder;
     @PostMapping()
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
@@ -136,6 +138,18 @@ public class UserController {
         }
     }
 
+    @GetMapping("/findByRoleAndClass")
+    public List<Utilisateur> findByRoleAndClass(@RequestParam ERole role, @RequestParam Long classId) {
+        Classe classe = classeService.getClasseById(classId);
+        return userService.getUtilisateursByRoleAndClasse(role, classe);
+    }
+
+    @GetMapping("/findClassByUser")
+    public Classe findClassByUser(@RequestParam Long UserId) {
+        return userService.getClasseByUserId(UserId);
+    }
+
+}
     @GetMapping("/all-enseignant2")
     public ResponseEntity<?> getAllEnseignant2() {
         try {

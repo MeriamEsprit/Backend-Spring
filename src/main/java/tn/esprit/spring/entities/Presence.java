@@ -9,20 +9,31 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
+@ToString(exclude = {"utilisateur", "justification","classe"})
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
+
 @Table(name = "presence")
 public class Presence {
     @Id
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
+    private Long idPresence;
+    private Boolean etatPresence;
+    private LocalDate datePresence;
+    private LocalTime heureDebut;
+    private LocalTime heureFin;
 
-    @Column(name = "etat")
-    private Boolean etat;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "utilisateur_id")
+    @JsonIgnoreProperties({"notes","presences"})
+    Utilisateur utilisateur;
 
-    @Column(name = "date")
-    private LocalDate date;
-
+  
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "justification_id")
+    @JsonBackReference
     private Justification justification;
 
 }

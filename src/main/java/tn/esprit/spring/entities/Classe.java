@@ -18,12 +18,16 @@ public class Classe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
+
     @Column(name = "idClasse", nullable = false)
     private Long idClasse;
+
 
     @Column(name = "nomClasse", nullable = false)
     private String nomClasse;
 
     @OneToMany(mappedBy = "classe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Utilisateur> utilisateurs;
-}
+
+
+    }

@@ -18,5 +18,15 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
     
     Utilisateur getUtilisateurByEmail(String email);
     Boolean existsByEmail(String email);
+
+
+    @Query("SELECT u FROM Utilisateur u WHERE u.role = :role AND u.classe.id = :classeId")
+    List<Utilisateur> findByRoleAndClasse(@Param("role") ERole role, @Param("classe") Classe classe);
+
+    @Query("SELECT u.classe FROM Utilisateur u WHERE u.id = :utilisateurId")
+    Classe findClasseByUtilisateurId(@Param("utilisateurId") Long utilisateurId);
+
+
 //    List<Utilisateur> findAllByRolesContainingAndIsHiddenFalse(Set<Role> roles);
+
 }
