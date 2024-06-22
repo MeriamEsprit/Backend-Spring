@@ -7,10 +7,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import tn.esprit.spring.Dto.response.JwtResponse;
 import tn.esprit.spring.entities.*;
 import tn.esprit.spring.repositories.RefreshTokenRepository;
-import tn.esprit.spring.repositories.RoleRepository;
 import tn.esprit.spring.repositories.UtilisateurRepository;
 import tn.esprit.spring.security.jwt.JwtUtils;
 import tn.esprit.spring.security.services.UserDetailsServiceImpl;
@@ -25,7 +25,6 @@ public class UserService implements IUserService {
 
     UtilisateurRepository userRepository;
     UserDetailsServiceImpl userDetailsService;
-    RoleRepository roleRepository;
     RefreshTokenRepository refreshTokenRepository;
     JwtUtils jwtUtils;
     AuthenticationManager authenticationManager;
@@ -131,5 +130,10 @@ public class UserService implements IUserService {
         return userRepository.findAllByRole(role);
     }
 
+
+    @Override
+    public Utilisateur getUserByRole(long id , ERole role) {
+        return userRepository.findUtilisateurByIdAndRole(id,role);
+    }
 
 }

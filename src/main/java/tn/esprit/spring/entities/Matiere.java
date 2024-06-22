@@ -45,9 +45,6 @@ public class Matiere {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "matieres"})
     Module module;
 
-    @OneToMany(mappedBy = "matiere", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("matiere")
-    List<Note> notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "competence_id")

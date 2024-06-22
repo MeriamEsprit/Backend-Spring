@@ -1,4 +1,4 @@
-package tn.esprit.spring.controllers;
+package tn.esprit.spring.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +12,7 @@ import tn.esprit.spring.Dto.request.RefreshRequestDTO;
 import tn.esprit.spring.Dto.request.SignupRequest;
 import tn.esprit.spring.Dto.response.MessageResponse;
 import tn.esprit.spring.entities.ERole;
-import tn.esprit.spring.entities.Role;
 import tn.esprit.spring.entities.Utilisateur;
-import tn.esprit.spring.repositories.RoleRepository;
 import tn.esprit.spring.repositories.UtilisateurRepository;
 import tn.esprit.spring.security.jwt.JwtUtils;
 import tn.esprit.spring.services.UserService;
@@ -31,9 +29,6 @@ public class AuthController {
     UtilisateurRepository userRepository;
 
     @Autowired
-    RoleRepository roleRepository;
-
-    @Autowired
     PasswordEncoder encoder;
 
     @Autowired
@@ -47,33 +42,33 @@ public class AuthController {
         return ResponseEntity.ok(service.authenticate(loginRequest.getEmail(), loginRequest.getPassword()));
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
-        try {
-            if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-                return ResponseEntity
-                        .badRequest()
-                        .body(new MessageResponse("Email déjà utilisé!"));
-            }
 
-            // Create new user's account
-            Utilisateur user = new Utilisateur(signUpRequest.getEmail(),encoder.encode(signUpRequest.getPassword()));
-            // Always assign either user role / employe
-
-            if (signUpRequest.getRole().equals("TEACHER")) {
-                user.setRole(ERole.ROLE_TEACHER);
-            } else if (signUpRequest.getRole().equals("STUDENT")){
-                user.setRole(ERole.ROLE_STUDENT);
-            }
-
-            userRepository.save(user);
-
-            return ResponseEntity.ok(service.authenticate(signUpRequest.getEmail(), signUpRequest.getPassword()));
-        } catch (Exception ex) {
-            return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
+//    @PostMapping("/signup")
+//    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
+//        try {
+//            if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+//                return ResponseEntity
+//                        .badRequest()
+//                        .body(new MessageResponse("Email déjà utilisé!"));
+//            }
+//
+//            // Create new user's account
+//            Utilisateur user = new Utilisateur(signUpRequest.getEmail(),encoder.encode(signUpRequest.getPassword()));
+//            // Always assign either user role / employe
+//
+//            if (signUpRequest.getRole().equals("TEACHER")) {
+//                user.setRole(ERole.ROLE_TEACHER);
+//            } else if (signUpRequest.getRole().equals("STUDENT")){
+//                user.setRole(ERole.ROLE_STUDENT);
+//            }
+//
+//            userRepository.save(user);
+//
+//            return ResponseEntity.ok(service.authenticate(signUpRequest.getEmail(), signUpRequest.getPassword()));
+//        } catch (Exception ex) {
+//            return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     @PostMapping("/refresh-token")
     public ResponseEntity<String> refreshAccessToken(@RequestBody RefreshRequestDTO request) {

@@ -12,5 +12,6 @@ import java.util.List;
 
 public interface IUserService {
     List<Utilisateur> getAllUserByRole(ERole role);
+    Utilisateur getUserByRole(long id , ERole role);
 
 }

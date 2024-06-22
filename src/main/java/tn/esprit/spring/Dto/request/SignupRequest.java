@@ -6,13 +6,11 @@ import lombok.Data;
 @Data
 public class SignupRequest {
 
-
-    private String firstName;
-    private String lastName;
+    private String nom;
+    private String prenom;
     private String email;
-    private String username;
-    private String phoneNumber;
-    private String password;
+    private String cin;
+    private String classe;
     private String role;
 
 }

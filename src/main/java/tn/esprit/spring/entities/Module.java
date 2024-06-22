@@ -20,10 +20,14 @@ public class Module {
     @Column(name = "idModule", nullable = false)
     Long id;
 
-    @Column(name = "nom",unique = true)
+    @Column(unique = true)
     String nom;
 
     @OneToMany(mappedBy = "module")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "competence"})
+    String description;
+
+    @OneToMany(mappedBy = "module",cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("module")
     List<Matiere> matieres;
 }

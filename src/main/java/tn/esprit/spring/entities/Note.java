@@ -40,7 +40,7 @@ public class Note {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "utilisateur_id")
-    @JsonIgnoreProperties({"notes", "classe"})
+    @JsonIgnoreProperties({"notes"})
     Utilisateur utilisateur;
 
     @ManyToOne(fetch = FetchType.EAGER)
