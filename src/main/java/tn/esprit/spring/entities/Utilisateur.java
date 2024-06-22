@@ -25,6 +25,10 @@ public class Utilisateur {
     @Column(name = "idUtilisateur", nullable = false)
     Long id;
 
+    private String identifiant;
+
+    private String cin;
+
     private String nom;
 
     private String prenom;
@@ -42,6 +46,7 @@ public class Utilisateur {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classe_id")
+    @JsonIgnore
     Classe classe;
 /*
     @JsonIgnore

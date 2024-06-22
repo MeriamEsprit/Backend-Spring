@@ -8,7 +8,7 @@ import tn.esprit.spring.services.ClasseServicesImpl;
 import java.util.List;
 
 @RestController
-@RequestMapping("/classes")
+@RequestMapping("/api/classes")
 public class ClasseController {
 
     @Autowired

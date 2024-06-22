@@ -5,4 +5,5 @@ import tn.esprit.spring.entities.Classe;
 
 
 public interface ClasseRepository extends JpaRepository<Classe, Long> {
+    public boolean existsBynomClasse(String nomClasse);
 }

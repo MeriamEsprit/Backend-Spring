@@ -80,18 +80,9 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                        .requestMatchers("/reglement/**").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        .requestMatchers("/facture/**").permitAll()
-                        .requestMatchers("/database/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-
-
                         .anyRequest().authenticated())
-
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
