@@ -1,5 +1,9 @@
 package tn.esprit.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,6 +15,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,23 +24,27 @@ public class Note {
     @Column(name = "idNote", nullable = false)
     Long id;
 
-    @Column(name = "noteCc")
     Double noteCc;
 
-    @Column(name = "noteTp")
     Double noteTp;
 
-    @Column(name = "noteEx")
-    Double noteEx;
+    Double noteExamen;
 
-    @Column(name = "classe")
-    String classe;
+    Double notePrincipale;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    Double noteControle;
+
+    Double MoyennePrincipale;
+
+    Double MoyenneControle;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "utilisateur_id")
+    @JsonIgnoreProperties({"notes"})
     Utilisateur utilisateur;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "matiere_id")
+    @JsonIgnoreProperties({"notes", "module"})
     Matiere matiere;
 }

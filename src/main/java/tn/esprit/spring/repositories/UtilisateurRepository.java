@@ -16,6 +16,7 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
 
     Utilisateur findUtilisateurByIdAndRole(Long id , ERole role);
     
+    Utilisateur getUtilisateurByEmail(String email);
     Boolean existsByEmail(String email);
 //    List<Utilisateur> findAllByRolesContainingAndIsHiddenFalse(Set<Role> roles);
 }

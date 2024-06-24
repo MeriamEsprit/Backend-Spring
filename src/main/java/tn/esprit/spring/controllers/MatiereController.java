@@ -1,5 +1,8 @@
 package tn.esprit.spring.controllers;
 
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Matiere;
 import tn.esprit.spring.services.MatiereServicesImp;
@@ -7,17 +10,32 @@ import tn.esprit.spring.services.MatiereServicesImp;
 import java.util.List;
 
 @RestController
-@RequestMapping("/matieres")
+@AllArgsConstructor
+@RequestMapping("/api/matieres")
 public class MatiereController {
     private MatiereServicesImp matiereService;
     @PostMapping
-    public Matiere saveMatiere(@RequestBody Matiere matiere) {
-        return matiereService.saveMatiere(matiere);
+    public ResponseEntity<Matiere> createMatiere(@RequestBody Matiere matiere, @RequestParam Long moduleId) {
+        try {
+            Matiere savedMatiere = matiereService.saveMatiere(matiere, moduleId);
+            return new ResponseEntity<>(savedMatiere, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @PutMapping
-    public Matiere updateMatiere(@RequestBody Matiere matiere) {
-        return matiereService.updateMatiere(matiere);
+    @PutMapping("/{id}")
+    public ResponseEntity<Matiere> updateMatiere(@PathVariable("id") Long id, @RequestBody Matiere matiereDetails, @RequestParam(required = false) Long moduleId) {
+        try {
+            Matiere updatedMatiere = matiereService.updateMatiere(id, matiereDetails, moduleId);
+            return new ResponseEntity<>(updatedMatiere, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/{id}")
