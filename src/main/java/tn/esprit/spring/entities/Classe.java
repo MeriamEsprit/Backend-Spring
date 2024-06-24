@@ -19,8 +19,8 @@ public class Classe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
 
-    @Column(name = "idClasse", nullable = false)
-    private Long idClasse;
+    @Column(nullable = false)
+    private Long id;
 
 
     @Column(name = "nomClasse", nullable = false)

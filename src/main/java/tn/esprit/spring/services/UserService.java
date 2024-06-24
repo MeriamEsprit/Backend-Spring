@@ -138,7 +138,6 @@ public class UserService implements IUserService {
     public Classe getClasseByUserId(Long id) {
         return userRepository.findClasseByUtilisateurId(id);
     }
-    }
 
     @Override
     public Utilisateur getUserByRole(long id , ERole role) {

@@ -23,14 +23,14 @@ public class ModuleServicesImpl implements IModuleServices{
     @Autowired
     private MatiereRepository matiereRepository;
 
-    @Override
-    public Module saveModule(Module module) {
-        checkUniqueModuleName(module.getNom());
-        if (module.getMatieres() != null) {
-            checkMatieresExist(module.getMatieres());
-        }
-        return moduleRepository.save(module);
-    }
+//    @Override
+//    public Module saveModule(Module module) {
+//        checkUniqueModuleName(module.getNom());
+//        if (module.getMatieres() != null) {
+//            checkMatieresExist(module.getMatieres());
+//        }
+//        return moduleRepository.save(module);
+//    }
      @Override
     public Module updateModule(Long moduleId, Module module) {
         Module existingModule = getModuleById(moduleId);
@@ -118,12 +118,12 @@ public class ModuleServicesImpl implements IModuleServices{
         }
     }
 
-    private void checkUniqueModuleName(String nom) {
-        Optional<Module> existingModule = moduleRepository.findByNom(nom);
-        if (existingModule.isPresent()) {
-            throw new IllegalArgumentException("Module with name " + nom + " already exists");
-        }
-    }
+//    private void checkUniqueModuleName(String nom) {
+//        Optional<Module> existingModule = moduleRepository.findByNom(nom);
+//        if (existingModule.isPresent()) {
+//            throw new IllegalArgumentException("Module with name " + nom + " already exists");
+//        }
+//    }
 
 
 }

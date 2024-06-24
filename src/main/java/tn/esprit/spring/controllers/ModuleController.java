@@ -18,15 +18,15 @@ public class ModuleController {
 
     private ModuleServicesImpl moduleService;
 
-    @PostMapping
-    public ResponseEntity<Module> saveModule(@RequestBody Module module) {
-        try {
-            Module createdModule = moduleService.saveModule(module);
-            return new ResponseEntity<>(createdModule, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @PostMapping
+//    public ResponseEntity<Module> saveModule(@RequestBody Module module) {
+//        try {
+//            Module createdModule = moduleService.saveModule(module);
+//            return new ResponseEntity<>(createdModule, HttpStatus.CREATED);
+//        } catch (IllegalArgumentException e) {
+//            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//        }
+//    }
     @PutMapping("/{moduleId}")
     public ResponseEntity<Module> updateModule(@PathVariable("moduleId") Long moduleId, @RequestBody Module module) {
         try {

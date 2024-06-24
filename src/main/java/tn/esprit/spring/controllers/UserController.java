@@ -15,6 +15,7 @@ import tn.esprit.spring.entities.Classe;
 import tn.esprit.spring.entities.ERole;
 import tn.esprit.spring.entities.Utilisateur;
 import tn.esprit.spring.repositories.ClasseRepository;
+import tn.esprit.spring.services.ClasseServicesImpl;
 import tn.esprit.spring.services.UserService;
 
 import java.time.LocalDate;
@@ -125,12 +126,12 @@ public class UserController {
         }
     }
 
+
     @GetMapping("/all-etudiant")
-    // /user/all-etudiant
     public ResponseEntity<?> getAllEtudiant() {
         try {
-            List<?> enseignants = userService.getAllUserByRole(ERole.ROLE_STUDENT);
-            return ResponseEntity.ok(enseignants);
+            List<Utilisateur> etudiants = userService.getAllUserByRole(ERole.ROLE_STUDENT);
+            return ResponseEntity.ok(etudiants);
         } catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         } catch (RuntimeException ex) {
@@ -149,7 +150,6 @@ public class UserController {
         return userService.getClasseByUserId(UserId);
     }
 
-}
     @GetMapping("/all-enseignant2")
     public ResponseEntity<?> getAllEnseignant2() {
         try {
@@ -162,9 +162,11 @@ public class UserController {
                         return transformed;
                     })
                     .collect(Collectors.toList());
-
             return ResponseEntity.ok(transformedEnseignants);
-
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
      @GetMapping("/enseignant/{id}")
     // /user/all-enseignant
     public ResponseEntity<?> getEnseignant(@PathVariable Long id) {
@@ -185,7 +187,7 @@ public class UserController {
             Long classeId = etudiant.getClasse() != null ? etudiant.getClasse().getId() : null;
             EtudiantDto etudiantDto = new EtudiantDto(
                     etudiant.getId(), etudiant.getIdentifiant(), etudiant.getCin(), etudiant.getNom(),
-                    etudiant.getPrenom(), etudiant.getEmail(), etudiant.isHidden(), etudiant.getRole(), classeId);
+                    etudiant.getPrenom(), etudiant.getEmail(), etudiant.isHidden(), etudiant.getRole(), classeId, etudiant.getClasse());
             return ResponseEntity.ok(etudiantDto);
         } catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);

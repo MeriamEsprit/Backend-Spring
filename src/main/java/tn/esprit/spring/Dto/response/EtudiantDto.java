@@ -3,6 +3,7 @@ package tn.esprit.spring.Dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import tn.esprit.spring.entities.Classe;
 import tn.esprit.spring.entities.ERole;
 
 @Getter
@@ -18,4 +19,5 @@ public class EtudiantDto {
     private boolean isHidden;
     private ERole role;
     private Long classeId;
+    private Classe classe;
 }

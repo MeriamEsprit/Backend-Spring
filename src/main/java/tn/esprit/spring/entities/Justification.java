@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +27,5 @@ public class Justification implements Serializable {
 
     @OneToMany(mappedBy = "justification", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Presence> presences = new ArrayList<>();
-
+    private List<Presence> presences;
 }
-
