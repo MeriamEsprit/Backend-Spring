@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-
+@ToString(exclude = {"utilisateur"})
 public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,11 +40,13 @@ public class Note {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "utilisateur_id")
-    @JsonIgnoreProperties({"notes"})
+    @JsonBackReference(value = "user-notes")
     Utilisateur utilisateur;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "matiere_id")
-    @JsonIgnoreProperties({"notes", "module"})
+/*
+    @JsonBackReference("matiere-notes")
+*/
     Matiere matiere;
 }

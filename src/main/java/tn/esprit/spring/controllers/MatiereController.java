@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.spring.Dto.MatiereDTO;
 import tn.esprit.spring.entities.Matiere;
 import tn.esprit.spring.services.MatiereServicesImp;
 
@@ -15,9 +16,9 @@ import java.util.List;
 public class MatiereController {
     private MatiereServicesImp matiereService;
     @PostMapping
-    public ResponseEntity<Matiere> createMatiere(@RequestBody Matiere matiere, @RequestParam Long moduleId) {
+    public ResponseEntity<MatiereDTO> createMatiere(@RequestBody MatiereDTO matiereDTO) {
         try {
-            Matiere savedMatiere = matiereService.saveMatiere(matiere, moduleId);
+            MatiereDTO savedMatiere = matiereService.saveMatiere(matiereDTO);
             return new ResponseEntity<>(savedMatiere, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -27,9 +28,9 @@ public class MatiereController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Matiere> updateMatiere(@PathVariable("id") Long id, @RequestBody Matiere matiereDetails, @RequestParam(required = false) Long moduleId) {
+    public ResponseEntity<MatiereDTO> updateMatiere(@PathVariable("id") Long id, @RequestBody MatiereDTO matiereDetails) {
         try {
-            Matiere updatedMatiere = matiereService.updateMatiere(id, matiereDetails, moduleId);
+            MatiereDTO updatedMatiere = matiereService.updateMatiere(id, matiereDetails);
             return new ResponseEntity<>(updatedMatiere, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -44,12 +45,12 @@ public class MatiereController {
     }
 
     @GetMapping("/{id}")
-    public Matiere getMatiereById(@PathVariable Long id) {
+    public MatiereDTO getMatiereById(@PathVariable Long id) {
         return matiereService.getMatiereById(id);
     }
 
     @GetMapping
-    public List<Matiere> getAllMatieres() {
+    public List<MatiereDTO> getAllMatieres() {
         return matiereService.getAllMatieres();
     }
 }

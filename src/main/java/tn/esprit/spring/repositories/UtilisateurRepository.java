@@ -32,4 +32,7 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
 
 //    List<Utilisateur> findAllByRolesContainingAndIsHiddenFalse(Set<Role> roles);
 
+    List<Utilisateur> findByClasseId(Long classeId);
+
+
 }

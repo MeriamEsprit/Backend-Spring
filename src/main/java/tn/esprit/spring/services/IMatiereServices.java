@@ -1,13 +1,14 @@
 package tn.esprit.spring.services;
 
+import tn.esprit.spring.Dto.MatiereDTO;
 import tn.esprit.spring.entities.Matiere;
 
 import java.util.List;
 
 public interface IMatiereServices {
-    Matiere saveMatiere(Matiere matiere,Long moduleId);
-    Matiere updateMatiere(Long id, Matiere matiereDetails, Long moduleId);
+    MatiereDTO saveMatiere(MatiereDTO matiereDTO);
+    MatiereDTO updateMatiere(Long id, MatiereDTO matiereDTO);
     void deleteMatiere(Long id);
-    Matiere getMatiereById(Long id);
-    List<Matiere> getAllMatieres();
+    MatiereDTO getMatiereById(Long id);
+    List<MatiereDTO> getAllMatieres();
 }
