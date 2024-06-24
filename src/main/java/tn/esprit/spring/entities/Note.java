@@ -48,5 +48,5 @@ public class Note {
 /*
     @JsonBackReference("matiere-notes")
 */
-    Matiere matiere;
+            Matiere matiere;
 }

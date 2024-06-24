@@ -1,11 +1,9 @@
 package tn.esprit.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
@@ -16,6 +14,7 @@ import java.util.List;
 @Table(name = "competence")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
+@ToString(exclude = {"utilisateurs","matieres"})
 public class Competence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +26,11 @@ public class Competence {
     private String nomCompetence;
 
     @OneToMany(mappedBy = "competence", fetch = FetchType.LAZY)
+    @JsonBackReference(value = "competence-users")
     List<Utilisateur> utilisateurs;
 
-    @OneToMany(mappedBy = "competence", fetch = FetchType.LAZY)
-    List<Matiere> matieres;
+/*    @OneToMany(mappedBy = "competence", fetch = FetchType.LAZY)
+    @JsonBackReference(value = "competence-matieres")
+    List<Matiere> matieres;*/
 
 }
