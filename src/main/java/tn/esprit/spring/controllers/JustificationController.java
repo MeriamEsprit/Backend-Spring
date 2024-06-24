@@ -1,118 +1,92 @@
 package tn.esprit.spring.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import tn.esprit.spring.Dto.JustificationDTO;
 import tn.esprit.spring.entities.Justification;
 import tn.esprit.spring.entities.Presence;
+import tn.esprit.spring.repositories.PresenceRepository;
 import tn.esprit.spring.services.IJustificationServices;
-import tn.esprit.spring.services.IPresenceService;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDate;
-
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/justifications")
+@RequiredArgsConstructor
 public class JustificationController {
 
     @Autowired
-    private IJustificationServices justificationServices;
+    private final IJustificationServices justificationService;
     @Autowired
-    private IPresenceService presenceService;
+    private PresenceRepository presenceRepository;
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
-
-    @PostMapping("/presence/{date}/{idPresence}")
-    public ResponseEntity<Justification> addJustification(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                                          @PathVariable Long idPresence,
-                                                          @RequestParam("justification") String justificationDetails,
-                                                          @RequestParam("file") MultipartFile file) {
-        Presence presence = presenceService.getPresenceByIdAndDate(idPresence, date);
-        if (presence == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Justification justification = new Justification();
-        justification.setReason(justificationDetails); // Set the justification reason directly
-        justification.setPresences(new ArrayList<>());
-        justification.getPresences().add(presence);
-
-        String filePath = saveFile(file, justification.getIdJustification());
-        justification.setFilePath(filePath);
-
-        Justification createdJustification = justificationServices.addJustification(justification);
-        presence.setJustification(createdJustification);
-        presenceService.updatePresence(presence);
-
-        return ResponseEntity.ok(createdJustification);
-    }
-
-    @PutMapping("/updateJustification/{id}")
-    public ResponseEntity<Justification> updateJustification(@PathVariable Long id, @RequestBody Justification justification) {
-        justification.setIdJustification(id);
-        Justification updatedJustification = justificationServices.updateJustificationById(justification, id);
-        return ResponseEntity.ok(updatedJustification);
-    }
-
-    @GetMapping("/getJustification/{id}")
-    public ResponseEntity<Justification> getJustificationById(@PathVariable Long id) {
-        Justification justification = justificationServices.getJustificationById(id);
-        return ResponseEntity.ok(justification);
-    }
-
-    @DeleteMapping("/deleteJustification/{id}")
-    public ResponseEntity<Void> deleteJustification(@PathVariable Long id) {
-        justificationServices.deleteJustification(id);
-        return ResponseEntity.noContent().build();
+    @PostMapping("/addJustification")
+    public JustificationDTO addJustification(@RequestBody JustificationDTO justificationDTO) {
+        Justification justification = mapToEntity(justificationDTO);
+        Justification savedJustification = justificationService.addJustification(justification);
+        return mapToDTO(savedJustification);
     }
 
     @GetMapping("/getAllJustifications")
-    public ResponseEntity<List<Justification>> getAllJustifications() {
-        List<Justification> justifications = justificationServices.getAllJustification();
-        return ResponseEntity.ok(justifications);
+    public List<JustificationDTO> findAllJustifications() {
+        List<Justification> justifications = justificationService.getAllJustification();
+        return justifications.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    private Justification parseJustificationDetails(String justificationDetails) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(justificationDetails, Justification.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to parse justification details", e);
-        }
+    @PutMapping("/updateJustification")
+    public JustificationDTO updateJustification(@RequestBody JustificationDTO justificationDTO) {
+        Justification justification = mapToEntity(justificationDTO);
+        Justification updatedJustification = justificationService.updateJustification(justification);
+        return mapToDTO(updatedJustification);
     }
 
-    @PostConstruct
-    public void init() {
-        try {
-            Files.createDirectories(Paths.get(uploadDir));
-        } catch (IOException e) {
-            throw new RuntimeException("Could not create upload directory!", e);
-        }
-    }
-    private String saveFile(MultipartFile file, Long justificationId) {
-        String fileName = "justification_" + justificationId + "_" + file.getOriginalFilename();
-        Path filePath = Paths.get(uploadDir, fileName);
-
-        try {
-            Files.createDirectories(filePath.getParent());
-            file.transferTo(filePath.toFile());
-            return filePath.toString();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save file", e);
-        }
+    @DeleteMapping("/deleteJustification/{id}")
+    public void deleteJustification(@PathVariable Long id) {
+        justificationService.deleteJustification(id);
     }
 
+    @GetMapping("/getJustificationById/{id}")
+    public JustificationDTO getJustificationById(@PathVariable Long id) {
+        Justification justification = justificationService.getJustificationById(id);
+        return mapToDTO(justification);
+    }
+
+    @PutMapping("/updateJustificationById/{id}")
+    public JustificationDTO updateJustificationById(@PathVariable Long id, @RequestBody JustificationDTO justificationDTO) {
+        Justification justification = mapToEntity(justificationDTO);
+        Justification updatedJustification = justificationService.updateJustificationById(justification, id);
+        return mapToDTO(updatedJustification);
+    }
+
+    private JustificationDTO mapToDTO(Justification justification) {
+        JustificationDTO justificationDTO = new JustificationDTO();
+        justificationDTO.setIdJustification(justification.getIdJustification());
+        justificationDTO.setName(justification.getName());
+        justificationDTO.setReason(justification.getReason());
+        justificationDTO.setStatus(justification.getStatus());
+        justificationDTO.setSubmissionDate(justification.getSubmissionDate());
+        justificationDTO.setValidationDate(justification.getValidationDate());
+        justificationDTO.setFilePath(justification.getFilePath());
+        justificationDTO.setPresenceIds(justification.getPresences().stream().map(Presence::getIdPresence).collect(Collectors.toList()));
+        return justificationDTO;
+    }
+
+    private Justification mapToEntity(JustificationDTO justificationDTO) {
+        Justification justification = new Justification();
+        justification.setIdJustification(justificationDTO.getIdJustification());
+        justification.setName(justificationDTO.getName());
+        justification.setReason(justificationDTO.getReason());
+        justification.setStatus(justificationDTO.getStatus());
+        justification.setSubmissionDate(justificationDTO.getSubmissionDate());
+        justification.setValidationDate(justificationDTO.getValidationDate());
+        justification.setFilePath(justificationDTO.getFilePath());
+        List<Presence> presences = justificationDTO.getPresenceIds().stream()
+                .map(id -> presenceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Presence not found with id " + id)))
+                .collect(Collectors.toList());
+        justification.setPresences(presences);
+        return justification;
+    }
 }

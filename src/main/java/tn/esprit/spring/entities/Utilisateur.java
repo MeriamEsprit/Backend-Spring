@@ -1,6 +1,7 @@
 package tn.esprit.spring.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -45,8 +46,9 @@ public class Utilisateur {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classe_id")
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "utilisateurs"}) // Prevent recursion
     Classe classe;
+
 /*
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "utilisateur")
@@ -61,4 +63,8 @@ public class Utilisateur {
         this.motDePasse = motDePasse;
         this.email = email;
     }
+
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"utilisateur"})
+    private List<Presence> presences;
 }

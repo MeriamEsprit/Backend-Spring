@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class JustificationServicesImpl implements IJustificationServices {
+public class JustificationServiceImpl implements IJustificationServices {
 
     @Autowired
     private JustificationRepository justificationRepository;

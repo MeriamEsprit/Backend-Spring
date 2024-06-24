@@ -22,9 +22,6 @@ public class Module {
 
     @Column(unique = true)
     String nom;
-
-    @OneToMany(mappedBy = "module")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "competence"})
     String description;
 
     @OneToMany(mappedBy = "module",cascade = CascadeType.ALL)

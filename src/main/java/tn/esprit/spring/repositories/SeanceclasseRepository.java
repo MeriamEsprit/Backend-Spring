@@ -11,6 +11,6 @@ public interface SeanceclasseRepository extends JpaRepository<SeanceClasse, Long
     @Query("SELECT s FROM SeanceClasse s WHERE s.enseignant.id = :idEnseignant")
     List<SeanceClasse> findByEnseignantId(Long idEnseignant);
 
-    @Query("SELECT s FROM SeanceClasse s WHERE s.classe.idClasse = :idClasse")
+    @Query("SELECT s FROM SeanceClasse s WHERE s.classe.id = :idClasse")
     List<SeanceClasse> findByClasseId(Long idClasse);
 }
