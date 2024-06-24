@@ -22,7 +22,7 @@ public class ExcelUtils {
             Note note = new Note();
             note.setNoteCc(row.getCell(0).getNumericCellValue());
             note.setNoteTp(row.getCell(1).getNumericCellValue());
-            note.setNoteEx(row.getCell(2).getNumericCellValue());
+            note.setNoteExamen(row.getCell(2).getNumericCellValue());
 
             // Retrieve Utilisateur by ID
             Long utilisateurId = (long) row.getCell(3).getNumericCellValue();

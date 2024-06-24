@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import tn.esprit.spring.Dto.response.JwtResponse;
 import tn.esprit.spring.entities.*;
+import tn.esprit.spring.repositories.NoteRepository;
 import tn.esprit.spring.repositories.RefreshTokenRepository;
 import tn.esprit.spring.repositories.UtilisateurRepository;
 import tn.esprit.spring.security.jwt.JwtUtils;
@@ -22,6 +23,7 @@ import java.util.*;
 @Slf4j
 @AllArgsConstructor
 public class UserService implements IUserService {
+    private final NoteRepository noteRepository;
 
     UtilisateurRepository userRepository;
     UserDetailsServiceImpl userDetailsService;
@@ -126,11 +128,26 @@ public class UserService implements IUserService {
 
     @Override
     public List<Utilisateur> getAllUserByRole(ERole role) {
+
         return userRepository.findAllByRole(role);
+    }
+
+    public List<Note> getNotesByUser(Long userId) {
+        return noteRepository.findByUtilisateurId(userId);
+    }
+  
+    public List<Utilisateur> getUtilisateursByRoleAndClasse(ERole role, Classe classe) {
+        return userRepository.findByRoleAndClasse(role, classe);
+    }
+
+    @Override
+    public Classe getClasseByUserId(Long id) {
+        return userRepository.findClasseByUtilisateurId(id);
     }
 
     @Override
     public Utilisateur getUserByRole(long id , ERole role) {
         return userRepository.findUtilisateurByIdAndRole(id,role);
     }
+
 }

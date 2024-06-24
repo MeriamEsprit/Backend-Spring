@@ -1,27 +1,36 @@
 package tn.esprit.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "competence")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@ToString(exclude = {"utilisateurs","matieres"})
 public class Competence {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     @Column(name = "idCompetence", nullable = false)
-    private Long id;
+    private Long idCompetence;
 
     @Column(name = "nomCompetence")
     private String nomCompetence;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "utilisateur_id")
-    private Utilisateur utilisateur;
+    @OneToMany(mappedBy = "competence", fetch = FetchType.LAZY)
+    @JsonBackReference(value = "competence-users")
+    List<Utilisateur> utilisateurs;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "matiere_id")
-    private Matiere matiere;
+/*    @OneToMany(mappedBy = "competence", fetch = FetchType.LAZY)
+    @JsonBackReference(value = "competence-matieres")
+    List<Matiere> matieres;*/
 
 }

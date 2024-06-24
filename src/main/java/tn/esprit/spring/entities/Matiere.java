@@ -1,5 +1,6 @@
 package tn.esprit.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -17,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@ToString(exclude = {"notes", "module", "classes"})
 
 public class Matiere {
     @Id
@@ -42,9 +44,19 @@ public class Matiere {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "module_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "matieres"})
+    @JsonBackReference("module-matieres")
     Module module;
 
+    @ManyToMany(mappedBy = "matieres")
+    @JsonIgnore
+    private List<Classe> classes;
 
+    @OneToMany(mappedBy = "matiere")
+    @JsonIgnore
+    List<Note> notes;
 
+ /*   @ManyToOne
+    @JoinColumn(name = "competence_id")
+    @JsonBackReference(value = "competence-matieres")
+    private Competence competence;*/
 }

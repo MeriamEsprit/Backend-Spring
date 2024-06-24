@@ -1,5 +1,6 @@
 package tn.esprit.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,12 +22,10 @@ public class Justification implements Serializable {
     private String reason;
     private int status;
     private Date submissionDate;
-    private Date ValidationDate;
+    private Date validationDate;
+    private String filePath;
 
-//    @ManyToOne
-//    private Utilisateur utilisateur;
-
-  /*  @OneToMany(mappedBy = "justification")
-    private List<Attendance> attendances;*/
+    @OneToMany(mappedBy = "justification", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Presence> presences;
 }
-
