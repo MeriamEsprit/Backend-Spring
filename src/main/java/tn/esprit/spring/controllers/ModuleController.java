@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.spring.entities.Matiere;
-import tn.esprit.spring.entities.Module;
+import tn.esprit.spring.Dto.ModuleDTO;
 import tn.esprit.spring.services.ModuleServicesImpl;
 
 import java.util.List;
-
 
 @RestController
 @AllArgsConstructor
@@ -19,31 +17,24 @@ public class ModuleController {
     private ModuleServicesImpl moduleService;
 
     @PostMapping
-    public ResponseEntity<Module> saveModule(@RequestBody Module module) {
+    public ResponseEntity<ModuleDTO> saveModule(@RequestBody ModuleDTO moduleDTO) {
         try {
-            Module createdModule = moduleService.saveModule(module);
+            ModuleDTO createdModule = moduleService.saveModule(moduleDTO);
             return new ResponseEntity<>(createdModule, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
+
     @PutMapping("/{moduleId}")
-    public ResponseEntity<Module> updateModule(@PathVariable("moduleId") Long moduleId, @RequestBody Module module) {
+    public ResponseEntity<ModuleDTO> updateModule(@PathVariable("moduleId") Long moduleId, @RequestBody ModuleDTO moduleDTO) {
         try {
-            Module updatedModule = moduleService.updateModuleWithMatieres(moduleId, module);
+            ModuleDTO updatedModule = moduleService.updateModule(moduleId, moduleDTO);
             return new ResponseEntity<>(updatedModule, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
-
-    @PostMapping("/{moduleId}/matieres/{matiereId}")
-    public ResponseEntity<Module> addMatiereToModule(@PathVariable Long moduleId, @PathVariable Long matiereId) {
-        Module updatedModule = moduleService.addMatiereToModule(moduleId, matiereId);
-        return ResponseEntity.ok(updatedModule);
-    }
-
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteModule(@PathVariable Long id) {
@@ -52,21 +43,18 @@ public class ModuleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Module> getModuleById(@PathVariable Long id) {
-        Module module = moduleService.getModuleById(id);
-        if (module != null) {
-            return new ResponseEntity<>(module, HttpStatus.OK);
+    public ResponseEntity<ModuleDTO> getModuleById(@PathVariable Long id) {
+        ModuleDTO moduleDTO = moduleService.getModuleById(id);
+        if (moduleDTO != null) {
+            return new ResponseEntity<>(moduleDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<Module>> getAllModules() {
-        List<Module> modules = moduleService.getAllModules();
+    public ResponseEntity<List<ModuleDTO>> getAllModules() {
+        List<ModuleDTO> modules = moduleService.getAllModules();
         return new ResponseEntity<>(modules, HttpStatus.OK);
     }
-
-
-
 }

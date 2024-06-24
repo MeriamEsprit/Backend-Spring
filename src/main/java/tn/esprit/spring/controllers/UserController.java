@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.ERole;
+import tn.esprit.spring.entities.Note;
 import tn.esprit.spring.services.UserService;
 
 import java.util.List;
@@ -47,5 +48,10 @@ public class UserController {
         } catch (RuntimeException ex) {
             return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    @GetMapping("/{userId}/notes")
+    public ResponseEntity<List<Note>> getNotesByUser(@PathVariable Long userId) {
+        List<Note> notes = userService.getNotesByUser(userId);
+        return ResponseEntity.ok(notes);
     }
 }

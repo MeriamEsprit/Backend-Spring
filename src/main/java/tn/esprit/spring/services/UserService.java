@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tn.esprit.spring.Dto.response.JwtResponse;
 import tn.esprit.spring.entities.*;
+import tn.esprit.spring.repositories.NoteRepository;
 import tn.esprit.spring.repositories.RefreshTokenRepository;
 import tn.esprit.spring.repositories.RoleRepository;
 import tn.esprit.spring.repositories.UtilisateurRepository;
@@ -22,6 +23,7 @@ import java.util.*;
 @Slf4j
 @AllArgsConstructor
 public class UserService implements IUserService {
+    private final NoteRepository noteRepository;
 
     UtilisateurRepository userRepository;
     UserDetailsServiceImpl userDetailsService;
@@ -130,4 +132,7 @@ public class UserService implements IUserService {
         return userRepository.findAllByRole(role);
     }
 
+    public List<Note> getNotesByUser(Long userId) {
+        return noteRepository.findByUtilisateurId(userId);
+    }
 }

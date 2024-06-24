@@ -18,6 +18,7 @@ import java.util.Set;
 @Table(name = "utilisateur")
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"notes", "classe"})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 
 public class Utilisateur {
@@ -41,11 +42,12 @@ public class Utilisateur {
     private ERole role ;
 
     @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("utilisateur")
+    @JsonBackReference(value = "user-notes")
     List<Note> notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classe_id")
+    @JsonBackReference(value = "classe-users")
     Classe classe;
 
     public Utilisateur(String email, String motDePasse) {

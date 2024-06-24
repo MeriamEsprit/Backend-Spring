@@ -1,18 +1,20 @@
 package tn.esprit.spring.services;
 
 import org.springframework.web.multipart.MultipartFile;
+import tn.esprit.spring.Dto.NoteDTO;
 import tn.esprit.spring.entities.Note;
 
 import java.util.List;
 
 public interface INoteServices {
 
-    Note saveNote(Note note);
-    Note updateNote(Note note, Long userId);
+    NoteDTO saveNote(NoteDTO note);
+    List<NoteDTO> updateNotes(List<NoteDTO> note, Long userId);
+
     void deleteNote(Long id, Long userId);
-    Note getNoteById(Long id, Long userId);
-    List<Note> getAllNotes();
-    List<Note> getNotesByUserId(Long userId);
+    NoteDTO getNoteById(Long id, Long userId);
+    List<NoteDTO> getAllNotes();
+    List<NoteDTO> getNotesByUserId(Long userId);
 
 
 }
