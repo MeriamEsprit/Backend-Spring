@@ -59,5 +59,9 @@ public class Matiere {
     List<Note> notes;
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "competence_id")
+    Competence competence;
+
 
 }

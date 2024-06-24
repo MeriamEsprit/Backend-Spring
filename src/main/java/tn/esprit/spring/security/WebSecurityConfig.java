@@ -79,19 +79,13 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                        .requestMatchers("/reglement/**").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        .requestMatchers("/facture/**").permitAll()
+                            .requestMatchers("/auth/**", "/error", "/api/seanceClasses/summaries","/api/salle", "/api/classe", "/api/matieres", "/api/user/all-enseignant", "/api/seanceClasses", "/api/salle", "/api/seanceClasses/**").permitAll()
                         .requestMatchers("/database/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-
-
                         .anyRequest().authenticated())
-
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -105,9 +99,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 registry.addMapping("/**")
                         .allowedOriginPatterns("*")  // This allows all origins when using patterns
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD","OPTIONS")
-                       .allowedOriginPatterns("*")// This allows all origins when using patterns
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD")
-
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }

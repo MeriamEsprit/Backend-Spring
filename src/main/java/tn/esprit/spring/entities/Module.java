@@ -26,7 +26,6 @@ public class Module {
 
     @Column(unique = true)
     String nom;
-
     String description;
 
     @OneToMany(mappedBy = "module",cascade = CascadeType.ALL)

@@ -8,7 +8,7 @@ import tn.esprit.spring.services.CompetenceServicesImpl;
 import java.util.List;
 
 @RestController
-@RequestMapping("/competences")
+@RequestMapping("/api/competences")
 public class CompetenceController {
 
     @Autowired

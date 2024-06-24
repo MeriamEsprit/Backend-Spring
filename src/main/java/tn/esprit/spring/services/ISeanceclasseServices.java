@@ -1,13 +1,29 @@
 package tn.esprit.spring.services;
 
-import tn.esprit.spring.entities.Seanceclasse;
+import tn.esprit.spring.Dto.emploiDuTemps.SeanceClasseDTO;
+import org.springframework.transaction.annotation.Transactional;
+import tn.esprit.spring.entities.SeanceClasse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ISeanceclasseServices {
-    Seanceclasse saveSeanceclasse(Seanceclasse seanceclasse);
-    Seanceclasse updateSeanceclasse(Seanceclasse seanceclasse);
+    SeanceClasse saveSeanceclasse(SeanceClasse seanceclasse);
+
+
+    SeanceClasse addSeanceClasse(SeanceClasseDTO dto);
+
+    SeanceClasse updateSeanceClasse(Long idSeance, SeanceClasseDTO dto);
+
+    List<SeanceClasse> getSeanceClassesByEnseignant(Long idEnseignant);
+
+    List<SeanceClasse> getSeanceClassesByClasse(Long idClasse);
+
     void deleteSeanceclasse(Long id);
-    Seanceclasse getSeanceclasseById(Long id);
-    List<Seanceclasse> getAllSeanceclasses();
+    SeanceClasse getSeanceclasseById(Long id);
+    List<SeanceClasse> getAllSeanceclasses();
+
+   // List<SeanceClasseSummaryDto> getAllSeanceClasseSummaries();
+
+    //List<seanceClasseDto> getAllSeanceclasses2();
 }
