@@ -1,12 +1,10 @@
 package tn.esprit.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.HashSet;
@@ -15,9 +13,12 @@ import java.util.Set;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @Entity
 @Table(name = "utilisateur")
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = {"notes", "classe","competence"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Utilisateur {
 
     @Id
@@ -41,12 +42,13 @@ public class Utilisateur {
 
     private ERole role ;
 
-    @OneToMany(mappedBy = "utilisateur")
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+    @JsonBackReference(value = "user-notes")
     List<Note> notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classe_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "utilisateurs"}) // Prevent recursion
+    @JsonBackReference(value = "classe-users")
     Classe classe;
 
 /*
@@ -57,6 +59,7 @@ public class Utilisateur {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idCompetence")
+    @JsonBackReference(value = "competence-users")
     Competence competence;
 
     public Utilisateur(String email, String motDePasse) {

@@ -52,16 +52,11 @@ public class Matiere {
     private List<Classe> classes;
 
     @OneToMany(mappedBy = "matiere")
-/*
-    @JsonManagedReference("matiere-notes")
-*/
-            @JsonIgnore
+    @JsonIgnore
     List<Note> notes;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
+ /*   @ManyToOne
     @JoinColumn(name = "competence_id")
-    Competence competence;
-
-
+    @JsonBackReference(value = "competence-matieres")
+    private Competence competence;*/
 }
