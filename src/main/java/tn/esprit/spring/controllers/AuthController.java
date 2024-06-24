@@ -1,4 +1,4 @@
-package tn.esprit.spring.controllers;
+package tn.esprit.spring.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

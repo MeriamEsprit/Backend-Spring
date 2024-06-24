@@ -19,6 +19,7 @@ public class Application {
 	private UtilisateurRepository userRepository;
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
+		System.out.println("everything is ok !!");
 	}
 
 //	@Bean

@@ -1,5 +1,4 @@
 package tn.esprit.spring.security;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +14,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import tn.esprit.spring.security.jwt.AuthEntryPointJwt;
 import tn.esprit.spring.security.jwt.AuthTokenFilter;
 import tn.esprit.spring.security.services.UserDetailsServiceImpl;
+
+import java.util.Arrays;
 
 
 @Configuration
@@ -61,6 +66,13 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
     }
 
 
+
+
+    @Bean
+    public MultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
@@ -70,7 +82,16 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        .requestMatchers("/reglement/**").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/facture/**").permitAll()
+                        .requestMatchers("/database/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+
+
                         .anyRequest().authenticated())
+
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -84,9 +105,13 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 registry.addMapping("/**")
                         .allowedOriginPatterns("*")  // This allows all origins when using patterns
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD","OPTIONS")
+                       .allowedOriginPatterns("*")// This allows all origins when using patterns
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD")
+
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }
         };
     }
+
 }
