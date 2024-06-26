@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import tn.esprit.spring.Dto.response.EtudiantDto;
 import tn.esprit.spring.entities.Classe;
 import tn.esprit.spring.entities.ERole;
 import tn.esprit.spring.entities.Utilisateur;

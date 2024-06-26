@@ -1,6 +1,7 @@
 package tn.esprit.spring.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,8 +30,8 @@ public class Competence {
     @JsonBackReference(value = "competence-users")
     List<Utilisateur> utilisateurs;
 
-/*    @OneToMany(mappedBy = "competence", fetch = FetchType.LAZY)
-    @JsonBackReference(value = "competence-matieres")
-    List<Matiere> matieres;*/
+//    @OneToMany(mappedBy = "competence")
+//    @JsonIgnore
+//    List<Matiere> matieres;
 
 }
