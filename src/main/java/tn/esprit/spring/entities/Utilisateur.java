@@ -30,6 +30,8 @@ public class Utilisateur {
 
     private String cin;
 
+    private String photo;
+
     private String nom;
 
     private String prenom;
@@ -60,6 +62,7 @@ public class Utilisateur {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idCompetence")
     @JsonBackReference(value = "competence-users")
+    @JsonIgnore
     Competence competence;
 
     public Utilisateur(String email, String motDePasse) {
