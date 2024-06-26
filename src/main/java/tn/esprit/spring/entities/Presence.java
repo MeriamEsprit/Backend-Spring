@@ -34,4 +34,7 @@ public class Presence {
     @JoinColumn(name = "justification_id")
     @JsonBackReference
     private Justification justification;
+
+    @ManyToOne
+    private Matiere matiere;
 }

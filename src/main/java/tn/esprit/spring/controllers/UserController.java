@@ -46,7 +46,7 @@ public class UserController {
 
     @Autowired
     UserService userService;
-   
+
 
 
 
@@ -186,9 +186,19 @@ public class UserController {
         try {
             Utilisateur etudiant = userService.getUserByRole(id, ERole.ROLE_STUDENT);
             Long classeId = etudiant.getClasse() != null ? etudiant.getClasse().getId() : null;
+            String nomClasse = etudiant.getClasse() != null ? etudiant.getClasse().getNomClasse() : null;
             EtudiantDto etudiantDto = new EtudiantDto(
-                    etudiant.getId(), etudiant.getIdentifiant(), etudiant.getCin(), etudiant.getNom(),
-                    etudiant.getPrenom(), etudiant.getEmail(), etudiant.isHidden(), etudiant.getRole(), classeId, etudiant.getClasse());
+                    etudiant.getId(),
+                    etudiant.getIdentifiant(),
+                    etudiant.getCin(),
+                    etudiant.getNom(),
+                    etudiant.getPrenom(),
+                    etudiant.getEmail(),
+                    etudiant.isHidden(),
+                    etudiant.getRole(),
+                    classeId,
+                    nomClasse
+            );
             return ResponseEntity.ok(etudiantDto);
         } catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
@@ -196,6 +206,8 @@ public class UserController {
             return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
     @GetMapping("/{userId}/notes")
     public ResponseEntity<List<Note>> getNotesByUser(@PathVariable Long userId) {
         List<Note> notes = userService.getNotesByUser(userId);

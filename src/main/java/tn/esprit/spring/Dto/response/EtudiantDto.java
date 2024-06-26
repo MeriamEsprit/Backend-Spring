@@ -19,5 +19,4 @@ public class EtudiantDto {
     private boolean isHidden;
     private ERole role;
     private Long classeId;
-    private Classe classe;
 }
