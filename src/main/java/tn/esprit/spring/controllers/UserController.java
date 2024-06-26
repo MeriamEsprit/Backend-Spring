@@ -46,9 +46,6 @@ public class UserController {
 
     @Autowired
     UserService userService;
-   
-
-
 
     @Autowired
     UtilisateurRepository userRepository;
@@ -122,6 +119,7 @@ public class UserController {
 
             if(!signUpRequest.getCin().isEmpty())user.setCin(signUpRequest.getCin());
             if(!signUpRequest.getNom().isEmpty())user.setNom(signUpRequest.getNom());
+            if(!signUpRequest.getPhoto().isEmpty())user.setPhoto(signUpRequest.getPhoto());
             if(!signUpRequest.getPrenom().isEmpty())user.setPrenom(signUpRequest.getPrenom());
             if(!signUpRequest.getEmail().isEmpty())user.setEmail(signUpRequest.getEmail());
 
@@ -154,6 +152,32 @@ public class UserController {
             return String.format("%dTMT%03d", year, userId);
         }
         return "0000";
+    }
+
+    @GetMapping("/profile")
+    //    /api/user/profile
+    public ResponseEntity<?> getMyProfile() {
+//        try {
+//            Utilisateur userInfoDto =
+//            return new ResponseEntity<>(userInfoDto, HttpStatus.OK);
+//        } catch (EntityNotFoundException ex) {
+//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+//        } catch (RuntimeException ex) {
+//            return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+        try {
+            Utilisateur etudiant = userService.getInfo();
+            Long classeId = etudiant.getClasse() != null ? etudiant.getClasse().getId() : null;
+            String classeName = etudiant.getClasse() != null ? etudiant.getClasse().getNomClasse() : null;
+            EtudiantDto etudiantDto = new EtudiantDto(
+                    etudiant.getId(), etudiant.getIdentifiant(), etudiant.getCin(),etudiant.getPhoto(), etudiant.getNom(),
+                    etudiant.getPrenom(), etudiant.getEmail(), etudiant.isHidden(), etudiant.getRole(), classeId,classeName);
+            return ResponseEntity.ok(etudiantDto);
+        } catch (EntityNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/all-enseignant")
@@ -228,9 +252,20 @@ public class UserController {
         try {
             Utilisateur etudiant = userService.getUserByRole(id, ERole.ROLE_STUDENT);
             Long classeId = etudiant.getClasse() != null ? etudiant.getClasse().getId() : null;
+            String classeName = etudiant.getClasse() != null ? etudiant.getClasse().getNomClasse() : null;
             EtudiantDto etudiantDto = new EtudiantDto(
-                    etudiant.getId(), etudiant.getIdentifiant(), etudiant.getCin(), etudiant.getNom(),
-                    etudiant.getPrenom(), etudiant.getEmail(), etudiant.isHidden(), etudiant.getRole(), classeId, etudiant.getClasse());
+                    etudiant.getId(),
+                    etudiant.getIdentifiant(),
+                    etudiant.getCin(),
+                    etudiant.getPhoto(),
+                    etudiant.getNom(),
+                    etudiant.getPrenom(),
+                    etudiant.getEmail(),
+                    etudiant.isHidden(),
+                    etudiant.getRole(),
+                    classeId,
+                    classeName
+            );
             return ResponseEntity.ok(etudiantDto);
         } catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);

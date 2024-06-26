@@ -9,6 +9,7 @@ public class SignupRequest {
     private String nom;
     private String prenom;
     private String email;
+    private String Photo;
     private String cin;
     private String classe;
     private String role;
