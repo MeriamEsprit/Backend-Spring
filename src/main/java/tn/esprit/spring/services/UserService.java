@@ -32,23 +32,11 @@ public class UserService implements IUserService {
     AuthenticationManager authenticationManager;
     PasswordEncoder passwordEncoder;
 
-
+    @Override
     public List<Utilisateur> getAllUsers() {
         return userRepository.findAll();
     }
-
-
-//    public List<Utilisateur> getAllUsersByRoles(ERole role) {
-//        Set<Role> roles = new HashSet<>();
-//        roles.add(roleRepository.findByName(role).orElseThrow(() -> new RuntimeException("Role non trouvé!")));
-//        return userRepository.findAllByRolesContainingAndIsHiddenFalse(roles);
-//    }
-
-
-    public Utilisateur getClientById(Long id) {
-        return userRepository.findById(id).get();
-    }
-
+    @Override
     public JwtResponse authenticate(String email, String password) {
         try {
             // Retrieve the user by username
@@ -80,7 +68,7 @@ public class UserService implements IUserService {
             throw new RuntimeException(e);
         }
     }
-
+    @Override
     public Utilisateur getAuthenticatedUser() {
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Utilisateur user = this.userRepository.findByEmail(authenticatedUserEmail).orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
@@ -89,14 +77,14 @@ public class UserService implements IUserService {
     }
 
 
-
+    @Override
     public Object deleteAccountByAdmin(Long id) {
         Utilisateur u = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
         userRepository.delete(u);
         return u;
     }
 
-
+    @Override
     public Tokens generateTokens(Utilisateur user) {
         String accessToken = jwtUtils.generateAccessToken(user);
         String refreshToken = jwtUtils.generateRefreshToken(user);
@@ -112,7 +100,11 @@ public class UserService implements IUserService {
         return new Tokens(accessToken, refreshToken);
     }
 
-
+    @Override
+    public Utilisateur getInfo() {
+        return getAuthenticatedUser();
+    }
+    @Override
     public String refreshAccessToken(String refreshToken) {
         RefreshToken tokenEntity = refreshTokenRepository.findByToken(refreshToken)
                 .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
@@ -125,17 +117,17 @@ public class UserService implements IUserService {
             throw new RuntimeException("Refresh token has expired");
         }
     }
-
     @Override
     public List<Utilisateur> getAllUserByRole(ERole role) {
 
         return userRepository.findAllByRole(role);
     }
-
+    @Override
     public List<Note> getNotesByUser(Long userId) {
         return noteRepository.findByUtilisateurId(userId);
     }
-  
+
+    @Override
     public List<Utilisateur> getUtilisateursByRoleAndClasse(ERole role, Classe classe) {
         return userRepository.findByRoleAndClasse(role, classe);
     }
