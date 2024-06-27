@@ -55,8 +55,9 @@ public class Matiere {
     @JsonIgnore
     List<Note> notes;
 
- /*   @ManyToOne
-    @JoinColumn(name = "competence_id")
-    @JsonBackReference(value = "competence-matieres")
-    private Competence competence;*/
+//    @ManyToOne
+//    @JoinColumn(name = "competence_id")
+//    @JsonBackReference(value = "competence-matieres")
+//    private Competence competence;
+
 }

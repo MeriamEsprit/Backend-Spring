@@ -70,7 +70,10 @@ public class Utilisateur {
     @JsonIgnoreProperties({"utilisateur"})
     private List<Presence> presences;
 
+
     @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Reclamation> reclamations;
+
 }
+

@@ -54,4 +54,7 @@ public class ClasseController {
         List<Matiere> matieres = classeService.getMatieresByClass(classeId);
         return ResponseEntity.ok(matieres);
     }
+
+
+
 }

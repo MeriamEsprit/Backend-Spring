@@ -292,6 +292,7 @@ public class UserController {
                     etudiant.getRole(),
                     classeId,
                     classeName
+
             );
             return ResponseEntity.ok(etudiantDto);
         } catch (EntityNotFoundException ex) {
@@ -300,6 +301,8 @@ public class UserController {
             return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
     @GetMapping("/{userId}/notes")
     public ResponseEntity<List<Note>> getNotesByUser(@PathVariable Long userId) {
         List<Note> notes = userService.getNotesByUser(userId);
