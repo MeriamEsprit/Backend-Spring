@@ -16,6 +16,7 @@ import tn.esprit.spring.entities.ERole;
 import tn.esprit.spring.entities.Utilisateur;
 import tn.esprit.spring.repositories.ClasseRepository;
 import tn.esprit.spring.services.ClasseServicesImpl;
+import tn.esprit.spring.services.EmailService;
 import tn.esprit.spring.services.UserService;
 
 import java.time.LocalDate;
@@ -54,6 +55,9 @@ public class UserController {
     ClasseRepository classeRepository;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private ClasseServicesImpl classeService;
 
     PasswordEncoder encoder;
@@ -72,6 +76,7 @@ public class UserController {
             user.setNom(signUpRequest.getNom());
             user.setPrenom(signUpRequest.getPrenom());
             user.setEmail(signUpRequest.getEmail());
+            user.setPrivateemail(signUpRequest.getPrivateemail());
             if (signUpRequest.getClasse() != null && !signUpRequest.getClasse().isEmpty()) {
                 Long classeId = Long.valueOf(signUpRequest.getClasse());
                 Optional<Classe> classeOpt = classeRepository.findById(classeId);
@@ -93,7 +98,27 @@ public class UserController {
             user.setIdentifiant(generateIdentifiant(user.getId(),user.getRole()));
             user.setMotDePasse(encoder.encode(user.getIdentifiant()));
             userRepository.save(user);
+            try {
+                if(!user.getPrivateemail().isEmpty()){
+                    String subject = "Bienvenue dans Esprit";
+                    String content = String.format(
+                            "Bonjour %s %s,\n\n" +
+                                    "Bienvenue dans Esprit !\n\n" +
+                                    "Voici vos identifiants de compte :\n" +
+                                    "Email : %s\n\n" +
+                                    "Identifiant : %s\n\n" +
+                                    "Merci de vous être inscrit chez nous.\n\n" +
+                                    "Cordialement,\n" +
+                                    "L'équipe Esprit",
+                            user.getNom(), user.getPrenom(),user.getEmail(),user.getIdentifiant()
+                    );
+                    emailService.sendEmail(user.getPrivateemail(),subject,content);
+                }
 
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                return ResponseEntity.ok(user);
+            }
             return ResponseEntity.ok(user);
         } catch (Exception ex) {
             return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -122,6 +147,8 @@ public class UserController {
             if(!signUpRequest.getPhoto().isEmpty())user.setPhoto(signUpRequest.getPhoto());
             if(!signUpRequest.getPrenom().isEmpty())user.setPrenom(signUpRequest.getPrenom());
             if(!signUpRequest.getEmail().isEmpty())user.setEmail(signUpRequest.getEmail());
+            if(!signUpRequest.getPrivateemail().isEmpty())user.setPrivateemail(signUpRequest.getPrivateemail());
+
 
             if (signUpRequest.getClasse() != null && !signUpRequest.getClasse().isEmpty()) {
                 Long classeId = Long.valueOf(signUpRequest.getClasse());
@@ -136,7 +163,6 @@ public class UserController {
             }
 
             userRepository.save(user);
-
             return ResponseEntity.ok(user);
         } catch (Exception ex) {
             return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -171,7 +197,7 @@ public class UserController {
             String classeName = etudiant.getClasse() != null ? etudiant.getClasse().getNomClasse() : null;
             EtudiantDto etudiantDto = new EtudiantDto(
                     etudiant.getId(), etudiant.getIdentifiant(), etudiant.getCin(),etudiant.getPhoto(), etudiant.getNom(),
-                    etudiant.getPrenom(), etudiant.getEmail(), etudiant.isHidden(), etudiant.getRole(), classeId,classeName);
+                    etudiant.getPrenom(), etudiant.getEmail(),etudiant.getPrivateemail(), etudiant.isHidden(), etudiant.getRole(), classeId,classeName);
             return ResponseEntity.ok(etudiantDto);
         } catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
@@ -261,6 +287,7 @@ public class UserController {
                     etudiant.getNom(),
                     etudiant.getPrenom(),
                     etudiant.getEmail(),
+                    etudiant.getPrivateemail(),
                     etudiant.isHidden(),
                     etudiant.getRole(),
                     classeId,

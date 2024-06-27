@@ -17,6 +17,7 @@ public class EtudiantDto {
     private String nom;
     private String prenom;
     private String email;
+    private String privateemail;
     private boolean isHidden;
     private ERole role;
     private Long classeId;
