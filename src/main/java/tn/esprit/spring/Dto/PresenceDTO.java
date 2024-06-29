@@ -23,6 +23,8 @@ public class PresenceDTO {
     private Long justificationId;
     private Long idmatiere;
     private String nomMatiere;
+    private Integer nbreHeures;
+
 
         public static PresenceDTO mapToDTO(Presence presence) {
         PresenceDTO presenceDTO = new PresenceDTO();
@@ -35,7 +37,7 @@ public class PresenceDTO {
         presenceDTO.setJustificationId(presence.getJustification() != null ? presence.getJustification().getIdJustification() : null);
         presenceDTO.setIdmatiere(presence.getMatiere() != null ? presence.getMatiere().getId() : null);
         presenceDTO.setNomMatiere(presence.getMatiere() != null ? presence.getMatiere().getNomMatiere() : null);
-//        presenceDTO.setUtilisateur(presence.getUtilisateur());
+        presenceDTO.setNbreHeures(presence.getMatiere() != null ? presence.getMatiere().getNbreHeures() : 0);
         return presenceDTO;
     }
     public static Presence mapToEntity(PresenceDTO presenceDTO, UtilisateurRepository utilisateurRepository, JustificationRepository justificationRepository, MatiereRepository matiereRepository) {
@@ -45,6 +47,7 @@ public class PresenceDTO {
         presence.setDatePresence(presenceDTO.getDatePresence());
         presence.setHeureDebut(presenceDTO.getHeureDebut());
         presence.setHeureFin(presenceDTO.getHeureFin());
+
 
         if (presenceDTO.getUtilisateurId() != null) {
             Utilisateur utilisateur = utilisateurRepository.findById(presenceDTO.getUtilisateurId())
