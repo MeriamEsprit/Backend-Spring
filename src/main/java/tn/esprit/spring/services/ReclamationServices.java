@@ -51,9 +51,16 @@ public class ReclamationServices implements IReclamationServices {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<DtoReclamation> getAllReclamationsByUser(Long userId) {
+        List<Reclamation> reclamations = reclamationRepository.findAllByUtilisateurId(userId);
+        return reclamations.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
     private Reclamation mapToEntity(DtoReclamation dtoReclamation) {
         Reclamation reclamation = new Reclamation();
         reclamation.setId(dtoReclamation.getId());
+        reclamation.setSubject(dtoReclamation.getSubject());
         reclamation.setDescription(dtoReclamation.getDescription());
         reclamation.setStatut(dtoReclamation.getStatut());
         reclamation.setDate(dtoReclamation.getDate());
@@ -66,6 +73,7 @@ public class ReclamationServices implements IReclamationServices {
     private DtoReclamation mapToDto(Reclamation reclamation) {
         DtoReclamation dtoReclamation = new DtoReclamation();
         dtoReclamation.setId(reclamation.getId());
+        dtoReclamation.setSubject(reclamation.getSubject());
         dtoReclamation.setDescription(reclamation.getDescription());
         dtoReclamation.setStatut(reclamation.getStatut());
         dtoReclamation.setDate(reclamation.getDate());

@@ -20,12 +20,12 @@ public class ReclamationController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private EmailService emailService;
+
     @PostMapping
     public ResponseEntity<DtoReclamation> createReclamation(@RequestBody DtoReclamation dtoReclamation) {
         Utilisateur user = userService.getInfo();
         dtoReclamation.setUtilisateurId(user.getId());
+        System.out.println(dtoReclamation.getSubject());
         DtoReclamation createdReclamation = reclamationServices.createReclamation(dtoReclamation);
 
         return ResponseEntity.ok(createdReclamation);
@@ -52,6 +52,17 @@ public class ReclamationController {
     @GetMapping
     public ResponseEntity<List<DtoReclamation>> getAllReclamations() {
         List<DtoReclamation> reclamations = reclamationServices.getAllReclamations();
+        return ResponseEntity.ok(reclamations);
+    }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<DtoReclamation>> getAllReclamationsByUser(@PathVariable Long userId) {
+        List<DtoReclamation> reclamations = reclamationServices.getAllReclamationsByUser(userId);
+        return ResponseEntity.ok(reclamations);
+    }
+    @GetMapping("/user")
+    public ResponseEntity<List<DtoReclamation>> getAllReclamationsByUser() {
+        Utilisateur user = userService.getInfo();
+        List<DtoReclamation> reclamations = reclamationServices.getAllReclamationsByUser(user.getId());
         return ResponseEntity.ok(reclamations);
     }
 }

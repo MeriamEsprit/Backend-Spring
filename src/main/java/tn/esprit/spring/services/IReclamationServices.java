@@ -10,4 +10,5 @@ public interface IReclamationServices {
     void deleteReclamation(Long id);
     DtoReclamation getReclamationById(Long id);
     List<DtoReclamation> getAllReclamations();
+    List<DtoReclamation> getAllReclamationsByUser(Long userId);
 }

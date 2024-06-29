@@ -10,6 +10,7 @@ import java.time.LocalDate;
 public class DtoReclamation {
     private Long id;
     private String description;
+    private String subject;
     private String statut;
     private LocalDate date;
     private Long utilisateurId;
