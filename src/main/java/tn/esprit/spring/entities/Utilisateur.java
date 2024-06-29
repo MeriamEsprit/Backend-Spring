@@ -24,7 +24,7 @@ public class Utilisateur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    Long id;
+    private Long id;
 
     private String identifiant;
 
@@ -38,32 +38,28 @@ public class Utilisateur {
 
     private String email;
 
+    private String privateemail;
+
     private String motDePasse;
 
     private boolean isHidden;
 
-    private ERole role ;
+    private ERole role;
 
     @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
     @JsonBackReference(value = "user-notes")
-    List<Note> notes;
+    private List<Note> notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classe_id")
     @JsonBackReference(value = "classe-users")
-    Classe classe;
-
-/*
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "utilisateur")
-    Set<Reglement> reglements;
-*/
+    private Classe classe;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idCompetence")
     @JsonBackReference(value = "competence-users")
     @JsonIgnore
-    Competence competence;
+    private Competence competence;
 
     public Utilisateur(String email, String motDePasse) {
         this.motDePasse = motDePasse;
@@ -73,4 +69,11 @@ public class Utilisateur {
     @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"utilisateur"})
     private List<Presence> presences;
+
+
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Reclamation> reclamations;
+
 }
+
