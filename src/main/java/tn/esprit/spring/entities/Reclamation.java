@@ -17,6 +17,9 @@ public class Reclamation {
     @Column(name = "idReclamation", nullable = false)
     private Long id;
 
+    @Column(name = "subject")
+    private String subject;
+
     @Column(name = "description")
     private String description;
 
