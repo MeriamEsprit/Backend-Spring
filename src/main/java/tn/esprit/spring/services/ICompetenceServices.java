@@ -10,4 +10,6 @@ public interface ICompetenceServices {
     void deleteCompetence(Long id);
     Competence getCompetenceById(Long id);
     List<Competence> getAllCompetences();
+
+    void assignCompetenceToMatieres(Long competenceId, List<Long> matiereIds);
 }

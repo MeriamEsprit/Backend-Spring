@@ -5,12 +5,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import tn.esprit.spring.entities.Classe;
-import tn.esprit.spring.entities.ERole;
-import tn.esprit.spring.entities.Utilisateur;
+import tn.esprit.spring.entities.*;
 import tn.esprit.spring.repositories.ClasseRepository;
 import tn.esprit.spring.repositories.UtilisateurRepository;
+import tn.esprit.spring.repositories.SalleRepository;
+import tn.esprit.spring.repositories.MatiereRepository;
+import tn.esprit.spring.repositories.SeanceclasseRepository;
 
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +23,7 @@ public class LoadDatabase {
     @Autowired
     PasswordEncoder encoder;
     @Bean
-    CommandLineRunner initDatabase(UtilisateurRepository userRepository, ClasseRepository classeRepository){
+    CommandLineRunner initDatabase(UtilisateurRepository userRepository, ClasseRepository classeRepository, SalleRepository salleRepository, SeanceclasseRepository seanceclasseRepository, MatiereRepository matiereRepository){
         return args -> {
             List<String> classes = new ArrayList<>();
             classes.add("1CINFO1");
@@ -84,7 +87,46 @@ public class LoadDatabase {
                 System.out.println(admin.getEmail());
             }
 
+            Salle salleA = new Salle();
+            salleA.setNom_salle("Salle A");
+            salleA.setCapacite(30);
+            salleRepository.save(salleA);
 
+            Salle salleB = new Salle();
+            salleB.setNom_salle("Salle B");
+            salleB.setCapacite(25);
+            salleRepository.save(salleB);
+
+            Salle salleC = new Salle();
+            salleC.setNom_salle("Salle C");
+            salleC.setCapacite(20);
+            salleRepository.save(salleC);
+
+            // Adding Matieres
+            List<Matiere> matieres = new ArrayList<>();
+            matieres.add(new Matiere(null, "Mathématiques", 40, 0.2, 0.3, 0.5, null, null));
+            matieres.add(new Matiere(null, "Physique", 35, 0.2, 0.3, 0.5, null, null));
+            matieres.add(new Matiere(null, "Informatique", 45, 0.3, 0.3, 0.4, null, null));
+            matieres.forEach(matiereRepository::save);
+
+            // Adding SeanceClasse
+            List<SeanceClasse> seanceClasses = new ArrayList<>();
+            for (Classe classe : classeRepository.findAll()) {
+                for (Matiere matiere : matiereRepository.findAll()) {
+                    for (Salle salle : salleRepository.findAll()) {
+                        for (Utilisateur enseignant : userRepository.findAllByRole(ERole.ROLE_TEACHER)) {
+                            SeanceClasse seanceClasse = new SeanceClasse();
+                            seanceClasse.setHeureDebut(Instant.now());
+                            seanceClasse.setHeureFin(Instant.now().plusSeconds(3600));
+                            seanceClasse.setClasse(classe);
+                            seanceClasse.setMatiere(matiere);
+                            seanceClasse.setSalle(salle);
+                            seanceClasse.setEnseignant(enseignant);
+                            seanceclasseRepository.save(seanceClasse);
+                        }
+                    }
+                }
+            }
 
 
 

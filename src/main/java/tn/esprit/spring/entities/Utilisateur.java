@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.HashSet;
@@ -57,6 +58,10 @@ public class Utilisateur {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idCompetence")
     Competence competence;
+
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"utilisateur"})
+    private List<Presence> presences;
 
     public Utilisateur(String email, String motDePasse) {
         this.motDePasse = motDePasse;

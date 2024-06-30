@@ -150,7 +150,11 @@ public class UserController {
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(transformedEnseignants);
-
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    ;
      @GetMapping("/enseignant/{id}")
     // /user/all-enseignant
     public ResponseEntity<?> getEnseignant(@PathVariable Long id) {
@@ -168,7 +172,7 @@ public class UserController {
     public ResponseEntity<?> getEtudiant(@PathVariable Long id) {
         try {
             Utilisateur etudiant = userService.getUserByRole(id, ERole.ROLE_STUDENT);
-            Long classeId = etudiant.getClasse() != null ? etudiant.getClasse().getId() : null;
+            Long classeId = etudiant.getClasse() != null ? etudiant.getClasse().getIdClasse() : null;
             EtudiantDto etudiantDto = new EtudiantDto(
                     etudiant.getId(), etudiant.getIdentifiant(), etudiant.getCin(), etudiant.getNom(),
                     etudiant.getPrenom(), etudiant.getEmail(), etudiant.isHidden(), etudiant.getRole(), classeId);
