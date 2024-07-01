@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ModuleRepository extends JpaRepository<Module, Long> {
+    Optional<Module> findByNom(String nom);
 
 
     Optional<Module> findByNom(String nom);

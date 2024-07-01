@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.multipart.MultipartResolver;
@@ -79,15 +81,23 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/auth/**", "/error", "/api/seanceClasses/summaries","/api/salle", "/api/classe", "/api/matieres", "/api/user/all-enseignant", "/api/seanceClasses", "/api/salle", "/api/seanceClasses/**","/api/jourFerie/**").permitAll()
-                        .requestMatchers("/database/**").permitAll()
 
+                            .requestMatchers("/auth/**", "/error", "/api/seanceClasses/summaries","/api/salle", "/api/classe", "/api/matieres", "/api/user/all-enseignant", "/api/seanceClasses", "/api/salle", "/api/seanceClasses/**","/api/jourFerie/**").permitAll()
+
+                        .requestMatchers("/auth/**", "/error").permitAll()
+
+                        .requestMatchers("/database/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/justifications/files/**").authenticated()
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
+                .headers(headers -> headers
+                        .defaultsDisabled()
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin()));
         return http.build();
     }
 
@@ -99,13 +109,17 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 registry.addMapping("/**")
                         .allowedOriginPatterns("*")  // This allows all origins when using patterns
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD","OPTIONS")
-                       .allowedOriginPatterns("*")// This allows all origins when using patterns
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD")
-
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }
         };
+    }
+    @Bean
+    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowUrlEncodedSlash(true);
+        firewall.setAllowUrlEncodedDoubleSlash(true);  // Allow double slashes
+        return firewall;
     }
 
 }

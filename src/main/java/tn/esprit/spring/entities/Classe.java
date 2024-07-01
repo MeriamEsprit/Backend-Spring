@@ -1,8 +1,9 @@
 package tn.esprit.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
@@ -10,20 +11,27 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "classe")
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor
-@AllArgsConstructor
-public class Classe {
+@ToString(exclude = {"utilisateurs","matieres"})
+//@JsonIgnoreProperties({"utilisateurs", "matieres"})
 
+public class Classe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     @Column(name = "idClasse", nullable = false)
-    private Long idClasse;
+    private Long id;
 
-    @Column(name = "nomClasse", nullable = false)
+    @Column(name = "nomClasse")
     private String nomClasse;
 
-    @OneToMany(mappedBy = "classe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Utilisateur> utilisateurs;
+    @OneToMany(mappedBy = "classe")
+    @JsonManagedReference(value = "classe-users")
+    List<Utilisateur> utilisateurs;
+
+    @ManyToMany
+    @JoinTable(
+            name = "classe_matiere", // Added JoinTable annotation
+            joinColumns = @JoinColumn(name = "classe_id"),
+            inverseJoinColumns = @JoinColumn(name = "matiere_id"))
+    @JsonManagedReference(value = "classe-matieres")
+    private List<Matiere> matieres;
 }
