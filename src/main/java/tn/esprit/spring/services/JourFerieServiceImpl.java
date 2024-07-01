@@ -28,6 +28,7 @@ public class JourFerieServiceImpl implements IJourFerieService {
         JourFerie existingJourFerie = jourFerieRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("JourFerie not found"));
         existingJourFerie.setDate(jourFerie.getDate());
+        existingJourFerie.setNom(jourFerie.getNom());
         return jourFerieRepository.save(existingJourFerie);
     }
 }
