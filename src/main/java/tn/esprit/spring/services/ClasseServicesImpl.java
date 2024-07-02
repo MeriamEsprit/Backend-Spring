@@ -6,6 +6,7 @@ import tn.esprit.spring.entities.Classe;
 import tn.esprit.spring.entities.Matiere;
 import tn.esprit.spring.entities.Utilisateur;
 import tn.esprit.spring.repositories.ClasseRepository;
+import tn.esprit.spring.repositories.MatiereRepository;
 import tn.esprit.spring.repositories.UtilisateurRepository;
 
 import java.util.List;
@@ -17,6 +18,8 @@ public class ClasseServicesImpl implements IClasseServices {
     private ClasseRepository classeRepository;
     @Autowired
     private UtilisateurRepository utilisateurRepository;
+    @Autowired
+    private MatiereRepository matiereRepository;
 
     @Override
     public Classe saveClasse(Classe classe) {
@@ -48,6 +51,20 @@ public class ClasseServicesImpl implements IClasseServices {
     }
     public List<Matiere> getMatieresByClass(Long classeId) {
         Classe classe = classeRepository.findById(classeId).orElseThrow(() -> new RuntimeException("Classe not found"));
+        return classe.getMatieres();
+    }
+    public Classe assignerMatieres(Long classeId, List<Long> matiereIds) {
+        Classe classe = classeRepository.findById(classeId)
+                .orElseThrow(() -> new RuntimeException("Classe non trouvée"));
+
+        List<Matiere> matieres = matiereRepository.findAllById(matiereIds);
+        matieres.forEach(matiere -> matiere.setClasse(classe));
+        matiereRepository.saveAll(matieres);
+        return classe;
+    }
+
+    public List<Matiere> getMatieresByClasse(Long classeId) {
+        Classe classe = classeRepository.findById(classeId).orElseThrow(() -> new RuntimeException("Classe non trouvée"));
         return classe.getMatieres();
     }
     

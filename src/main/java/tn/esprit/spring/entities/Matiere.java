@@ -55,9 +55,12 @@ public class Matiere {
     @JsonIgnore
     List<Note> notes;
 
-//    @ManyToOne
-//    @JoinColumn(name = "competence_id")
-//    @JsonBackReference(value = "competence-matieres")
-//    private Competence competence;
+    public void setClasse(Classe classe) {
+        this.classes = List.of(classe); // Mettre à jour la liste des classes
+    }
+    @ManyToOne
+    @JoinColumn(name = "competence_id")
+    @JsonBackReference(value = "competence-matieres")
+    private Competence competence;
 
 }

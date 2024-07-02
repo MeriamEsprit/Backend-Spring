@@ -54,6 +54,15 @@ public class ClasseController {
         List<Matiere> matieres = classeService.getMatieresByClass(classeId);
         return ResponseEntity.ok(matieres);
     }
+    @PostMapping("/{classeId}/matieres")
+    public void assignerMatieres(@PathVariable Long classeId, @RequestBody List<Long> matiereIds) {
+        classeService.assignerMatieres(classeId, matiereIds);
+    }
+
+    @GetMapping("/{classeId}/matieres")
+    public List<Matiere> getMatieresByClasse(@PathVariable Long classeId) {
+        return classeService.getMatieresByClasse(classeId);
+    }
 
 
 
