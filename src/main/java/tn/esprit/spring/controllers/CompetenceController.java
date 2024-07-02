@@ -1,6 +1,7 @@
 package tn.esprit.spring.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Competence;
 import tn.esprit.spring.services.CompetenceServicesImpl;
@@ -37,5 +38,11 @@ public class CompetenceController {
     @GetMapping
     public List<Competence> getAllCompetences() {
         return competenceService.getAllCompetences();
+    }
+
+    @PostMapping("/{competenceId}/assign")
+    public ResponseEntity<Void> assignCompetenceToMatieres(@PathVariable Long competenceId, @RequestBody List<Long> matiereIds) {
+        competenceService.assignCompetenceToMatieres(competenceId, matiereIds);
+        return ResponseEntity.ok().build();
     }
 }

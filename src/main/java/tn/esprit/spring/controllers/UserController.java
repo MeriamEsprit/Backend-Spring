@@ -256,10 +256,12 @@ public class UserController {
                     })
                     .collect(Collectors.toList());
             return ResponseEntity.ok(transformedEnseignants);
+
         } catch (RuntimeException ex) {
             return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
      @GetMapping("/enseignant/{id}")
     // /user/all-enseignant
     public ResponseEntity<?> getEnseignant(@PathVariable Long id) {
@@ -277,8 +279,10 @@ public class UserController {
     public ResponseEntity<?> getEtudiant(@PathVariable Long id) {
         try {
             Utilisateur etudiant = userService.getUserByRole(id, ERole.ROLE_STUDENT);
+
             Long classeId = etudiant.getClasse() != null ? etudiant.getClasse().getId() : null;
             String classeName = etudiant.getClasse() != null ? etudiant.getClasse().getNomClasse() : null;
+
             EtudiantDto etudiantDto = new EtudiantDto(
                     etudiant.getId(),
                     etudiant.getIdentifiant(),
