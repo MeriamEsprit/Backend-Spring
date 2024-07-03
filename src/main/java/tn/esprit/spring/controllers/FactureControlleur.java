@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.spring.entities.Facture;
 import tn.esprit.spring.entities.Reglement;
+import tn.esprit.spring.entities.Tranche;
+import tn.esprit.spring.entities.status;
 import tn.esprit.spring.repositories.FactureRepository;
 import tn.esprit.spring.repositories.ReglementRepository;
 import tn.esprit.spring.services.IReglementService;
@@ -110,6 +112,9 @@ public class FactureControlleur {
 
             if (montant != null) {
                 facture.setMontant(montant);
+            }
+            if (facture.getStatus() != status.NON_VALIDE || facture.getStatus() != status.EN_COURS_DE_TRAITEMENT) {
+                facture.setStatus(status.EN_COURS_DE_TRAITEMENT);
             }
 
             Facture updatedFacture = factureRepository.save(facture);
@@ -226,6 +231,22 @@ public Double montantrestant(@PathVariable Long id)
                                                 ) {
         List<Facture> Facture = factureService.searchStages(date, montant);
         return ResponseEntity.ok(Facture);
+    }
+    @PutMapping("/valider/{id}")
+    public ResponseEntity<Void> validerFacture(@PathVariable Long id) {
+        factureService.validerFacture(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/refuser/{id}")
+    public ResponseEntity<Void> refuserFacture(@PathVariable Long id) {
+        factureService.refuserFacture(id);
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/countFactureByStatus/{status}")
+    public ResponseEntity<Long> countFactureByStatus(@PathVariable status status) {
+        Long count = factureRepository.countFactureByStatus(status);
+        return ResponseEntity.ok(count);
     }
 
 }

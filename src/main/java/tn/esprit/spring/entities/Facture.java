@@ -1,5 +1,4 @@
 package tn.esprit.spring.entities;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -25,10 +24,20 @@ public class Facture {
     @Column(name = "date")
     private LocalDate date;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private status status = tn.esprit.spring.entities.status.EN_COURS_DE_TRAITEMENT;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     Reglement reglement;
 
+    public void validerFacture() {
+        this.status = status.VALIDE;
+    }
 
+    public void refuserFacture() {
+        this.status = status.NON_VALIDE;
+    }
 
 }

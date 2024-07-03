@@ -28,4 +28,8 @@ public interface IfactureService {
     byte[] generateFacture(Reglement reglement, Long id) throws DocumentException, IOException;
 
     List<Facture> searchStages(LocalDate date, Double montant);
+
+    void validerFacture(Long id);
+
+    void refuserFacture(Long id);
 }

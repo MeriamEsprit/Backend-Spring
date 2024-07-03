@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import tn.esprit.spring.entities.Facture;
 import tn.esprit.spring.entities.Reglement;
+import tn.esprit.spring.entities.status;
 import tn.esprit.spring.repositories.FactureRepository;
 import tn.esprit.spring.repositories.ReglementRepository;
 
@@ -137,6 +138,7 @@ public class FactureService implements IfactureService{
     public byte[] generateFacture(Reglement reglement, Long id) throws DocumentException, IOException {
         List<Facture> factures = getFacturebyid(id);
         Double totalPaid = factures.stream()
+                .filter(facture -> facture.getStatus() == status.VALIDE)
                 .mapToDouble(Facture::getMontant)
                 .sum();
          Double Reste= 6500 - totalPaid;
@@ -199,8 +201,9 @@ public class FactureService implements IfactureService{
 
 // Assuming reglement.getFactures() returns a list of Facture objects related to this payment
         for (Facture reglementFacture : reglement.getFacteurs()) {
+            if (reglementFacture.getStatus() == status.VALIDE) {
             table.addCell(reglementFacture.getDate().toString());
-            table.addCell(reglementFacture.getMontant().toString());
+            table.addCell(reglementFacture.getMontant().toString());}
         }
 
         document.add(table);
@@ -229,7 +232,21 @@ public class FactureService implements IfactureService{
 
         return factureRepository.findAll(spec);
     }
+    @Override
+    public void validerFacture(Long id) {
+        factureRepository.findById(id).ifPresent(facture -> {
+            facture.validerFacture();
+            factureRepository.save(facture);
+        });
+    }
 
+    @Override
+    public void refuserFacture(Long id) {
+        factureRepository.findById(id).ifPresent(facture -> {
+            facture.refuserFacture();
+            factureRepository.save(facture);
+        });
+    }
 
 
 }
