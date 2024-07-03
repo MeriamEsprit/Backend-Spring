@@ -9,6 +9,7 @@ import tn.esprit.spring.entities.Classe;
 import tn.esprit.spring.entities.Presence;
 import tn.esprit.spring.entities.Utilisateur;
 import tn.esprit.spring.repositories.ClasseRepository;
+import tn.esprit.spring.repositories.MatiereRepository;
 import tn.esprit.spring.repositories.PresenceRepository;
 import tn.esprit.spring.repositories.UtilisateurRepository;
 
@@ -28,11 +29,14 @@ public class PresenceServiceImpl implements IPresenceService{
     private UtilisateurRepository utilisateurRepository;
     @Autowired
     private final ClasseRepository classeRepository;
+    private final MatiereRepository matiereRepository;
 
     @Autowired
-    public PresenceServiceImpl(PresenceRepository presenceRepository,ClasseRepository classeRepository) {
+    public PresenceServiceImpl(PresenceRepository presenceRepository,ClasseRepository classeRepository,
+                               MatiereRepository matiereRepository) {
         this.presenceRepository=presenceRepository;
         this.classeRepository = classeRepository;
+        this.matiereRepository = matiereRepository;
     }
 
     @Override

@@ -12,8 +12,7 @@ public interface IJustificationServices {
     Justification getJustificationById(Long idJustification);
     void deleteJustification(Long idJustification);
     List<Justification>getAllJustification();
-
-
-
-
+    Justification addJustificationByPresence(Justification justification, String date, Long idPresence);
+    Justification validateJustification(Long idJustification);
+    Justification declineJustification(Long idJustification);
 }

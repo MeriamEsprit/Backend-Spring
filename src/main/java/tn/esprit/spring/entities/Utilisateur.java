@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+
 import lombok.*;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.HashSet;
@@ -61,15 +63,14 @@ public class Utilisateur {
     @JsonIgnore
     private Competence competence;
 
-    public Utilisateur(String email, String motDePasse) {
-        this.motDePasse = motDePasse;
-        this.email = email;
-    }
-
     @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"utilisateur"})
     private List<Presence> presences;
 
+    public Utilisateur(String email, String motDePasse) {
+        this.motDePasse = motDePasse;
+        this.email = email;
+    }
 
     @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
     @JsonIgnore

@@ -25,6 +25,7 @@ public class Presence {
     private LocalTime heureDebut;
     private LocalTime heureFin;
 
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "utilisateur_id")
     @JsonIgnoreProperties({"notes", "presences"})
