@@ -6,11 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import tn.esprit.spring.entities.*;
-import tn.esprit.spring.repositories.ClasseRepository;
-import tn.esprit.spring.repositories.UtilisateurRepository;
-import tn.esprit.spring.repositories.SalleRepository;
-import tn.esprit.spring.repositories.MatiereRepository;
-import tn.esprit.spring.repositories.SeanceclasseRepository;
+import tn.esprit.spring.entities.Module;
+import tn.esprit.spring.repositories.*;
 
 
 import java.time.Instant;
@@ -22,6 +19,8 @@ public class LoadDatabase {
 
     @Autowired
     PasswordEncoder encoder;
+    @Autowired
+    ModuleRepository moduleRepository;
     @Bean
     CommandLineRunner initDatabase(UtilisateurRepository userRepository, ClasseRepository classeRepository, SalleRepository salleRepository, SeanceclasseRepository seanceclasseRepository, MatiereRepository matiereRepository){
         return args -> {
@@ -103,11 +102,24 @@ public class LoadDatabase {
             salleRepository.save(salleC);
 
             // Adding Matieres
-            List<Matiere> matieres = new ArrayList<>();
-            matieres.add(new Matiere(null, "Mathématiques", 40, 0.2, 0.3, 0.5, null, null));
-            matieres.add(new Matiere(null, "Physique", 35, 0.2, 0.3, 0.5, null, null));
-            matieres.add(new Matiere(null, "Informatique", 45, 0.3, 0.3, 0.4, null, null));
-            matieres.forEach(matiereRepository::save);
+            List<String> matieres = new ArrayList<>();
+            Module module = new Module();
+            module.setNom("Informatique");
+            module.setDescription("Informatique Esprit");
+            moduleRepository.save(module);
+            matieres.add("Devops");
+            matieres.add("Angular");
+            matieres.add("Spring");
+            for (String m : matieres) {
+                Matiere matiere = new Matiere();
+                matiere.setModule(module);
+                matiere.setNomMatiere(m);
+                matiere.setNbreHeures(40);
+                matiere.setCoefficientTP(0.2);
+                matiere.setCoefficientCC(0.3);
+                matiere.setCoefficientExamen(0.5);
+                matiereRepository.save(matiere);
+            }
 
             // Adding SeanceClasse
             List<SeanceClasse> seanceClasses = new ArrayList<>();
