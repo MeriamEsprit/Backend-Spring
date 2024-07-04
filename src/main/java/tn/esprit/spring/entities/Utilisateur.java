@@ -42,6 +42,12 @@ public class Utilisateur {
 
     private String privateemail;
 
+    private String gender;
+
+    private String dateofbirth;
+
+    private String starteducation;
+
     private String motDePasse;
 
     private boolean isHidden;

@@ -11,8 +11,11 @@ import tn.esprit.spring.repositories.*;
 
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Configuration
 public class LoadDatabase {
@@ -51,6 +54,9 @@ public class LoadDatabase {
                             student.setIdentifiant("224SMT00"+(index+i));
                             student.setNom("student");
                             student.setPrenom("S"+index);
+                            student.setGender(this.generateRandomGender());
+                            student.setDateofbirth(this.generateRandomDateOfBirth());
+                            student.setStarteducation(this.generateRandomYear());
                             student.setRole(ERole.ROLE_STUDENT);
                             student.setClasse(classe);
                             student.setMotDePasse(encoder.encode("0000"));
@@ -68,6 +74,8 @@ public class LoadDatabase {
                     student.setEmail(i+"teacher@esprit.tn");
                     student.setCin("0"+(9868476+index+i));
                     student.setNom("teacher");
+                    student.setGender(this.generateRandomGender());
+                    student.setDateofbirth(this.generateRandomDateOfBirth());
                     student.setPrenom("T"+index);
                     student.setRole(ERole.ROLE_TEACHER);
                     student.setMotDePasse(encoder.encode("0000"));
@@ -86,63 +94,80 @@ public class LoadDatabase {
                 System.out.println(admin.getEmail());
             }
 
-            Salle salleA = new Salle();
-            salleA.setNom_salle("Salle A");
-            salleA.setCapacite(30);
-            salleRepository.save(salleA);
-
-            Salle salleB = new Salle();
-            salleB.setNom_salle("Salle B");
-            salleB.setCapacite(25);
-            salleRepository.save(salleB);
-
-            Salle salleC = new Salle();
-            salleC.setNom_salle("Salle C");
-            salleC.setCapacite(20);
-            salleRepository.save(salleC);
-
-            // Adding Matieres
-            List<String> matieres = new ArrayList<>();
-            Module module = new Module();
-            module.setNom("Informatique");
-            module.setDescription("Informatique Esprit");
-            moduleRepository.save(module);
-            matieres.add("Devops");
-            matieres.add("Angular");
-            matieres.add("Spring");
-            for (String m : matieres) {
-                Matiere matiere = new Matiere();
-                matiere.setModule(module);
-                matiere.setNomMatiere(m);
-                matiere.setNbreHeures(40);
-                matiere.setCoefficientTP(0.2);
-                matiere.setCoefficientCC(0.3);
-                matiere.setCoefficientExamen(0.5);
-                matiereRepository.save(matiere);
-            }
-
-            // Adding SeanceClasse
-            List<SeanceClasse> seanceClasses = new ArrayList<>();
-            for (Classe classe : classeRepository.findAll()) {
-                for (Matiere matiere : matiereRepository.findAll()) {
-                    for (Salle salle : salleRepository.findAll()) {
-                        for (Utilisateur enseignant : userRepository.findAllByRole(ERole.ROLE_TEACHER)) {
-                            SeanceClasse seanceClasse = new SeanceClasse();
-                            seanceClasse.setHeureDebut(Instant.now());
-                            seanceClasse.setHeureFin(Instant.now().plusSeconds(3600));
-                            seanceClasse.setClasse(classe);
-                            seanceClasse.setMatiere(matiere);
-                            seanceClasse.setSalle(salle);
-                            seanceClasse.setEnseignant(enseignant);
-                            seanceclasseRepository.save(seanceClasse);
-                        }
-                    }
-                }
-            }
-
-
-
-
+//            Salle salleA = new Salle();
+//            salleA.setNom_salle("Salle A");
+//            salleA.setCapacite(30);
+//            salleRepository.save(salleA);
+//
+//            Salle salleB = new Salle();
+//            salleB.setNom_salle("Salle B");
+//            salleB.setCapacite(25);
+//            salleRepository.save(salleB);
+//
+//            Salle salleC = new Salle();
+//            salleC.setNom_salle("Salle C");
+//            salleC.setCapacite(20);
+//            salleRepository.save(salleC);
+//
+//            // Adding Matieres
+//            List<String> matieres = new ArrayList<>();
+//            Module module = new Module();
+//            module.setNom("Informatique");
+//            module.setDescription("Informatique Esprit");
+//            moduleRepository.save(module);
+//            matieres.add("Devops");
+//            matieres.add("Angular");
+//            matieres.add("Spring");
+//            for (String m : matieres) {
+//                Matiere matiere = new Matiere();
+//                matiere.setModule(module);
+//                matiere.setNomMatiere(m);
+//                matiere.setNbreHeures(40);
+//                matiere.setCoefficientTP(0.2);
+//                matiere.setCoefficientCC(0.3);
+//                matiere.setCoefficientExamen(0.5);
+//                matiereRepository.save(matiere);
+//            }
+//
+//            // Adding SeanceClasse
+//            List<SeanceClasse> seanceClasses = new ArrayList<>();
+//            for (Classe classe : classeRepository.findAll()) {
+//                for (Matiere matiere : matiereRepository.findAll()) {
+//                    for (Salle salle : salleRepository.findAll()) {
+//                        for (Utilisateur enseignant : userRepository.findAllByRole(ERole.ROLE_TEACHER)) {
+//                            SeanceClasse seanceClasse = new SeanceClasse();
+//                            seanceClasse.setHeureDebut(Instant.now());
+//                            seanceClasse.setHeureFin(Instant.now().plusSeconds(3600));
+//                            seanceClasse.setClasse(classe);
+//                            seanceClasse.setMatiere(matiere);
+//                            seanceClasse.setSalle(salle);
+//                            seanceClasse.setEnseignant(enseignant);
+//                            seanceclasseRepository.save(seanceClasse);
+//                        }
+//                    }
+//                }
+//            }
         };
+    }
+
+    private String generateRandomDateOfBirth() {
+        long minDay = LocalDate.of(1900, 1, 1).toEpochDay();
+        long maxDay = LocalDate.now().toEpochDay();
+        long randomDay = ThreadLocalRandom.current().nextLong(minDay, maxDay);
+        return LocalDate.ofEpochDay(randomDay).toString();
+    }
+
+    private String generateRandomGender() {
+        String[] genders = {"Male", "Female"};
+        int randomIndex = ThreadLocalRandom.current().nextInt(genders.length);
+        return genders[randomIndex];
+    }
+
+    public String generateRandomYear() {
+        int minYear = 2000;
+        int maxYear = LocalDate.now().getYear();
+        Random random = new Random();
+        Integer year = random.nextInt((maxYear - minYear) + 1) + minYear;
+        return year.toString();
     }
 }

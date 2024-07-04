@@ -196,8 +196,21 @@ public class UserController {
             Long classeId = etudiant.getClasse() != null ? etudiant.getClasse().getId() : null;
             String classeName = etudiant.getClasse() != null ? etudiant.getClasse().getNomClasse() : null;
             EtudiantDto etudiantDto = new EtudiantDto(
-                    etudiant.getId(), etudiant.getIdentifiant(), etudiant.getCin(),etudiant.getPhoto(), etudiant.getNom(),
-                    etudiant.getPrenom(), etudiant.getEmail(),etudiant.getPrivateemail(), etudiant.isHidden(), etudiant.getRole(), classeId,classeName);
+                    etudiant.getId(),
+                    etudiant.getIdentifiant(),
+                    etudiant.getCin(),
+                    etudiant.getPhoto(),
+                    etudiant.getNom(),
+                    etudiant.getPrenom(),
+                    etudiant.getEmail(),
+                    etudiant.getPrivateemail(),
+                    etudiant.getGender(),
+                    etudiant.getDateofbirth(),
+                    etudiant.getStarteducation(),
+                    etudiant.isHidden(),
+                    etudiant.getRole(),
+                    classeId,classeName
+            );
             return ResponseEntity.ok(etudiantDto);
         } catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
@@ -292,11 +305,12 @@ public class UserController {
                     etudiant.getPrenom(),
                     etudiant.getEmail(),
                     etudiant.getPrivateemail(),
+                    etudiant.getGender(),
+                    etudiant.getDateofbirth(),
+                    etudiant.getStarteducation(),
                     etudiant.isHidden(),
                     etudiant.getRole(),
-                    classeId,
-                    classeName
-
+                    classeId,classeName
             );
             return ResponseEntity.ok(etudiantDto);
         } catch (EntityNotFoundException ex) {
