@@ -81,19 +81,19 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/database/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/justifications/files/**").authenticated()
-                        .anyRequest().authenticated())
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/database/**").permitAll()
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/**").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/justifications/files/**").authenticated()
+                .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> headers
-                        .defaultsDisabled()
-                        .frameOptions(frameOptions -> frameOptions.sameOrigin()));
+                .defaultsDisabled()
+                .frameOptions(frameOptions -> frameOptions.sameOrigin()));
         return http.build();
     }
 
