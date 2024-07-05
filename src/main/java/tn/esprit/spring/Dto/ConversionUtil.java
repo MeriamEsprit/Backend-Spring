@@ -1,6 +1,5 @@
 package tn.esprit.spring.Dto;
 
-import org.aspectj.weaver.ast.Not;
 import tn.esprit.spring.entities.Matiere;
 import tn.esprit.spring.entities.Module;
 import tn.esprit.spring.entities.Note;
@@ -24,6 +23,7 @@ public class ConversionUtil {
         module.setDescription(dto.getDescription());
         return module;
     }
+
     public static MatiereDTO convertToMatiereDTO(Matiere matiere) {
         MatiereDTO dto = new MatiereDTO();
         dto.setId(matiere.getId());
@@ -58,7 +58,10 @@ public class ConversionUtil {
         dto.setMoyennePrincipale(note.getMoyennePrincipale());
         dto.setMoyenneControle(note.getMoyenneControle());
         dto.setUtilisateurId(note.getUtilisateur() != null ? note.getUtilisateur().getId() : null);
-        dto.setMatiere(note.getMatiere()); // Set the Matiere object directly
+        dto.setMatiereId(note.getMatiere() != null ? note.getMatiere().getId() : null); // Ensure matiereId is set
+        System.out.println("Converted Note: " + note.getId() + ", Matiere ID: " + note.getMatiere().getId());
+
+
         return dto;
     }
 
@@ -75,5 +78,4 @@ public class ConversionUtil {
         note.setMatiere(matiere);
         return note;
     }
-
 }

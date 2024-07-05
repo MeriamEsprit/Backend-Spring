@@ -79,4 +79,14 @@ public class MatiereServicesImp implements IMatiereServices {
                 .map(ConversionUtil::convertToMatiereDTO)
                 .collect(Collectors.toList());
     }
+    public boolean isNomMatiereUnique(String nomMatiere) {
+        return !matiereRepository.existsByNomMatiere(nomMatiere);
+    }
+    public boolean isNomMatiereUniqueExceptCurrent(String nomMatiere, Long id) {
+        Matiere existingMatiere = matiereRepository.findById(id).orElse(null);
+        if (existingMatiere != null && existingMatiere.getNomMatiere().equals(nomMatiere)) {
+            return true;
+        }
+        return !matiereRepository.existsByNomMatiere(nomMatiere);
+    }
 }

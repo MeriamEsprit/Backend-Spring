@@ -35,16 +35,17 @@ public class NoteServicesImpl implements INoteServices {
             throw new IllegalArgumentException("Utilisateur does not exist");
         }
 
-        Matiere matiere = noteDTO.getMatiere();
-        if (matiere == null || matiereRepository.findById(matiere.getId()).isEmpty()) {
+        Optional<Matiere> matiere = matiereRepository.findById(noteDTO.getMatiereId());
+        if (matiere.isEmpty()) {
             throw new IllegalArgumentException("Matiere does not exist");
         }
 
-        Note note = ConversionUtil.convertToNoteEntity(noteDTO, utilisateur.get(), matiere);
+        Note note = ConversionUtil.convertToNoteEntity(noteDTO, utilisateur.get(), matiere.get());
         Note savedNote = noteRepository.save(note);
         return ConversionUtil.convertToNoteDTO(savedNote);
     }
 
+    @Override
     public List<NoteDTO> updateNotes(List<NoteDTO> noteDTOs, Long userId) {
         Optional<Utilisateur> utilisateur = utilisateurRepository.findById(userId);
         if (utilisateur.isEmpty()) {
@@ -53,8 +54,8 @@ public class NoteServicesImpl implements INoteServices {
 
         List<Note> updatedNotes = new ArrayList<>();
         for (NoteDTO noteDTO : noteDTOs) {
-            Matiere matiere = noteDTO.getMatiere();
-            if (matiere == null || matiereRepository.findById(matiere.getId()).isEmpty()) {
+            Optional<Matiere> matiere = matiereRepository.findById(noteDTO.getMatiereId());
+            if (matiere.isEmpty()) {
                 throw new IllegalArgumentException("Matiere does not exist");
             }
 
@@ -68,12 +69,18 @@ public class NoteServicesImpl implements INoteServices {
             } else {
                 note = new Note();
                 note.setUtilisateur(utilisateur.get());
-                note.setMatiere(matiere);
+                note.setMatiere(matiere.get());
             }
 
-            note.setNoteTp(noteDTO.getNoteTp());
-            note.setNoteCc(noteDTO.getNoteCc());
-            note.setNoteExamen(noteDTO.getNoteExamen());
+            if (noteDTO.getNoteTp() != null) {
+                note.setNoteTp(noteDTO.getNoteTp());
+            }
+            if (noteDTO.getNoteCc() != null) {
+                note.setNoteCc(noteDTO.getNoteCc());
+            }
+            if (noteDTO.getNoteExamen() != null) {
+                note.setNoteExamen(noteDTO.getNoteExamen());
+            }
 
             Note updatedNote = noteRepository.save(note);
             updatedNotes.add(updatedNote);
@@ -81,7 +88,6 @@ public class NoteServicesImpl implements INoteServices {
 
         return updatedNotes.stream().map(ConversionUtil::convertToNoteDTO).collect(Collectors.toList());
     }
-
 
     @Override
     public void deleteNote(Long id, Long userId) {
@@ -118,6 +124,4 @@ public class NoteServicesImpl implements INoteServices {
                 .map(ConversionUtil::convertToNoteDTO)
                 .collect(Collectors.toList());
     }
-
-
 }

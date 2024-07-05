@@ -14,5 +14,5 @@ public class NoteDTO {
     private Double moyennePrincipale;
     private Double moyenneControle;
     private Long utilisateurId;
-    private Matiere matiere;
+    private Long matiereId;
 }

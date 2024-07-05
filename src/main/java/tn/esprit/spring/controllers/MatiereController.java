@@ -53,4 +53,15 @@ public class MatiereController {
     public List<MatiereDTO> getAllMatieres() {
         return matiereService.getAllMatieres();
     }
+
+    @GetMapping("/check-nom-unique")
+    public ResponseEntity<Boolean> isNomMatiereUnique(@RequestParam String nomMatiere) {
+        boolean isUnique = matiereService.isNomMatiereUnique(nomMatiere);
+        return new ResponseEntity<>(isUnique, HttpStatus.OK);
+    }
+    @GetMapping("/check-nom-unique-except-current")
+    public ResponseEntity<Boolean> isNomMatiereUniqueExceptCurrent(@RequestParam String nomMatiere, @RequestParam Long id) {
+        boolean isUnique = matiereService.isNomMatiereUniqueExceptCurrent(nomMatiere, id);
+        return new ResponseEntity<>(isUnique, HttpStatus.OK);
+    }
 }

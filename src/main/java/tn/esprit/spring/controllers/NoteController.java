@@ -33,7 +33,6 @@ public class NoteController {
         }
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNote(@PathVariable Long id, @RequestParam Long userId) {
         noteService.deleteNote(id, userId);
