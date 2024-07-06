@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
+import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.spring.Dto.NoteDTO;
 import tn.esprit.spring.services.NoteServicesImpl;
 
@@ -61,5 +62,15 @@ public class NoteController {
     public ResponseEntity<List<NoteDTO>> updateNotes(@PathVariable Long userId, @RequestBody List<NoteDTO> noteDTOs) {
         List<NoteDTO> updatedNotes = noteService.updateNotes(noteDTOs, userId);
         return ResponseEntity.ok(updatedNotes);
+    }
+    @PostMapping("/upload/{classeId}")
+    public ResponseEntity<String> uploadNotes(@RequestParam("file") MultipartFile file, @PathVariable Long classeId) {
+        try {
+            noteService.saveNotesFromCSV(file, classeId);
+            return new ResponseEntity<>("Notes uploaded successfully.", HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error uploading notes: {}", e.getMessage());
+            return new ResponseEntity<>("Failed to upload notes.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

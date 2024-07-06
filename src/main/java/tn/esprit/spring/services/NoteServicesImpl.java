@@ -1,5 +1,6 @@
 package tn.esprit.spring.services;
 
+import com.opencsv.CSVParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tn.esprit.spring.Dto.ConversionUtil;
@@ -10,12 +11,16 @@ import tn.esprit.spring.entities.Matiere;
 import tn.esprit.spring.repositories.NoteRepository;
 import tn.esprit.spring.repositories.UtilisateurRepository;
 import tn.esprit.spring.repositories.MatiereRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import com.opencsv.CSVReader;
+import org.springframework.web.multipart.MultipartFile;
 @Service
 public class NoteServicesImpl implements INoteServices {
 
@@ -27,6 +32,8 @@ public class NoteServicesImpl implements INoteServices {
 
     @Autowired
     private MatiereRepository matiereRepository;
+    private static final Logger logger = LoggerFactory.getLogger(NoteServicesImpl.class);
+
 
     @Override
     public NoteDTO saveNote(NoteDTO noteDTO) {
@@ -124,4 +131,52 @@ public class NoteServicesImpl implements INoteServices {
                 .map(ConversionUtil::convertToNoteDTO)
                 .collect(Collectors.toList());
     }
+    public void saveNotesFromCSV(MultipartFile file, Long classeId) throws Exception {
+        try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
+            List<String[]> records = reader.readAll();
+            if (records.size() > 0) {
+                records.remove(0); // Remove header row
+            }
+            for (String[] record : records) {
+                Long utilisateurId = Long.parseLong(record[0]);
+                // Skip the student name field
+                String nomMatiere = record[2];
+                Double noteTp = record[3].isEmpty() ? null : Double.parseDouble(record[3]);
+                Double noteCc = record[4].isEmpty() ? null : Double.parseDouble(record[4]);
+                Double noteExamen = record[5].isEmpty() ? null : Double.parseDouble(record[5]);
+
+                Optional<Utilisateur> utilisateur = utilisateurRepository.findById(utilisateurId);
+                if (utilisateur.isEmpty()) {
+                    throw new IllegalArgumentException("Utilisateur with ID " + utilisateurId + " does not exist");
+                }
+
+                Optional<Matiere> matiere = matiereRepository.findByNomMatiere(nomMatiere);
+                if (matiere.isEmpty()) {
+                    throw new IllegalArgumentException("Matiere with name " + nomMatiere + " does not exist");
+                }
+
+                Note note = noteRepository.findByUtilisateurIdAndMatiereId(utilisateurId, matiere.get().getId())
+                        .orElse(new Note());
+
+                note.setUtilisateur(utilisateur.get());
+                note.setMatiere(matiere.get());
+
+                if (noteTp != null) {
+                    note.setNoteTp(noteTp);
+                }
+                if (noteCc != null) {
+                    note.setNoteCc(noteCc);
+                }
+                if (noteExamen != null) {
+                    note.setNoteExamen(noteExamen);
+                }
+
+                noteRepository.save(note);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing CSV file", e);
+        }
+    }
+
+
 }
