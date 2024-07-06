@@ -312,4 +312,9 @@ public class UserController {
         List<Note> notes = userService.getNotesByUser(userId);
         return ResponseEntity.ok(notes);
     }
+
+    @GetMapping("/isDisabled")
+    public List<Utilisateur> getDisabledUtilisateurs() {
+        return userService.getDisabledUtilisateurs();
+    }
 }

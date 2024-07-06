@@ -102,43 +102,46 @@ public class LoadDatabase {
             salleRepository.save(salleC);
 
             // Adding Matieres
-            List<String> matieres = new ArrayList<>();
-            Module module = new Module();
-            module.setNom("Informatique");
-            module.setDescription("Informatique Esprit");
-            moduleRepository.save(module);
-            matieres.add("Devops");
-            matieres.add("Angular");
-            matieres.add("Spring");
-            for (String m : matieres) {
-                Matiere matiere = new Matiere();
-                matiere.setModule(module);
-                matiere.setNomMatiere(m);
-                matiere.setNbreHeures(40);
-                matiere.setCoefficientTP(0.2);
-                matiere.setCoefficientCC(0.3);
-                matiere.setCoefficientExamen(0.5);
-                matiereRepository.save(matiere);
-            }
+           try{
+               List<String> matieres = new ArrayList<>();
+               Module module = new Module();
+               module.setNom("Informatique");
+               module.setDescription("Informatique Esprit");
+               moduleRepository.save(module);
+               matieres.add("Devops");
+               matieres.add("Angular");
+               matieres.add("Spring");
+               for (String m : matieres) {
+                   Matiere matiere = new Matiere();
+                   matiere.setModule(module);
+                   matiere.setNomMatiere(m);
+                   matiere.setNbreHeures(40);
+                   matiere.setCoefficientTP(0.2);
+                   matiere.setCoefficientCC(0.3);
+                   matiere.setCoefficientExamen(0.5);
+                   matiereRepository.save(matiere);
+               }
+           }catch (Exception e){}
+
 
             // Adding SeanceClasse
-            List<SeanceClasse> seanceClasses = new ArrayList<>();
-            for (Classe classe : classeRepository.findAll()) {
-                for (Matiere matiere : matiereRepository.findAll()) {
-                    for (Salle salle : salleRepository.findAll()) {
-                        for (Utilisateur enseignant : userRepository.findAllByRole(ERole.ROLE_TEACHER)) {
-                            SeanceClasse seanceClasse = new SeanceClasse();
-                            seanceClasse.setHeureDebut(Instant.now());
-                            seanceClasse.setHeureFin(Instant.now().plusSeconds(3600));
-                            seanceClasse.setClasse(classe);
-                            seanceClasse.setMatiere(matiere);
-                            seanceClasse.setSalle(salle);
-                            seanceClasse.setEnseignant(enseignant);
-                            seanceclasseRepository.save(seanceClasse);
-                        }
-                    }
-                }
-            }
+//            List<SeanceClasse> seanceClasses = new ArrayList<>();
+//            for (Classe classe : classeRepository.findAll()) {
+//                for (Matiere matiere : matiereRepository.findAll()) {
+//                    for (Salle salle : salleRepository.findAll()) {
+//                        for (Utilisateur enseignant : userRepository.findAllByRole(ERole.ROLE_TEACHER)) {
+//                            SeanceClasse seanceClasse = new SeanceClasse();
+//                            seanceClasse.setHeureDebut(Instant.now());
+//                            seanceClasse.setHeureFin(Instant.now().plusSeconds(3600));
+//                            seanceClasse.setClasse(classe);
+//                            seanceClasse.setMatiere(matiere);
+//                            seanceClasse.setSalle(salle);
+//                            seanceClasse.setEnseignant(enseignant);
+//                            seanceclasseRepository.save(seanceClasse);
+//                        }
+//                    }
+//                }
+//            }
 
 
 

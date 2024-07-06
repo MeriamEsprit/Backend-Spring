@@ -142,4 +142,9 @@ public class UserService implements IUserService {
         return userRepository.findUtilisateurByIdAndRole(id,role);
     }
 
+    @Override
+    public List<Utilisateur> getDisabledUtilisateurs() {
+        return userRepository.findByIsDisabledTrue();
+    }
+
 }
