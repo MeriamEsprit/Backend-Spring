@@ -48,7 +48,6 @@ public class PresenceDTO {
         presence.setHeureDebut(presenceDTO.getHeureDebut());
         presence.setHeureFin(presenceDTO.getHeureFin());
 
-
         if (presenceDTO.getUtilisateurId() != null) {
             Utilisateur utilisateur = utilisateurRepository.findById(presenceDTO.getUtilisateurId())
                     .orElseThrow(() -> new EntityNotFoundException("User not found with id " + presenceDTO.getUtilisateurId()));
@@ -59,9 +58,15 @@ public class PresenceDTO {
             presence.setJustification(justificationRepository.findById(presenceDTO.getJustificationId())
                     .orElseThrow(() -> new EntityNotFoundException("Justification not found with id " + presenceDTO.getJustificationId())));
         }
+
         if (presenceDTO.getIdmatiere() != null) {
-            presence.setMatiere(matiereRepository.findById(presenceDTO.getIdmatiere())
-                    .orElseThrow(() -> new EntityNotFoundException("Matière not found with id " + presenceDTO.getIdmatiere())));
+            Matiere matiere = matiereRepository.findById(presenceDTO.getIdmatiere())
+                    .orElseThrow(() -> new EntityNotFoundException("Matière not found with id " + presenceDTO.getIdmatiere()));
+            presence.setMatiere(matiere);
+        } else if (presenceDTO.getNomMatiere() != null) {
+            Matiere matiere = matiereRepository.findByNomMatiere(presenceDTO.getNomMatiere())
+                    .orElseThrow(() -> new EntityNotFoundException("Matière not found with name " + presenceDTO.getNomMatiere()));
+            presence.setMatiere(matiere);
         }
 
         return presence;

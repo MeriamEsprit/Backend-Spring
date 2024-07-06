@@ -1,20 +1,30 @@
 package tn.esprit.spring.controllers;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.spring.Dto.MatiereDTO;
 import tn.esprit.spring.Dto.PresenceDTO;
+import tn.esprit.spring.entities.Matiere;
 import tn.esprit.spring.entities.Presence;
 import tn.esprit.spring.entities.Utilisateur;
 import tn.esprit.spring.repositories.JustificationRepository;
 import tn.esprit.spring.repositories.MatiereRepository;
 import tn.esprit.spring.repositories.UtilisateurRepository;
 import tn.esprit.spring.services.IPresenceService;
+import tn.esprit.spring.services.MatiereServicesImp;
+import tn.esprit.spring.services.PresenceServiceImpl;
+import tn.esprit.spring.services.UserService;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,6 +38,11 @@ public class PresenceController {
     private final UtilisateurRepository utilisateurRepository;
     private final JustificationRepository justificationRepository;
     private final MatiereRepository matiereRepository;
+
+    @Autowired
+    UserService userService;
+    @Autowired
+    MatiereServicesImp matiereServices;
 
     @PostMapping("/addPresence")
     public PresenceDTO addPresence(@RequestBody PresenceDTO presenceDTO) {
@@ -50,7 +65,9 @@ public class PresenceController {
 
     @PostMapping(value = "/addPresenceForEtudiant", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PresenceDTO> addPresenceForEtudiant(@RequestParam Long studentId, @RequestBody PresenceDTO presenceDTO) {
-        Presence presenceDetails = PresenceDTO.mapToEntity(presenceDTO, utilisateurRepository, justificationRepository,matiereRepository);
+        System.out.println("Received PresenceDTO: " + presenceDTO);
+        Presence presenceDetails = PresenceDTO.mapToEntity(presenceDTO, utilisateurRepository, justificationRepository, matiereRepository);
+        System.out.println("Mapped Presence Entity: " + presenceDetails);
         Presence savedPresence = presenceService.addPresenceForEtudiant(studentId, presenceDetails);
         return ResponseEntity.ok(PresenceDTO.mapToDTO(savedPresence));
     }
@@ -112,6 +129,55 @@ public class PresenceController {
             e.printStackTrace(); // Log the exception
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
+    }
+
+    @GetMapping("/dashboard/presenceByMatiere/{idMatiere}")
+    public ArrayList<Double> dashboardPresence (@PathVariable Long idMatiere) {
+        Utilisateur user = userService.getInfo();
+        MatiereDTO matiere = new MatiereDTO();
+
+
+        List<Presence> presences = presenceService.getAllPresencesByUserId(user.getId());
+        long hoursListPresence = 0;
+        long hoursListAbsence = 0;
+        long hoursMatiere = 0;
+        try {
+            matiere =  matiereServices.getMatiereById(idMatiere);
+            hoursMatiere = matiere.getNbreHeures();
+            for (Presence p : presences) {
+                LocalTime heureDebut = p.getHeureDebut();
+                LocalTime heureFin = p.getHeureFin();
+                long hours = Duration.between(heureDebut, heureFin).toHours();
+                if(matiere.getId().equals(p.getMatiere().getId())){
+                    if (p.getEtatPresence()==true){
+                        hoursListPresence += hours;
+                    }else{
+                        hoursListAbsence+=hours;
+                    }
+                }
+
+            }
+        }catch (Exception e){
+            for (Presence p : presences) {
+                LocalTime heureDebut = p.getHeureDebut();
+                LocalTime heureFin = p.getHeureFin();
+                long hours = Duration.between(heureDebut, heureFin).toHours();
+                if (p.getEtatPresence()==true){
+                    hoursListPresence += hours;
+                }else{
+                    hoursListAbsence+=hours;
+                }
+            }
+            for (MatiereDTO m:matiereServices.getAllMatieres()) {
+                hoursMatiere += m.getNbreHeures();
+            }
+        }
+
+        ArrayList<Double> hours = new ArrayList<>();
+        hours.add((double)hoursListPresence / hoursMatiere * 100);
+        hours.add((double)hoursListAbsence / hoursMatiere * 100);
+        hours.add((double)hoursMatiere);
+        return hours;
     }
 
 }
