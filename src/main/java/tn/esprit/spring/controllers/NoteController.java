@@ -1,5 +1,6 @@
 package tn.esprit.spring.controllers;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -7,9 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
+import tn.esprit.spring.Dto.ClasseDTO1;
 import tn.esprit.spring.Dto.NoteDTO;
+import tn.esprit.spring.Dto.emploiDuTemps.ClasseDTO;
+import tn.esprit.spring.entities.Classe;
 import tn.esprit.spring.services.NoteServicesImpl;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -71,6 +76,31 @@ public class NoteController {
         } catch (Exception e) {
             logger.error("Error uploading notes: {}", e.getMessage());
             return new ResponseEntity<>("Failed to upload notes.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/user/{userId}/class")
+    public ResponseEntity<ClasseDTO1> getClassByUserId(@PathVariable Long userId) {
+        try {
+            ClasseDTO1 classe = noteService.getClassByUserId(userId);
+            return new ResponseEntity<>(classe, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            logger.error("Error fetching class for user {}: {}", userId, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            logger.error("Unexpected error fetching class for user {}: {}", userId, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/download/{userId}")
+    public void downloadNotes(@PathVariable Long userId, HttpServletResponse response) {
+        try {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=\"notes.pdf\"");
+            noteService.generateNotesPdf(userId, response.getOutputStream());
+        } catch (IOException e) {
+            logger.error("Error generating PDF for user {}: {}", userId, e.getMessage());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }

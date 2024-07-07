@@ -1,9 +1,7 @@
 package tn.esprit.spring.Dto;
 
-import tn.esprit.spring.entities.Matiere;
+import tn.esprit.spring.entities.*;
 import tn.esprit.spring.entities.Module;
-import tn.esprit.spring.entities.Note;
-import tn.esprit.spring.entities.Utilisateur;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,5 +75,17 @@ public class ConversionUtil {
         note.setUtilisateur(utilisateur);
         note.setMatiere(matiere);
         return note;
+    }
+    public static ClasseDTO1 convertToClasseDTO(Classe classe) {
+        ClasseDTO1 dto = new ClasseDTO1();
+        dto.setId(classe.getId());
+        dto.setNomClasse(classe.getNomClasse());
+        return dto;
+    }
+
+    public static Classe convertToClasseEntity(ClasseDTO1 dto) {
+        Classe classe = new Classe();
+        classe.setNomClasse(dto.getNomClasse());
+        return classe;
     }
 }

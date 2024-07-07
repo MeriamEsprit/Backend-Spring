@@ -3,17 +3,25 @@ package tn.esprit.spring.services;
 import com.opencsv.CSVParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tn.esprit.spring.Dto.ClasseDTO1;
 import tn.esprit.spring.Dto.ConversionUtil;
 import tn.esprit.spring.Dto.NoteDTO;
+import tn.esprit.spring.entities.Classe;
 import tn.esprit.spring.entities.Note;
 import tn.esprit.spring.entities.Utilisateur;
 import tn.esprit.spring.entities.Matiere;
+import tn.esprit.spring.repositories.ClasseRepository;
 import tn.esprit.spring.repositories.NoteRepository;
 import tn.esprit.spring.repositories.UtilisateurRepository;
 import tn.esprit.spring.repositories.MatiereRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +29,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import com.opencsv.CSVReader;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.OutputStream;
 @Service
 public class NoteServicesImpl implements INoteServices {
 
@@ -29,9 +38,12 @@ public class NoteServicesImpl implements INoteServices {
 
     @Autowired
     private UtilisateurRepository utilisateurRepository;
+    @Autowired
+    private  ClasseRepository classeRepository;
 
     @Autowired
     private MatiereRepository matiereRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(NoteServicesImpl.class);
 
 
@@ -179,4 +191,50 @@ public class NoteServicesImpl implements INoteServices {
     }
 
 
+    public ClasseDTO1 getClassByUserId(Long userId) {
+        Utilisateur user = utilisateurRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+        Classe classe = user.getClasse();
+        return ConversionUtil.convertToClasseDTO(classe);
+    }
+    public void generateNotesPdf(Long userId, OutputStream outputStream) {
+        Optional<Utilisateur> utilisateurOpt = utilisateurRepository.findById(userId);
+        if (utilisateurOpt.isEmpty()) {
+            throw new IllegalArgumentException("User not found with id: " + userId);
+        }
+
+        Utilisateur utilisateur = utilisateurOpt.get();
+        List<Note> notes = noteRepository.findByUtilisateurId(userId);
+        Document document = new Document();
+
+        try {
+            PdfWriter.getInstance(document, outputStream);
+            document.open();
+
+            document.add(new Paragraph("Relevé de Notes"));
+            document.add(new Paragraph("Nom et Prénom: " + utilisateur.getNom() + " " + utilisateur.getPrenom()));
+            if (utilisateur.getClasse() != null) {
+                document.add(new Paragraph("Classe: " + utilisateur.getClasse().getNomClasse()));
+            }
+
+            PdfPTable table = new PdfPTable(4);
+            table.addCell("Matiere");
+            table.addCell("Note TP");
+            table.addCell("Note CC");
+            table.addCell("Note Examen");
+
+            for (Note note : notes) {
+                table.addCell(note.getMatiere().getNomMatiere());
+                table.addCell(note.getNoteTp() != null ? note.getNoteTp().toString() : "-");
+                table.addCell(note.getNoteCc() != null ? note.getNoteCc().toString() : "-");
+                table.addCell(note.getNoteExamen() != null ? note.getNoteExamen().toString() : "-");
+            }
+
+            document.add(table);
+        } catch (DocumentException e) {
+            throw new RuntimeException("Error generating PDF", e);
+        } finally {
+            document.close();
+        }
+    }
 }
