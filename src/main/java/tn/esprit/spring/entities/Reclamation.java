@@ -1,6 +1,7 @@
 package tn.esprit.spring.entities;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,8 +13,12 @@ import java.time.LocalDate;
 @Table(name = "reclamation")
 public class Reclamation {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idReclamation", nullable = false)
-    private Integer id;
+    private Long id;
+
+    @Column(name = "subject")
+    private String subject;
 
     @Column(name = "description")
     private String description;
@@ -27,5 +32,4 @@ public class Reclamation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;
-
 }

@@ -42,34 +42,6 @@ public class AuthController {
         return ResponseEntity.ok(service.authenticate(loginRequest.getEmail(), loginRequest.getPassword()));
     }
 
-
-//    @PostMapping("/signup")
-//    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
-//        try {
-//            if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-//                return ResponseEntity
-//                        .badRequest()
-//                        .body(new MessageResponse("Email déjà utilisé!"));
-//            }
-//
-//            // Create new user's account
-//            Utilisateur user = new Utilisateur(signUpRequest.getEmail(),encoder.encode(signUpRequest.getPassword()));
-//            // Always assign either user role / employe
-//
-//            if (signUpRequest.getRole().equals("TEACHER")) {
-//                user.setRole(ERole.ROLE_TEACHER);
-//            } else if (signUpRequest.getRole().equals("STUDENT")){
-//                user.setRole(ERole.ROLE_STUDENT);
-//            }
-//
-//            userRepository.save(user);
-//
-//            return ResponseEntity.ok(service.authenticate(signUpRequest.getEmail(), signUpRequest.getPassword()));
-//        } catch (Exception ex) {
-//            return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
     @PostMapping("/refresh-token")
     public ResponseEntity<String> refreshAccessToken(@RequestBody RefreshRequestDTO request) {
         ;

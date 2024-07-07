@@ -16,6 +16,7 @@ import tn.esprit.spring.entities.ERole;
 import tn.esprit.spring.entities.Utilisateur;
 import tn.esprit.spring.repositories.ClasseRepository;
 import tn.esprit.spring.services.ClasseServicesImpl;
+import tn.esprit.spring.services.EmailService;
 import tn.esprit.spring.services.UserService;
 
 import java.time.LocalDate;
@@ -46,15 +47,15 @@ public class UserController {
 
     @Autowired
     UserService userService;
-   
-
-
 
     @Autowired
     UtilisateurRepository userRepository;
 
     @Autowired
     ClasseRepository classeRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private ClasseServicesImpl classeService;
@@ -75,6 +76,7 @@ public class UserController {
             user.setNom(signUpRequest.getNom());
             user.setPrenom(signUpRequest.getPrenom());
             user.setEmail(signUpRequest.getEmail());
+            user.setPrivateemail(signUpRequest.getPrivateemail());
             if (signUpRequest.getClasse() != null && !signUpRequest.getClasse().isEmpty()) {
                 Long classeId = Long.valueOf(signUpRequest.getClasse());
                 Optional<Classe> classeOpt = classeRepository.findById(classeId);
@@ -96,7 +98,71 @@ public class UserController {
             user.setIdentifiant(generateIdentifiant(user.getId(),user.getRole()));
             user.setMotDePasse(encoder.encode(user.getIdentifiant()));
             userRepository.save(user);
+            try {
+                if(!user.getPrivateemail().isEmpty()){
+                    String subject = "Bienvenue dans Esprit";
+                    String content = String.format(
+                            "Bonjour %s %s,\n\n" +
+                                    "Bienvenue dans Esprit !\n\n" +
+                                    "Voici vos identifiants de compte :\n" +
+                                    "Email : %s\n\n" +
+                                    "Identifiant : %s\n\n" +
+                                    "Merci de vous être inscrit chez nous.\n\n" +
+                                    "Cordialement,\n" +
+                                    "L'équipe Esprit",
+                            user.getNom(), user.getPrenom(),user.getEmail(),user.getIdentifiant()
+                    );
+                    emailService.sendEmail(user.getPrivateemail(),subject,content);
+                }
 
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                return ResponseEntity.ok(user);
+            }
+            return ResponseEntity.ok(user);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable long id, @RequestBody SignupRequest signUpRequest) {
+        try {
+            // Récupérer l'utilisateur existant
+            Optional<Utilisateur> userOpt = userRepository.findById(id);
+            if (!userOpt.isPresent()) {
+                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            }
+
+            Utilisateur user = userOpt.get();
+
+            if (userRepository.existsByEmail(signUpRequest.getEmail()) && !signUpRequest.getEmail().equals(user.getEmail())) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new MessageResponse("Email déjà utilisé!"));
+            }
+
+            if(!signUpRequest.getCin().isEmpty())user.setCin(signUpRequest.getCin());
+            if(!signUpRequest.getNom().isEmpty())user.setNom(signUpRequest.getNom());
+            if(!signUpRequest.getPhoto().isEmpty())user.setPhoto(signUpRequest.getPhoto());
+            if(!signUpRequest.getPrenom().isEmpty())user.setPrenom(signUpRequest.getPrenom());
+            if(!signUpRequest.getEmail().isEmpty())user.setEmail(signUpRequest.getEmail());
+            if(!signUpRequest.getPrivateemail().isEmpty())user.setPrivateemail(signUpRequest.getPrivateemail());
+
+
+            if (signUpRequest.getClasse() != null && !signUpRequest.getClasse().isEmpty()) {
+                Long classeId = Long.valueOf(signUpRequest.getClasse());
+                Optional<Classe> classeOpt = classeRepository.findById(classeId);
+
+                if (classeOpt.isPresent()) {
+                    Classe classe = classeOpt.get();
+                    if (classe.getNomClasse() != null && !classe.getNomClasse().isEmpty()) {
+                        user.setClasse(classe);
+                    }
+                }
+            }
+
+            userRepository.save(user);
             return ResponseEntity.ok(user);
         } catch (Exception ex) {
             return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -112,6 +178,45 @@ public class UserController {
             return String.format("%dTMT%03d", year, userId);
         }
         return "0000";
+    }
+
+    @GetMapping("/profile")
+    //    /api/user/profile
+    public ResponseEntity<?> getMyProfile() {
+//        try {
+//            Utilisateur userInfoDto =
+//            return new ResponseEntity<>(userInfoDto, HttpStatus.OK);
+//        } catch (EntityNotFoundException ex) {
+//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+//        } catch (RuntimeException ex) {
+//            return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+        try {
+            Utilisateur etudiant = userService.getInfo();
+            Long classeId = etudiant.getClasse() != null ? etudiant.getClasse().getId() : null;
+            String classeName = etudiant.getClasse() != null ? etudiant.getClasse().getNomClasse() : null;
+            EtudiantDto etudiantDto = new EtudiantDto(
+                    etudiant.getId(),
+                    etudiant.getIdentifiant(),
+                    etudiant.getCin(),
+                    etudiant.getPhoto(),
+                    etudiant.getNom(),
+                    etudiant.getPrenom(),
+                    etudiant.getEmail(),
+                    etudiant.getPrivateemail(),
+                    etudiant.getGender(),
+                    etudiant.getDateofbirth(),
+                    etudiant.getStarteducation(),
+                    etudiant.isHidden(),
+                    etudiant.getRole(),
+                    classeId,classeName
+            );
+            return ResponseEntity.ok(etudiantDto);
+        } catch (EntityNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/all-enseignant")
@@ -164,10 +269,12 @@ public class UserController {
                     })
                     .collect(Collectors.toList());
             return ResponseEntity.ok(transformedEnseignants);
+
         } catch (RuntimeException ex) {
             return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
      @GetMapping("/enseignant/{id}")
     // /user/all-enseignant
     public ResponseEntity<?> getEnseignant(@PathVariable Long id) {
@@ -185,10 +292,26 @@ public class UserController {
     public ResponseEntity<?> getEtudiant(@PathVariable Long id) {
         try {
             Utilisateur etudiant = userService.getUserByRole(id, ERole.ROLE_STUDENT);
+
             Long classeId = etudiant.getClasse() != null ? etudiant.getClasse().getId() : null;
+            String classeName = etudiant.getClasse() != null ? etudiant.getClasse().getNomClasse() : null;
+
             EtudiantDto etudiantDto = new EtudiantDto(
-                    etudiant.getId(), etudiant.getIdentifiant(), etudiant.getCin(), etudiant.getNom(),
-                    etudiant.getPrenom(), etudiant.getEmail(), etudiant.isHidden(), etudiant.getRole(), classeId, etudiant.getClasse());
+                    etudiant.getId(),
+                    etudiant.getIdentifiant(),
+                    etudiant.getCin(),
+                    etudiant.getPhoto(),
+                    etudiant.getNom(),
+                    etudiant.getPrenom(),
+                    etudiant.getEmail(),
+                    etudiant.getPrivateemail(),
+                    etudiant.getGender(),
+                    etudiant.getDateofbirth(),
+                    etudiant.getStarteducation(),
+                    etudiant.isHidden(),
+                    etudiant.getRole(),
+                    classeId,classeName
+            );
             return ResponseEntity.ok(etudiantDto);
         } catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
@@ -196,6 +319,8 @@ public class UserController {
             return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
     @GetMapping("/{userId}/notes")
     public ResponseEntity<List<Note>> getNotesByUser(@PathVariable Long userId) {
         List<Note> notes = userService.getNotesByUser(userId);

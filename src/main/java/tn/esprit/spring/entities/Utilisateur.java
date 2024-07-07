@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+
 import lombok.*;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.HashSet;
@@ -24,11 +26,13 @@ public class Utilisateur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    Long id;
+    private Long id;
 
     private String identifiant;
 
     private String cin;
+
+    private String photo;
 
     private String nom;
 
@@ -36,31 +40,38 @@ public class Utilisateur {
 
     private String email;
 
+    private String privateemail;
+
+    private String gender;
+
+    private String dateofbirth;
+
+    private String starteducation;
+
     private String motDePasse;
 
     private boolean isHidden;
 
-    private ERole role ;
+    private ERole role;
 
     @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
     @JsonBackReference(value = "user-notes")
-    List<Note> notes;
+    private List<Note> notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classe_id")
     @JsonBackReference(value = "classe-users")
-    Classe classe;
-
-/*
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "utilisateur")
-    Set<Reglement> reglements;
-*/
+    private Classe classe;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idCompetence")
     @JsonBackReference(value = "competence-users")
-    Competence competence;
+    @JsonIgnore
+    private Competence competence;
+
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"utilisateur"})
+    private List<Presence> presences;
 
     public Utilisateur(String email, String motDePasse) {
         this.motDePasse = motDePasse;
@@ -68,6 +79,8 @@ public class Utilisateur {
     }
 
     @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties({"utilisateur"})
-    private List<Presence> presences;
+    @JsonIgnore
+    private List<Reclamation> reclamations;
+
 }
+

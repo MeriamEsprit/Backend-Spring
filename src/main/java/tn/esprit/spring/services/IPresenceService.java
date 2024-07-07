@@ -17,6 +17,7 @@ public interface IPresenceService {
     Presence getPresenceByIdAndDate(Long idPresence, LocalDate date);
 
     Presence addPresenceForEtudiant(Long studentId, Presence presenceDetails);
+    Presence updatePresenceForEtudiant(Long studentId, Presence presenceDetails);
     void deletePresence(Long id);
 
     List<Presence> getAllPresencesByUserId(Long id);
@@ -26,4 +27,6 @@ public interface IPresenceService {
     List<Presence> getPresencesByClasseId(Long classeId);
 
     List<Utilisateur> findStudentByClasse(Long classId);
+
+    boolean checkPresenceExists(Long studentId, LocalDate datePresence);
 }

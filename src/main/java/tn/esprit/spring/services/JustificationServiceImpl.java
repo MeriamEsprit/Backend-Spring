@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.spring.entities.Justification;
+import tn.esprit.spring.entities.Presence;
 import tn.esprit.spring.repositories.JustificationRepository;
 import tn.esprit.spring.repositories.PresenceRepository;
 
@@ -64,5 +65,32 @@ public class JustificationServiceImpl implements IJustificationServices {
     @Override
     public List<Justification> getAllJustification() {
         return justificationRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public Justification addJustificationByPresence(Justification justification, String date, Long idPresence) {
+        Presence presence = presenceRepository.findById(idPresence)
+                .orElseThrow(() -> new EntityNotFoundException("Presence not found with id " + idPresence));
+
+        presence.setJustification(justification);
+        justification.getPresences().add(presence);
+
+        return justificationRepository.save(justification);
+    }
+
+    @Override
+    public Justification validateJustification(Long id) {
+        Justification justification = getJustificationById(id);
+        justification.setStatus(1);  // Set status to validated
+        justification.setValidationDate(new Date()); // Set validation date
+        return updateJustification(justification);
+    }
+    @Override
+    public Justification declineJustification(Long id) {
+        Justification justification = getJustificationById(id);
+        justification.setStatus(0);  // Set status to declined
+        justification.setValidationDate(new Date()); // Set validation date
+        return updateJustification(justification);
     }
 }

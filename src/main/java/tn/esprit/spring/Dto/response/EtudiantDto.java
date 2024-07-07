@@ -13,11 +13,16 @@ public class EtudiantDto {
     private Long id;
     private String identifiant;
     private String cin;
+    private String photo;
     private String nom;
     private String prenom;
     private String email;
+    private String privateemail;
+    private String gender;
+    private String dateofbirth;
+    private String starteducation;
     private boolean isHidden;
     private ERole role;
     private Long classeId;
-    private Classe classe;
+    private String classeName;
 }
