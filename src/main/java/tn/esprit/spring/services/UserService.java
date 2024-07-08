@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import tn.esprit.spring.Dto.request.ChangePwdDto;
 import tn.esprit.spring.Dto.response.JwtResponse;
 import tn.esprit.spring.entities.*;
 import tn.esprit.spring.repositories.NoteRepository;
@@ -140,6 +141,18 @@ public class UserService implements IUserService {
     @Override
     public Utilisateur getUserByRole(long id , ERole role) {
         return userRepository.findUtilisateurByIdAndRole(id,role);
+    }
+
+    @Override
+    public Object changePassword(ChangePwdDto changePwd) {
+        Utilisateur user = getAuthenticatedUser();
+        if (passwordEncoder.matches(changePwd.getOldPwd(), user.getMotDePasse())) {
+            user.setMotDePasse(passwordEncoder.encode(changePwd.getNewPwd()));
+            userRepository.save(user);
+            return "Password changed successfully.";
+        } else {
+            return "Old password is incorrect.";
+        }
     }
 
 }
