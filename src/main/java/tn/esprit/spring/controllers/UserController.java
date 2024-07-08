@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.Dto.response.EtudiantDto;
 import tn.esprit.spring.Dto.request.SignupRequest;
 import tn.esprit.spring.Dto.response.MessageResponse;
-import tn.esprit.spring.entities.Classe;
-import tn.esprit.spring.entities.ERole;
-import tn.esprit.spring.entities.Utilisateur;
+import tn.esprit.spring.entities.*;
 import tn.esprit.spring.repositories.ClasseRepository;
+import tn.esprit.spring.repositories.CompetenceRepository;
 import tn.esprit.spring.services.ClasseServicesImpl;
 import tn.esprit.spring.services.EmailService;
 import tn.esprit.spring.services.UserService;
@@ -29,7 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.ERole;
-import tn.esprit.spring.entities.Note;
 import tn.esprit.spring.entities.Utilisateur;
 import tn.esprit.spring.repositories.UtilisateurRepository;
 import tn.esprit.spring.services.UserService;
@@ -60,6 +58,9 @@ public class UserController {
     @Autowired
     private ClasseServicesImpl classeService;
 
+    @Autowired
+    private CompetenceRepository competenceRepository;
+    @Autowired
     PasswordEncoder encoder;
     @PostMapping()
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
@@ -77,20 +78,34 @@ public class UserController {
             user.setPrenom(signUpRequest.getPrenom());
             user.setEmail(signUpRequest.getEmail());
             user.setPrivateemail(signUpRequest.getPrivateemail());
-            if (signUpRequest.getClasse() != null && !signUpRequest.getClasse().isEmpty()) {
-                Long classeId = Long.valueOf(signUpRequest.getClasse());
-                Optional<Classe> classeOpt = classeRepository.findById(classeId);
+            user.setGender(signUpRequest.getGender());
+            user.setDateofbirth(signUpRequest.getDateofbirth());
+            user.setStarteducation(signUpRequest.getStarteducation());
+            if (signUpRequest.getRole().equals("TEACHER")) {
+                if (signUpRequest.getCompetence() != null && !signUpRequest.getCompetence().isEmpty()) {
+                    Long competenceId = Long.valueOf(signUpRequest.getCompetence());
+                    Optional<Competence> competenceOpt = competenceRepository.findById(competenceId);
 
-                if (classeOpt.isPresent()) {
-                    Classe classe = classeOpt.get();
-                    if (classe.getNomClasse() != null && !classe.getNomClasse().isEmpty()) {
-                        user.setClasse(classe);
+                    if (competenceOpt.isPresent()) {
+                        Competence competence = competenceOpt.get();
+                        if (competence.getNomCompetence() != null && !competence.getNomCompetence().isEmpty()) {
+                            user.setCompetence(competence);
+                        }
                     }
                 }
-            }
-            if (signUpRequest.getRole().equals("TEACHER")) {
                 user.setRole(ERole.ROLE_TEACHER);
             } else if (signUpRequest.getRole().equals("STUDENT")){
+                if (signUpRequest.getClasse() != null && !signUpRequest.getClasse().isEmpty()) {
+                    Long classeId = Long.valueOf(signUpRequest.getClasse());
+                    Optional<Classe> classeOpt = classeRepository.findById(classeId);
+
+                    if (classeOpt.isPresent()) {
+                        Classe classe = classeOpt.get();
+                        if (classe.getNomClasse() != null && !classe.getNomClasse().isEmpty()) {
+                            user.setClasse(classe);
+                        }
+                    }
+                }
                 user.setRole(ERole.ROLE_STUDENT);
             }
             userRepository.save(user);
@@ -144,11 +159,13 @@ public class UserController {
 
             if(!signUpRequest.getCin().isEmpty())user.setCin(signUpRequest.getCin());
             if(!signUpRequest.getNom().isEmpty())user.setNom(signUpRequest.getNom());
-            if(!signUpRequest.getPhoto().isEmpty())user.setPhoto(signUpRequest.getPhoto());
+            if(!signUpRequest.getPhoto().isEmpty()) user.setPhoto(signUpRequest.getPhoto()); else user.setPhoto("");
             if(!signUpRequest.getPrenom().isEmpty())user.setPrenom(signUpRequest.getPrenom());
             if(!signUpRequest.getEmail().isEmpty())user.setEmail(signUpRequest.getEmail());
             if(!signUpRequest.getPrivateemail().isEmpty())user.setPrivateemail(signUpRequest.getPrivateemail());
-
+            if(!signUpRequest.getDateofbirth().isEmpty())user.setDateofbirth(signUpRequest.getDateofbirth());
+            if(!signUpRequest.getGender().isEmpty())user.setGender(signUpRequest.getGender());
+            if(!signUpRequest.getStarteducation().isEmpty())user.setStarteducation(signUpRequest.getStarteducation());
 
             if (signUpRequest.getClasse() != null && !signUpRequest.getClasse().isEmpty()) {
                 Long classeId = Long.valueOf(signUpRequest.getClasse());
@@ -158,6 +175,18 @@ public class UserController {
                     Classe classe = classeOpt.get();
                     if (classe.getNomClasse() != null && !classe.getNomClasse().isEmpty()) {
                         user.setClasse(classe);
+                    }
+                }
+            }
+
+            if (signUpRequest.getCompetence() != null && !signUpRequest.getCompetence().isEmpty()) {
+                Long competenceId = Long.valueOf(signUpRequest.getCompetence());
+                Optional<Competence> competenceOpt = competenceRepository.findById(competenceId);
+
+                if (competenceOpt.isPresent()) {
+                    Competence competence = competenceOpt.get();
+                    if (competence.getNomCompetence() != null && !competence.getNomCompetence().isEmpty()) {
+                        user.setCompetence(competence);
                     }
                 }
             }
@@ -193,6 +222,8 @@ public class UserController {
 //        }
         try {
             Utilisateur etudiant = userService.getInfo();
+            Long competenceId = etudiant.getCompetence() != null ? etudiant.getCompetence().getIdCompetence() : null;
+            String competenceName = etudiant.getCompetence() != null ? etudiant.getCompetence().getNomCompetence() : null;
             Long classeId = etudiant.getClasse() != null ? etudiant.getClasse().getId() : null;
             String classeName = etudiant.getClasse() != null ? etudiant.getClasse().getNomClasse() : null;
             EtudiantDto etudiantDto = new EtudiantDto(
@@ -209,7 +240,10 @@ public class UserController {
                     etudiant.getStarteducation(),
                     etudiant.isHidden(),
                     etudiant.getRole(),
-                    classeId,classeName
+                    classeId,
+                    classeName,
+                    competenceId,
+                    competenceName
             );
             return ResponseEntity.ok(etudiantDto);
         } catch (EntityNotFoundException ex) {
@@ -280,7 +314,26 @@ public class UserController {
     public ResponseEntity<?> getEnseignant(@PathVariable Long id) {
         try {
             Utilisateur enseignant = userService.getUserByRole(id, ERole.ROLE_TEACHER);
-            return ResponseEntity.ok(enseignant);
+            EtudiantDto etudiantDto = new EtudiantDto(
+                    enseignant.getId(),
+                    enseignant.getIdentifiant(),
+                    enseignant.getCin(),
+                    enseignant.getPhoto() != null ? enseignant.getPhoto() : "",
+                    enseignant.getNom(),
+                    enseignant.getPrenom(),
+                    enseignant.getEmail(),
+                    enseignant.getPrivateemail(),
+                    enseignant.getGender(),
+                    enseignant.getDateofbirth(),
+                    enseignant.getStarteducation(),
+                    enseignant.isHidden(),
+                    enseignant.getRole(),
+                    null,
+                    null,
+                    enseignant.getCompetence().getIdCompetence(),
+                    enseignant.getCompetence().getNomCompetence()
+            );
+            return ResponseEntity.ok(etudiantDto);
         } catch (EntityNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         } catch (RuntimeException ex) {
@@ -293,6 +346,9 @@ public class UserController {
         try {
             Utilisateur etudiant = userService.getUserByRole(id, ERole.ROLE_STUDENT);
 
+            Long competenceId = etudiant.getCompetence() != null ? etudiant.getCompetence().getIdCompetence() : null;
+            String competenceName = etudiant.getCompetence() != null ? etudiant.getCompetence().getNomCompetence() : null;
+
             Long classeId = etudiant.getClasse() != null ? etudiant.getClasse().getId() : null;
             String classeName = etudiant.getClasse() != null ? etudiant.getClasse().getNomClasse() : null;
 
@@ -300,7 +356,7 @@ public class UserController {
                     etudiant.getId(),
                     etudiant.getIdentifiant(),
                     etudiant.getCin(),
-                    etudiant.getPhoto(),
+                    etudiant.getPhoto() != null ? etudiant.getPhoto() : "",
                     etudiant.getNom(),
                     etudiant.getPrenom(),
                     etudiant.getEmail(),
@@ -310,7 +366,10 @@ public class UserController {
                     etudiant.getStarteducation(),
                     etudiant.isHidden(),
                     etudiant.getRole(),
-                    classeId,classeName
+                    classeId,
+                    classeName,
+                    null,
+                    null
             );
             return ResponseEntity.ok(etudiantDto);
         } catch (EntityNotFoundException ex) {

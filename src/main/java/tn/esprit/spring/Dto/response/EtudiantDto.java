@@ -25,4 +25,6 @@ public class EtudiantDto {
     private ERole role;
     private Long classeId;
     private String classeName;
+    private Long competenceId;
+    private String competenceName;
 }
