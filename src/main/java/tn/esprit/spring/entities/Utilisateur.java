@@ -50,6 +50,8 @@ public class Utilisateur {
 
     private String motDePasse;
 
+    private String forgotpassword;
+
     private boolean isHidden;
 
     private ERole role;

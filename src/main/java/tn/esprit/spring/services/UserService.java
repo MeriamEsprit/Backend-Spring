@@ -69,6 +69,19 @@ public class UserService implements IUserService {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean resetPassword(String code, String newPassword) {
+        Optional<Utilisateur> userOptional = userRepository.findByForgotpassword(code);
+        if (userOptional.isPresent()) {
+            Utilisateur user = userOptional.get();
+            user.setMotDePasse(passwordEncoder.encode(newPassword));
+            user.setForgotpassword(null);  // Optionally clear the code after use
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public Utilisateur getAuthenticatedUser() {
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -154,5 +167,36 @@ public class UserService implements IUserService {
             return "Old password is incorrect.";
         }
     }
+
+    public JwtResponse authenticateWithEmail(String email) {
+        try {
+            // Retrieve the user by username
+            Optional<Utilisateur> optionalUser = userRepository.findByPrivateemail(email);
+
+            // Check if the user exists
+            if (!optionalUser.isPresent()) {
+                throw new RuntimeException("Email not found");
+            }
+
+            // Retrieve the user
+            Utilisateur user = optionalUser.get();
+
+            // Verify the password using the password encoder
+
+            Tokens tokens = generateTokens(user);
+            JwtResponse jwtResponse = new JwtResponse().builder()
+                    .id(user.getId())
+                    .type("Bearer")
+                    .token(tokens.accessToken())
+                    .refreshToken(tokens.refreshToken())
+                    .email(user.getEmail())
+                    .build();
+            return jwtResponse;
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 
 }
