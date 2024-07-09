@@ -16,6 +16,10 @@ import java.util.Set;
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> {
     Optional<Utilisateur> findByEmail(String email);
 
+    Optional<Utilisateur> findByPrivateemail(String email);
+
+    Optional<Utilisateur> findByForgotpassword(String forgotpassword);
+
     List<Utilisateur> findAllByRole(ERole role);
 
     Utilisateur findUtilisateurByIdAndRole(Long id , ERole role);

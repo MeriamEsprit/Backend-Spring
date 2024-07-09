@@ -25,9 +25,21 @@ public class LoadDatabase {
     PasswordEncoder encoder;
     @Autowired
     ModuleRepository moduleRepository;
+    @Autowired
+    CompetenceRepository competenceRepository;
     @Bean
     CommandLineRunner initDatabase(UtilisateurRepository userRepository, ClasseRepository classeRepository, SalleRepository salleRepository, SeanceclasseRepository seanceclasseRepository, MatiereRepository matiereRepository, BadWordRepository badWordRepository){
         return args -> {
+
+            if(!userRepository.existsByEmail("admin@esprit.tn")){
+                Utilisateur admin = new Utilisateur();
+                admin.setEmail("admin@esprit.tn");
+                admin.setRole(ERole.ROLE_ADMIN);
+                admin.setMotDePasse(encoder.encode("0000"));
+                userRepository.save(admin);
+                System.out.println(admin.getEmail());
+            }
+
             List<String> classes = new ArrayList<>();
             classes.add("1CINFO1");
             classes.add("1CINFO2");
@@ -76,32 +88,100 @@ public class LoadDatabase {
                     }
                 }
             }
+            List<String> competences = new ArrayList<>();
+            competences.add("France");
+            competences.add("English");
+            competences.add("Mathématiques");
+            competences.add("Réseaux");
+            competences.add("Java");
+            competences.add("Architecture");
 
-            for (int i = 0; i < 100; i++) {
-                if (!userRepository.existsByEmail(i+"teacher@esprit.tn")) {
-                    Utilisateur student = new Utilisateur();
-                    student.setEmail(i+"teacher@esprit.tn");
-                    student.setCin("0"+(9868476+index+i));
-                    student.setNom("teacher");
-                    student.setGender(this.generateRandomGender());
-                    student.setDateofbirth(this.generateRandomDateOfBirth());
-                    student.setPrenom("T"+index);
-                    student.setRole(ERole.ROLE_TEACHER);
-                    student.setMotDePasse(encoder.encode("0000"));
-                    userRepository.save(student);
-                    System.out.println(student.getEmail());
-                    index += 1;
+            for (String comp : competences) {
+                if(!competenceRepository.existsByNomCompetence(comp)){
+                    Competence competence = new Competence();
+                    competence.setNomCompetence(comp);
+                    competenceRepository.save(competence);
+                    for (int i = 0; i < 20; i++) {
+                        if (!userRepository.existsByEmail(index+"teacher@esprit.tn")) {
+                            Utilisateur student = new Utilisateur();
+                            student.setEmail(index+"teacher@esprit.tn");
+                            student.setCin("0"+(9868476+index+i));
+                            student.setNom("teacher");
+                            student.setCompetence(competence);
+                            student.setGender(this.generateRandomGender());
+                            student.setDateofbirth(this.generateRandomDateOfBirth());
+                            student.setPrenom("T"+index);
+                            student.setRole(ERole.ROLE_TEACHER);
+                            student.setMotDePasse(encoder.encode("0000"));
+                            userRepository.save(student);
+                            System.out.println(student.getEmail());
+                            index += 1;
+                        }
+                    }
                 }
             }
 
-            if(!userRepository.existsByEmail("admin@esprit.tn")){
-                Utilisateur admin = new Utilisateur();
-                admin.setEmail("admin@esprit.tn");
-                admin.setRole(ERole.ROLE_ADMIN);
-                admin.setMotDePasse(encoder.encode("0000"));
-                userRepository.save(admin);
-                System.out.println(admin.getEmail());
-            }
+
+
+
+//            List<String> salles = new ArrayList<>();
+//            salles.add("Salle A");
+//            salles.add("Salle B");
+//            salles.add("Salle C");
+//            salles.add("Salle D");
+//            salles.add("Salle F");
+//            salles.add("Salle G");
+//            salles.add("Salle H");
+//            salles.add("Salle I");
+//            salles.add("Salle G");
+//            for (String s : salles) {
+//                if(salleRepository.findByNom_salle(s)==null){
+//                    Salle salleA = new Salle();
+//                    salleA.setNom_salle(s);
+//                    salleA.setCapacite(30);
+//                    salleRepository.save(salleA);
+//                }
+//
+//            }
+
+              // Adding Matieres
+//            List<String> matieres = new ArrayList<>();
+//            Module module = new Module();
+//            module.setNom("Informatique");
+//            module.setDescription("Informatique Esprit");
+//            moduleRepository.save(module);
+//            matieres.add("Devops");
+//            matieres.add("Angular");
+//            matieres.add("Spring");
+//            for (String m : matieres) {
+//                Matiere matiere = new Matiere();
+//                matiere.setModule(module);
+//                matiere.setNomMatiere(m);
+//                matiere.setNbreHeures(40);
+//                matiere.setCoefficientTP(0.2);
+//                matiere.setCoefficientCC(0.3);
+//                matiere.setCoefficientExamen(0.5);
+//                matiereRepository.save(matiere);
+//            }
+
+              // Adding SeanceClasse
+//            List<SeanceClasse> seanceClasses = new ArrayList<>();
+//            for (Classe classe : classeRepository.findAll()) {
+//                for (Matiere matiere : matiereRepository.findAll()) {
+//                    for (Salle salle : salleRepository.findAll()) {
+//                        for (Utilisateur enseignant : userRepository.findAllByRole(ERole.ROLE_TEACHER)) {
+//                            SeanceClasse seanceClasse = new SeanceClasse();
+//                            seanceClasse.setHeureDebut(Instant.now());
+//                            seanceClasse.setHeureFin(Instant.now().plusSeconds(3600));
+//                            seanceClasse.setClasse(classe);
+//                            seanceClasse.setMatiere(matiere);
+//                            seanceClasse.setSalle(salle);
+//                            seanceClasse.setEnseignant(enseignant);
+//                            seanceclasseRepository.save(seanceClasse);
+//                        }
+//                    }
+//                }
+//            }
 
             List<String> badWords = Arrays.asList(
                     "badword1",
@@ -641,71 +721,11 @@ public class LoadDatabase {
                     "🖕"
             );
 
-//            for (String word : badWords) {
-//                BadWord badWord = new BadWord();
-//                badWord.setWord(word);
-//                badWordRepository.save(badWord);
-//            }
-
-
-
-//            Salle salleA = new Salle();
-//            salleA.setNom_salle("Salle A");
-//            salleA.setCapacite(30);
-//            salleRepository.save(salleA);
-//
-//            Salle salleB = new Salle();
-//            salleB.setNom_salle("Salle B");
-//            salleB.setCapacite(25);
-//            salleRepository.save(salleB);
-//
-//            Salle salleC = new Salle();
-//            salleC.setNom_salle("Salle C");
-//            salleC.setCapacite(20);
-//            salleRepository.save(salleC);
-//
-//            // Adding Matieres
-//            List<String> matieres = new ArrayList<>();
-//            Module module = new Module();
-//            module.setNom("Informatique");
-//            module.setDescription("Informatique Esprit");
-//            moduleRepository.save(module);
-//            matieres.add("Devops");
-//            matieres.add("Angular");
-//            matieres.add("Spring");
-//            for (String m : matieres) {
-//                Matiere matiere = new Matiere();
-//                matiere.setModule(module);
-//                matiere.setNomMatiere(m);
-//                matiere.setNbreHeures(40);
-//                matiere.setCoefficientTP(0.2);
-//                matiere.setCoefficientCC(0.3);
-//                matiere.setCoefficientExamen(0.5);
-//                matiereRepository.save(matiere);
-//            }
-//
-//            // Adding SeanceClasse
-//            List<SeanceClasse> seanceClasses = new ArrayList<>();
-//            for (Classe classe : classeRepository.findAll()) {
-//                for (Matiere matiere : matiereRepository.findAll()) {
-//                    for (Salle salle : salleRepository.findAll()) {
-//                        for (Utilisateur enseignant : userRepository.findAllByRole(ERole.ROLE_TEACHER)) {
-//                            SeanceClasse seanceClasse = new SeanceClasse();
-//                            seanceClasse.setHeureDebut(Instant.now());
-//                            seanceClasse.setHeureFin(Instant.now().plusSeconds(3600));
-//                            seanceClasse.setClasse(classe);
-//                            seanceClasse.setMatiere(matiere);
-//                            seanceClasse.setSalle(salle);
-//                            seanceClasse.setEnseignant(enseignant);
-//                            seanceclasseRepository.save(seanceClasse);
-//                        }
-//                    }
-//                }
-//            }
-
-
-
-
+            for (String word : badWords) {
+                BadWord badWord = new BadWord();
+                badWord.setWord(word);
+                badWordRepository.save(badWord);
+            }
         };
     }
 

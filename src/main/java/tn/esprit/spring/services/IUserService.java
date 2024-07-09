@@ -4,6 +4,7 @@ package tn.esprit.spring.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import tn.esprit.spring.Dto.request.ChangePwdDto;
 import tn.esprit.spring.Dto.response.JwtResponse;
 import tn.esprit.spring.entities.*;
 
@@ -22,4 +23,5 @@ public interface IUserService {
     String refreshAccessToken(String refreshToken);
     List<Note> getNotesByUser(Long userId);
     List<Utilisateur> getUtilisateursByRoleAndClasse(ERole role, Classe classe);
+    Object changePassword(ChangePwdDto changePwd);
 }
