@@ -1,14 +1,21 @@
 package tn.esprit.spring.services;
 
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import tn.esprit.spring.Dto.request.ChangePwdDto;
+import tn.esprit.spring.Dto.response.EtudiantDto;
 import tn.esprit.spring.Dto.response.JwtResponse;
 import tn.esprit.spring.entities.*;
 import tn.esprit.spring.repositories.NoteRepository;
@@ -19,6 +26,7 @@ import tn.esprit.spring.security.services.UserDetailsServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -197,6 +205,45 @@ public class UserService implements IUserService {
         }
 
     }
+    @Autowired
+    private EntityManager entityManager;
 
+    public List<EtudiantDto> searchUsers(ERole role, String search, String classeIdStr) {
+        if ((search == null || search.isEmpty()) && (classeIdStr == null || classeIdStr.isEmpty())) {
+            return userRepository.findAllByRole(role).stream().map(EtudiantDto::convertToDto).collect(Collectors.toList());
+        }
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Utilisateur> query = cb.createQuery(Utilisateur.class);
+        Root<Utilisateur> utilisateur = query.from(Utilisateur.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(utilisateur.get("role"), role));
+
+        if (search != null && !search.isEmpty()) {
+            String searchPattern = "%" + search.toLowerCase() + "%";
+
+            Predicate identifiantPredicate = cb.like(cb.lower(utilisateur.get("identifiant")), searchPattern);
+            Predicate cinPredicate = cb.like(cb.lower(utilisateur.get("cin")), searchPattern);
+            Predicate nomPredicate = cb.like(cb.lower(utilisateur.get("nom")), searchPattern);
+            Predicate prenomPredicate = cb.like(cb.lower(utilisateur.get("prenom")), searchPattern);
+            Predicate emailPredicate = cb.like(cb.lower(utilisateur.get("email")), searchPattern);
+
+            predicates.add(cb.or(identifiantPredicate, cinPredicate, nomPredicate, prenomPredicate, emailPredicate));
+        }
+
+        if (classeIdStr != null && !classeIdStr.isEmpty()) {
+            try {
+                Long classeId = Long.parseLong(classeIdStr);
+                predicates.add(cb.equal(utilisateur.get("classe").get("id"), classeId));
+            } catch (NumberFormatException e) {
+                // Handle the exception if needed or log it
+            }
+        }
+
+        query.where(predicates.toArray(new Predicate[0]));
+        List<Utilisateur> resultList = entityManager.createQuery(query).getResultList();
+        return resultList.stream().map(EtudiantDto::convertToDto).collect(Collectors.toList());
+    }
 
 }
