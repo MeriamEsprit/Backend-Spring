@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.spring.Dto.request.ChangePwdDto;
 import tn.esprit.spring.Dto.response.EtudiantDto;
 import tn.esprit.spring.Dto.request.SignupRequest;
 import tn.esprit.spring.Dto.response.MessageResponse;
@@ -387,14 +386,22 @@ public class UserController {
         return ResponseEntity.ok(notes);
     }
 
-    @PutMapping("/update/pwd")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePwdDto changePwd)
-    {
-        try {
+    @GetMapping("/search-etudiants")
+    public ResponseEntity<?> searchEtudiants(
+            @RequestParam String search,
+            @RequestParam String classeId
+    ) {
 
-            return new ResponseEntity<>(userService.changePassword(changePwd), HttpStatus.ACCEPTED);
-        }  catch (RuntimeException ex) {
-            return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<EtudiantDto> etudiants = userService.searchUsers(ERole.ROLE_STUDENT, search, classeId);
+        return ResponseEntity.ok(etudiants);
+    }
+    @GetMapping("/search-enseignants")
+    public ResponseEntity<?> searchEnseignants(
+            @RequestParam String search,
+            @RequestParam String classeId
+    ) {
+
+        List<EtudiantDto> etudiants = userService.searchUsers(ERole.ROLE_TEACHER, search, classeId);
+        return ResponseEntity.ok(etudiants);
     }
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import tn.esprit.spring.entities.Classe;
 import tn.esprit.spring.entities.ERole;
+import tn.esprit.spring.entities.Utilisateur;
 
 @Getter
 @Setter
@@ -27,4 +28,26 @@ public class EtudiantDto {
     private String classeName;
     private Long competenceId;
     private String competenceName;
+
+    public static EtudiantDto convertToDto(Utilisateur utilisateur) {
+        return new EtudiantDto(
+                utilisateur.getId(),
+                utilisateur.getIdentifiant(),
+                utilisateur.getCin(),
+                utilisateur.getPhoto(),
+                utilisateur.getNom(),
+                utilisateur.getPrenom(),
+                utilisateur.getEmail(),
+                utilisateur.getPrivateemail(),
+                utilisateur.getGender(),
+                utilisateur.getDateofbirth(),
+                utilisateur.getStarteducation(),
+                utilisateur.isHidden(),
+                utilisateur.getRole(),
+                utilisateur.getClasse() != null ? utilisateur.getClasse().getId() : null,
+                utilisateur.getClasse() != null ? utilisateur.getClasse().getNomClasse() : null,
+                utilisateur.getCompetence() != null ? utilisateur.getCompetence().getIdCompetence() : null,
+                utilisateur.getCompetence() != null ? utilisateur.getCompetence().getNomCompetence() : null
+        );
+    }
 }
