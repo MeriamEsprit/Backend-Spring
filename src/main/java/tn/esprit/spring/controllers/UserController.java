@@ -385,4 +385,23 @@ public class UserController {
         List<Note> notes = userService.getNotesByUser(userId);
         return ResponseEntity.ok(notes);
     }
+
+    @GetMapping("/search-etudiants")
+    public ResponseEntity<?> searchEtudiants(
+            @RequestParam String search,
+            @RequestParam String classeId
+    ) {
+
+        List<EtudiantDto> etudiants = userService.searchUsers(ERole.ROLE_STUDENT, search, classeId);
+        return ResponseEntity.ok(etudiants);
+    }
+    @GetMapping("/search-enseignants")
+    public ResponseEntity<?> searchEnseignants(
+            @RequestParam String search,
+            @RequestParam String classeId
+    ) {
+
+        List<EtudiantDto> etudiants = userService.searchUsers(ERole.ROLE_TEACHER, search, classeId);
+        return ResponseEntity.ok(etudiants);
+    }
 }

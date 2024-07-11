@@ -1,13 +1,21 @@
 package tn.esprit.spring.services;
 
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import tn.esprit.spring.Dto.request.ChangePwdDto;
+import tn.esprit.spring.Dto.response.EtudiantDto;
 import tn.esprit.spring.Dto.response.JwtResponse;
 import tn.esprit.spring.entities.*;
 import tn.esprit.spring.repositories.NoteRepository;
@@ -18,6 +26,7 @@ import tn.esprit.spring.security.services.UserDetailsServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -68,6 +77,19 @@ public class UserService implements IUserService {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean resetPassword(String code, String newPassword) {
+        Optional<Utilisateur> userOptional = userRepository.findByForgotpassword(code);
+        if (userOptional.isPresent()) {
+            Utilisateur user = userOptional.get();
+            user.setMotDePasse(passwordEncoder.encode(newPassword));
+            user.setForgotpassword(null);  // Optionally clear the code after use
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public Utilisateur getAuthenticatedUser() {
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -140,6 +162,88 @@ public class UserService implements IUserService {
     @Override
     public Utilisateur getUserByRole(long id , ERole role) {
         return userRepository.findUtilisateurByIdAndRole(id,role);
+    }
+
+    @Override
+    public Object changePassword(ChangePwdDto changePwd) {
+        Utilisateur user = getAuthenticatedUser();
+        if (passwordEncoder.matches(changePwd.getOldPwd(), user.getMotDePasse())) {
+            user.setMotDePasse(passwordEncoder.encode(changePwd.getNewPwd()));
+            userRepository.save(user);
+            return "Password changed successfully.";
+        } else {
+            return "Old password is incorrect.";
+        }
+    }
+
+    public JwtResponse authenticateWithEmail(String email) {
+        try {
+            // Retrieve the user by username
+            Optional<Utilisateur> optionalUser = userRepository.findByPrivateemail(email);
+
+            // Check if the user exists
+            if (!optionalUser.isPresent()) {
+                throw new RuntimeException("Email not found");
+            }
+
+            // Retrieve the user
+            Utilisateur user = optionalUser.get();
+
+            // Verify the password using the password encoder
+
+            Tokens tokens = generateTokens(user);
+            JwtResponse jwtResponse = new JwtResponse().builder()
+                    .id(user.getId())
+                    .type("Bearer")
+                    .token(tokens.accessToken())
+                    .refreshToken(tokens.refreshToken())
+                    .email(user.getEmail())
+                    .build();
+            return jwtResponse;
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    @Autowired
+    private EntityManager entityManager;
+
+    public List<EtudiantDto> searchUsers(ERole role, String search, String classeIdStr) {
+        if ((search == null || search.isEmpty()) && (classeIdStr == null || classeIdStr.isEmpty())) {
+            return userRepository.findAllByRole(role).stream().map(EtudiantDto::convertToDto).collect(Collectors.toList());
+        }
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Utilisateur> query = cb.createQuery(Utilisateur.class);
+        Root<Utilisateur> utilisateur = query.from(Utilisateur.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(utilisateur.get("role"), role));
+
+        if (search != null && !search.isEmpty()) {
+            String searchPattern = "%" + search.toLowerCase() + "%";
+
+            Predicate identifiantPredicate = cb.like(cb.lower(utilisateur.get("identifiant")), searchPattern);
+            Predicate cinPredicate = cb.like(cb.lower(utilisateur.get("cin")), searchPattern);
+            Predicate nomPredicate = cb.like(cb.lower(utilisateur.get("nom")), searchPattern);
+            Predicate prenomPredicate = cb.like(cb.lower(utilisateur.get("prenom")), searchPattern);
+            Predicate emailPredicate = cb.like(cb.lower(utilisateur.get("email")), searchPattern);
+
+            predicates.add(cb.or(identifiantPredicate, cinPredicate, nomPredicate, prenomPredicate, emailPredicate));
+        }
+
+        if (classeIdStr != null && !classeIdStr.isEmpty()) {
+            try {
+                Long classeId = Long.parseLong(classeIdStr);
+                predicates.add(cb.equal(utilisateur.get("classe").get("id"), classeId));
+            } catch (NumberFormatException e) {
+                // Handle the exception if needed or log it
+            }
+        }
+
+        query.where(predicates.toArray(new Predicate[0]));
+        List<Utilisateur> resultList = entityManager.createQuery(query).getResultList();
+        return resultList.stream().map(EtudiantDto::convertToDto).collect(Collectors.toList());
     }
 
 }
