@@ -14,7 +14,7 @@ import java.io.IOException;
 @Service
 public class OpenAIService {
 
-    @Value("${openai.api.key}")
+   /* @Value("${openai.api.key}")
     private String apiKey;
 
     @Value("${openai.organization.id}")
@@ -42,5 +42,5 @@ public class OpenAIService {
                 return EntityUtils.toString(response.getEntity());
             }
         }
-    }
+    }*/
 }

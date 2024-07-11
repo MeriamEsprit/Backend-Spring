@@ -3,6 +3,7 @@ package tn.esprit.spring.services;
 import com.opencsv.CSVParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.spring.Dto.ClasseDTO1;
 import tn.esprit.spring.Dto.ConversionUtil;
 import tn.esprit.spring.Dto.NoteDTO;
@@ -23,9 +24,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import com.opencsv.CSVReader;
 import org.springframework.web.multipart.MultipartFile;
@@ -99,6 +98,9 @@ public class NoteServicesImpl implements INoteServices {
             }
             if (noteDTO.getNoteExamen() != null) {
                 note.setNoteExamen(noteDTO.getNoteExamen());
+            }
+            if (noteDTO.getNotePrincipale() != null) {
+                note.setNotePrincipale(noteDTO.getNotePrincipale());
             }
 
             Note updatedNote = noteRepository.save(note);
@@ -237,4 +239,51 @@ public class NoteServicesImpl implements INoteServices {
             document.close();
         }
     }
+
+    public void calculateAndSaveAveragesForUser(Long userId) {
+        List<Note> notes = noteRepository.findByUtilisateurId(userId);
+
+        for (Note note : notes) {
+            double tp = note.getNoteTp() != null ? note.getNoteTp() : 0;
+            double cc = note.getNoteCc() != null ? note.getNoteCc() : 0;
+            double examen = note.getNoteExamen() != null ? note.getNoteExamen() : 0;
+            double average = (tp + cc + examen) / 3;
+            note.setNotePrincipale(average);
+        }
+
+        noteRepository.saveAll(notes);
+    }
+    public Double calculateOverallAverage(Long studentId) {
+        List<Note> notes = noteRepository.findByUtilisateurId(studentId);
+        Map<Long, List<Note>> notesByMatiere = notes.stream()
+                .collect(Collectors.groupingBy(note -> note.getMatiere().getId()));
+
+        double totalSum = 0.0;
+        double totalCoefficient = 0.0;
+
+        for (Map.Entry<Long, List<Note>> entry : notesByMatiere.entrySet()) {
+            List<Note> matiereNotes = entry.getValue();
+            boolean allHaveNoteExamen = matiereNotes.stream().allMatch(note -> note.getNoteExamen() != null);
+            if (allHaveNoteExamen) {
+                double average = matiereNotes.stream()
+                        .mapToDouble(note -> note.getNoteTp() * note.getMatiere().getCoefficientTP() +
+                                note.getNoteCc() * note.getMatiere().getCoefficientCC() +
+                                note.getNoteExamen() * note.getMatiere().getCoefficientExamen())
+                        .average()
+                        .orElse(0.0);
+
+                double coefficient = matiereNotes.get(0).getMatiere().getCoefficient();
+
+                totalSum += average * coefficient;
+                totalCoefficient += coefficient;
+            }
+        }
+
+        if (totalCoefficient == 0) {
+            return null; // Or any other indication that the overall average cannot be calculated
+        }
+
+        return totalSum / totalCoefficient;
+    }
+
 }

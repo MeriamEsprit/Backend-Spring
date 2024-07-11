@@ -16,6 +16,7 @@ import tn.esprit.spring.services.NoteServicesImpl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -102,5 +103,16 @@ public class NoteController {
             logger.error("Error generating PDF for user {}: {}", userId, e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/api/notes/calculate-averages/{userId}")
+    public void calculateAndSaveAverages(@PathVariable Long userId) {
+        noteService.calculateAndSaveAveragesForUser(userId);
+    }
+
+    @GetMapping("/overall-average/{studentId}")
+    public ResponseEntity<Double> getOverallAverage(@PathVariable Long studentId) {
+        Double overallAverage = noteService.calculateOverallAverage(studentId);
+        return ResponseEntity.ok(overallAverage);
     }
 }

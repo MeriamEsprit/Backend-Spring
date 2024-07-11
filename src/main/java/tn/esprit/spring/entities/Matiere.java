@@ -33,6 +33,8 @@ public class Matiere {
     @Column(name = "nbreHeures")
     Integer nbreHeures;
 
+    Integer coefficient;
+
     @Column(name = "coefficientTP")
     Double coefficientTP;
 
@@ -41,6 +43,9 @@ public class Matiere {
 
     @Column(name = "coefficientExamen")
     Double coefficientExamen;
+
+    @Enumerated(EnumType.STRING)
+    TypeMatiere type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "module_id")

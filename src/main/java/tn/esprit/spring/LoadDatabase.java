@@ -1,5 +1,7 @@
 package tn.esprit.spring;
+import java.util.*;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -8,14 +10,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import tn.esprit.spring.entities.*;
 import tn.esprit.spring.entities.Module;
 import tn.esprit.spring.repositories.*;
+import tn.esprit.spring.utils.ModuleService;
 
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Configuration
@@ -23,87 +21,26 @@ public class LoadDatabase {
 
     @Autowired
     PasswordEncoder encoder;
+
     @Autowired
     ModuleRepository moduleRepository;
+
+    @Autowired
+    MatiereRepository matiereRepository;
+
+    @Autowired
+    ClasseRepository classeRepository;
+
+    @Autowired
+    ModuleService moduleService;
+
     @Bean
     CommandLineRunner initDatabase(UtilisateurRepository userRepository, ClasseRepository classeRepository, SalleRepository salleRepository, SeanceclasseRepository seanceclasseRepository, MatiereRepository matiereRepository, BadWordRepository badWordRepository){
         return args -> {
-            List<String> classes = new ArrayList<>();
-            classes.add("1CINFO1");
-            classes.add("1CINFO2");
-            classes.add("1CINFO3");
-            classes.add("1CINFO4");
-            classes.add("2CINFO1");
-            classes.add("2CINFO2");
-            classes.add("2CINFO3");
-            classes.add("2CINFO4");
-            classes.add("3CINFO1");
-            classes.add("3CINFO2");
-            classes.add("3CINFO3");
-            classes.add("3CINFO4");
-            classes.add("4CINFO1");
-            classes.add("4CINFO2");
-            classes.add("4CINFO3");
-            classes.add("4CINFO4");
+            initializeClasses(userRepository, classeRepository);
+            moduleService.initializeModulesAndMatieres();
 
-            int index = 0;
-
-            for (String c : classes) {
-                index += 1;
-                if (!classeRepository.existsBynomClasse(c)) {
-
-                    Classe classe = new Classe();
-                    classe.setNomClasse(c);
-                    classeRepository.save(classe);
-                    for (int i = 0; i < 40; i++) {
-                        if (!userRepository.existsByEmail(i+"student" + c + "@esprit.tn")) {
-                            Utilisateur student = new Utilisateur();
-                            student.setEmail(i+"student" + c + "@esprit.tn");
-                            student.setCin("0"+(9868476+index+i));
-                            student.setIdentifiant("224SMT00"+(index+i));
-                            student.setNom("student");
-                            student.setPrenom("S"+index);
-                            student.setGender(this.generateRandomGender());
-                            student.setDateofbirth(this.generateRandomDateOfBirth());
-                            student.setStarteducation(this.generateRandomYear());
-                            student.setRole(ERole.ROLE_STUDENT);
-                            student.setClasse(classe);
-                            student.setMotDePasse(encoder.encode("0000"));
-                            userRepository.save(student);
-                            System.out.println(student.getEmail());
-                            index += 1;
-                        }
-                    }
-                }
-            }
-
-            for (int i = 0; i < 100; i++) {
-                if (!userRepository.existsByEmail(i+"teacher@esprit.tn")) {
-                    Utilisateur student = new Utilisateur();
-                    student.setEmail(i+"teacher@esprit.tn");
-                    student.setCin("0"+(9868476+index+i));
-                    student.setNom("teacher");
-                    student.setGender(this.generateRandomGender());
-                    student.setDateofbirth(this.generateRandomDateOfBirth());
-                    student.setPrenom("T"+index);
-                    student.setRole(ERole.ROLE_TEACHER);
-                    student.setMotDePasse(encoder.encode("0000"));
-                    userRepository.save(student);
-                    System.out.println(student.getEmail());
-                    index += 1;
-                }
-            }
-
-            if(!userRepository.existsByEmail("admin@esprit.tn")){
-                Utilisateur admin = new Utilisateur();
-                admin.setEmail("admin@esprit.tn");
-                admin.setRole(ERole.ROLE_ADMIN);
-                admin.setMotDePasse(encoder.encode("0000"));
-                userRepository.save(admin);
-                System.out.println(admin.getEmail());
-            }
-
-            List<String> badWords = Arrays.asList(
+    List<String> badWords = Arrays.asList(
                     "badword1",
                     "badword2",
                     "badword3",
@@ -703,11 +640,73 @@ public class LoadDatabase {
 //                }
 //            }
 
-
-
-
         };
+
     }
+
+    private void initializeClasses(UtilisateurRepository userRepository, ClasseRepository classeRepository) {
+        List<String> classes = Arrays.asList(
+                "1CINFO1", "1CINFO2", "1CINFO3", "1CINFO4",
+                "2CINFO1", "2CINFO2", "2CINFO3", "2CINFO4",
+                "3CINFO1", "3CINFO2", "3CINFO3", "3CINFO4",
+                "4CINFO1", "4CINFO2", "4CINFO3", "4CINFO4"
+        );
+
+        int index = 0;
+
+        for (String c : classes) {
+            index += 1;
+            if (!classeRepository.existsBynomClasse(c)) {
+                Classe classe = new Classe();
+                classe.setNomClasse(c);
+                classeRepository.save(classe);
+
+                for (int i = 0; i < 40; i++) {
+                    if (!userRepository.existsByEmail(i + "student" + c + "@esprit.tn")) {
+                        Utilisateur student = new Utilisateur();
+                        student.setEmail(i + "student" + c + "@esprit.tn");
+                        student.setCin("0" + (9868476 + index + i));
+                        student.setIdentifiant("224SMT00" + (index + i));
+                        student.setNom("student");
+                        student.setPrenom("S" + index);
+                        student.setGender(generateRandomGender());
+                        student.setDateofbirth(generateRandomDateOfBirth());
+                        student.setStarteducation(generateRandomYear());
+                        student.setRole(ERole.ROLE_STUDENT);
+                        student.setClasse(classe);
+                        student.setMotDePasse(encoder.encode("0000"));
+                        userRepository.save(student);
+                        index += 1;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < 100; i++) {
+            if (!userRepository.existsByEmail(i + "teacher@esprit.tn")) {
+                Utilisateur teacher = new Utilisateur();
+                teacher.setEmail(i + "teacher@esprit.tn");
+                teacher.setCin("0" + (9868476 + index + i));
+                teacher.setNom("teacher");
+                teacher.setGender(generateRandomGender());
+                teacher.setDateofbirth(generateRandomDateOfBirth());
+                teacher.setPrenom("T" + index);
+                teacher.setRole(ERole.ROLE_TEACHER);
+                teacher.setMotDePasse(encoder.encode("0000"));
+                userRepository.save(teacher);
+                index += 1;
+            }
+        }
+
+        if (!userRepository.existsByEmail("admin@esprit.tn")) {
+            Utilisateur admin = new Utilisateur();
+            admin.setEmail("admin@esprit.tn");
+            admin.setRole(ERole.ROLE_ADMIN);
+            admin.setMotDePasse(encoder.encode("0000"));
+            userRepository.save(admin);
+        }
+    }
+
 
     private String generateRandomDateOfBirth() {
         long minDay = LocalDate.of(1997, 1, 1).toEpochDay();

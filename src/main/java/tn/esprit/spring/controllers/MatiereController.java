@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.Dto.MatiereDTO;
-import tn.esprit.spring.entities.Matiere;
 import tn.esprit.spring.services.MatiereServicesImp;
 
 import java.util.List;
@@ -15,6 +14,7 @@ import java.util.List;
 @RequestMapping("/api/matieres")
 public class MatiereController {
     private MatiereServicesImp matiereService;
+
     @PostMapping
     public ResponseEntity<MatiereDTO> createMatiere(@RequestBody MatiereDTO matiereDTO) {
         try {
@@ -59,6 +59,7 @@ public class MatiereController {
         boolean isUnique = matiereService.isNomMatiereUnique(nomMatiere);
         return new ResponseEntity<>(isUnique, HttpStatus.OK);
     }
+
     @GetMapping("/check-nom-unique-except-current")
     public ResponseEntity<Boolean> isNomMatiereUniqueExceptCurrent(@RequestParam String nomMatiere, @RequestParam Long id) {
         boolean isUnique = matiereService.isNomMatiereUniqueExceptCurrent(nomMatiere, id);

@@ -11,7 +11,7 @@ import java.util.Map;
 @RequestMapping("/api")
 public class OpenAIController {
 
-    @Autowired
+   /* @Autowired
     private OpenAIService openAIService;
 
     @PostMapping("/correct-text")
@@ -23,5 +23,5 @@ public class OpenAIController {
             e.printStackTrace();
             return "Error: " + e.getMessage();
         }
-    }
+    }*/
 }
