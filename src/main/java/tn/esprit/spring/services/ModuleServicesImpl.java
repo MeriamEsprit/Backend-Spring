@@ -5,10 +5,11 @@ import org.springframework.stereotype.Service;
 import tn.esprit.spring.Dto.ConversionUtil;
 import tn.esprit.spring.Dto.ModuleDTO;
 import tn.esprit.spring.entities.Module;
+import tn.esprit.spring.entities.Note;
 import tn.esprit.spring.repositories.ModuleRepository;
+import tn.esprit.spring.repositories.NoteRepository;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,6 +17,8 @@ public class ModuleServicesImpl implements IModuleServices {
 
     @Autowired
     private ModuleRepository moduleRepository;
+    @Autowired
+    private NoteRepository noteRepository;
 
     @Override
     public ModuleDTO saveModule(ModuleDTO moduleDTO) {
@@ -67,4 +70,22 @@ public class ModuleServicesImpl implements IModuleServices {
             throw new IllegalArgumentException("Module with name " + nom + " already exists");
         }
     }
+    public long count() {
+        return moduleRepository.count();
+    }
+
+    public boolean isModuleNameUnique(String nom) {
+        return !moduleRepository.existsByNom(nom);
+    }
+
+    public boolean isModuleNameUniqueExceptCurrent(String nom, Long id) {
+        Optional<Module> existingModule = moduleRepository.findById(id);
+        if (existingModule.isPresent() && existingModule.get().getNom().equals(nom)) {
+            return true;
+        }
+        return !moduleRepository.existsByNom(nom);
+    }
+
+
+
 }

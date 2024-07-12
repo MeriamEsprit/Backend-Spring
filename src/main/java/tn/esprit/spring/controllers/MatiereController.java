@@ -5,16 +5,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.Dto.MatiereDTO;
-import tn.esprit.spring.entities.Matiere;
 import tn.esprit.spring.services.MatiereServicesImp;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/matieres")
 public class MatiereController {
     private MatiereServicesImp matiereService;
+
     @PostMapping
     public ResponseEntity<MatiereDTO> createMatiere(@RequestBody MatiereDTO matiereDTO) {
         try {
@@ -53,4 +54,41 @@ public class MatiereController {
     public List<MatiereDTO> getAllMatieres() {
         return matiereService.getAllMatieres();
     }
+
+    @GetMapping("/check-nom-unique")
+    public ResponseEntity<Boolean> isNomMatiereUnique(@RequestParam String nomMatiere) {
+        boolean isUnique = matiereService.isNomMatiereUnique(nomMatiere);
+        return new ResponseEntity<>(isUnique, HttpStatus.OK);
+    }
+
+    @GetMapping("/check-nom-unique-except-current")
+    public ResponseEntity<Boolean> isNomMatiereUniqueExceptCurrent(@RequestParam String nomMatiere, @RequestParam Long id) {
+        boolean isUnique = matiereService.isNomMatiereUniqueExceptCurrent(nomMatiere, id);
+        return new ResponseEntity<>(isUnique, HttpStatus.OK);
+    }
+
+    @GetMapping("/count-below-ten")
+    public ResponseEntity<Integer> countMatieresBelowTenForUser(@RequestParam Long userId) {
+        int count = matiereService.countMatieresBelowTenForUser(userId);
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
+    @GetMapping("/getMatieresBelowTenStats")
+    public ResponseEntity<Map<String, Long>> getMatieresBelowTenStatsForUser(@RequestParam Long userId) {
+        Map<String, Long> stats = matiereService.getMatieresBelowTenStatsForUser(userId);
+        return ResponseEntity.ok(stats);
+    }
+    @GetMapping("/total")
+    public ResponseEntity<Long> getTotalMatieres() {
+        long total = matiereService.count();
+        return ResponseEntity.ok(total);
+    }
+
+
+    @GetMapping("/grade-distribution")
+    public ResponseEntity<Map<String, Double>> getGradeDistribution() {
+        Map<String, Double> distribution = matiereService.calculateGradeDistribution();
+        return ResponseEntity.ok(distribution);
+    }
+
 }

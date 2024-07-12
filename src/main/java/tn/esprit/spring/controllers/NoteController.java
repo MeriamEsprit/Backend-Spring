@@ -1,15 +1,23 @@
 package tn.esprit.spring.controllers;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
+import org.springframework.web.multipart.MultipartFile;
+import tn.esprit.spring.Dto.ClasseDTO1;
 import tn.esprit.spring.Dto.NoteDTO;
+import tn.esprit.spring.Dto.emploiDuTemps.ClasseDTO;
+import tn.esprit.spring.entities.Classe;
+import tn.esprit.spring.entities.Module;
 import tn.esprit.spring.services.NoteServicesImpl;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -32,7 +40,6 @@ public class NoteController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNote(@PathVariable Long id, @RequestParam Long userId) {
@@ -63,4 +70,79 @@ public class NoteController {
         List<NoteDTO> updatedNotes = noteService.updateNotes(noteDTOs, userId);
         return ResponseEntity.ok(updatedNotes);
     }
+    @PutMapping("/upload/{classeId}")
+    public ResponseEntity<String> uploadNotes(@RequestParam("file") MultipartFile file, @PathVariable Long classeId) {
+        try {
+            noteService.saveNotesFromCSV(file, classeId);
+            return new ResponseEntity<>("Notes uploaded successfully.", HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error uploading notes for class {}: {}", classeId, e.getMessage(), e);
+            return new ResponseEntity<>("Failed to upload notes: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/user/{userId}/class")
+    public ResponseEntity<ClasseDTO1> getClassByUserId(@PathVariable Long userId) {
+        try {
+            ClasseDTO1 classe = noteService.getClassByUserId(userId);
+            return new ResponseEntity<>(classe, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            logger.error("Error fetching class for user {}: {}", userId, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            logger.error("Unexpected error fetching class for user {}: {}", userId, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/download/{userId}")
+    public void downloadNotes(@PathVariable Long userId, HttpServletResponse response) {
+        try {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=\"notes.pdf\"");
+            noteService.generateNotesPdf(userId, response.getOutputStream());
+        } catch (IOException e) {
+            logger.error("Error generating PDF for user {}: {}", userId, e.getMessage());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/api/notes/calculate-averages/{userId}")
+    public void calculateAndSaveAverages(@PathVariable Long userId) {
+        noteService.calculateAndSaveAveragesForUser(userId);
+    }
+
+    @GetMapping("/overall-average/{studentId}")
+    public ResponseEntity<Double> getOverallAverage(@PathVariable Long studentId) {
+        Double overallAverage = noteService.calculateOverallAverage(studentId);
+        return ResponseEntity.ok(overallAverage);
+    }
+
+    @GetMapping("/class/{classeId}/module-average")
+    public ResponseEntity<Double> getModuleAverage(@PathVariable Long classeId) {
+        try {
+            Double moduleAverage = noteService.calculateModuleAverage(classeId);
+            return ResponseEntity.ok(moduleAverage);
+        } catch (Exception e) {
+            logger.error("Error calculating module average for class {}: {}", classeId, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/class/{classeId}/modules")
+    public ResponseEntity<List<Module>> getModulesByClasse(@PathVariable Long classeId) {
+        try {
+            List<Module> modules = noteService.getModulesByClasse(classeId);
+            return ResponseEntity.ok(modules);
+        } catch (Exception e) {
+            logger.error("Error fetching modules for class {}: {}", classeId, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<Long> getTotalNotes() {
+        long total = noteService.count();
+        return ResponseEntity.ok(total);
+    }
+
+
 }

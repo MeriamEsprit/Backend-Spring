@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -29,7 +31,7 @@ public class Module {
 
     String description;
 
-    @OneToMany(mappedBy = "module",cascade = CascadeType.ALL)
-    @JsonBackReference
-    List<Matiere> matieres;
+    @OneToMany(mappedBy = "module",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonManagedReference("module-matieres")
+    List<Matiere> matieres = new ArrayList<>();
 }

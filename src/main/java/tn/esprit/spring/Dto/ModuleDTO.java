@@ -8,4 +8,5 @@ public class ModuleDTO {
     private Long id;
     private String nom;
     private String description;
+    private List<MatiereDTO> matieres;
 }
