@@ -24,10 +24,10 @@ public class JwtUtils {
     @Value("${secret.app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${secret.app.jwtExpirationMs}")
+    @Value("${secret.app.jwtExpirationMs}0")
     private int jwtExpirationMs;
 
-    private static final long REFRESH_TOKEN_EXPIRY = 7 * 24 * 60 * 1000;
+    private static final long REFRESH_TOKEN_EXPIRY = 30 * 24 * 60 * 1000;
 
     public String generateJwtToken(Authentication authentication) {
 

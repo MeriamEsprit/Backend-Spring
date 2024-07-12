@@ -59,6 +59,11 @@ public class UserService implements IUserService {
             // Retrieve the user
             Utilisateur user = optionalUser.get();
 
+            // Check if the user isHidden
+            if (user.isHidden()) {
+                throw new RuntimeException("User is hidden");
+            }
+
             // Verify the password using the password encoder
             if (!passwordEncoder.matches(password, user.getMotDePasse())) {
                 throw new RuntimeException("Invalid credentials");

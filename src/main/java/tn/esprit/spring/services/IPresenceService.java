@@ -29,4 +29,16 @@ public interface IPresenceService {
     List<Utilisateur> findStudentByClasse(Long classId);
 
     boolean checkPresenceExists(Long studentId, LocalDate datePresence);
+
+    Long getCountByEtatPresenceTrue();
+
+    Long getCountByEtatPresenceFalse();
+
+    Long getCountByEtatPresenceTrueAndClasseId(Long classeId);
+
+    Long getCountByEtatPresenceFalseAndClasseId(Long classeId);
+
+    Long getCountByEtatPresenceTrueAndMatiereId(Long matiereId);
+
+    Long getCountByEtatPresenceFalseAndMatiereId(Long matiereId);
 }

@@ -12,6 +12,7 @@ import tn.esprit.spring.repositories.*;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +28,8 @@ public class LoadDatabase {
     ModuleRepository moduleRepository;
     @Autowired
     CompetenceRepository competenceRepository;
+    @Autowired
+    PresenceRepository presenceRepository;
     @Bean
     CommandLineRunner initDatabase(UtilisateurRepository userRepository, ClasseRepository classeRepository, SalleRepository salleRepository, SeanceclasseRepository seanceclasseRepository, MatiereRepository matiereRepository, BadWordRepository badWordRepository){
         return args -> {
@@ -38,6 +41,26 @@ public class LoadDatabase {
                 admin.setMotDePasse(encoder.encode("0000"));
                 userRepository.save(admin);
                 System.out.println(admin.getEmail());
+            }
+
+            // Adding Matieres
+            List<String> matieres = new ArrayList<>();
+            Module module = new Module();
+            module.setNom("Informatique");
+            module.setDescription("Informatique Esprit");
+            moduleRepository.save(module);
+            matieres.add("Devops");
+            matieres.add("Angular");
+            matieres.add("Spring");
+            for (String m : matieres) {
+                Matiere matiere = new Matiere();
+                matiere.setModule(module);
+                matiere.setNomMatiere(m);
+                matiere.setNbreHeures(40);
+                matiere.setCoefficientTP(0.2);
+                matiere.setCoefficientCC(0.3);
+                matiere.setCoefficientExamen(0.5);
+                matiereRepository.save(matiere);
             }
 
             List<String> classes = new ArrayList<>();
@@ -84,6 +107,20 @@ public class LoadDatabase {
                             userRepository.save(student);
                             System.out.println(student.getEmail());
                             index += 1;
+                            Presence presence = new Presence();
+                            for (int ii = 0; ii < 10; ii++) {
+                                // Initialisation correcte de la date et de l'heure
+                                presence.setDatePresence(LocalDate.now());
+                                presence.setUtilisateur(student);
+                                presence.setEtatPresence(this.generateRandomPresence());
+                                presence.setHeureDebut(LocalTime.now());
+                                presence.setHeureFin(LocalTime.now());
+                                // Vérifier si l'entité Matiere existe avant de la récupérer
+                                matiereRepository.findById(1L).ifPresent(presence::setMatiere);
+                                // Sauvegarder la présence si nécessaire (en supposant que vous avez un dépôt pour cela)
+                                presenceRepository.save(presence);
+                            }
+
                         }
                     }
                 }
@@ -144,25 +181,6 @@ public class LoadDatabase {
 //
 //            }
 
-            // Adding Matieres
-//            List<String> matieres = new ArrayList<>();
-//            Module module = new Module();
-//            module.setNom("Informatique");
-//            module.setDescription("Informatique Esprit");
-//            moduleRepository.save(module);
-//            matieres.add("Devops");
-//            matieres.add("Angular");
-//            matieres.add("Spring");
-//            for (String m : matieres) {
-//                Matiere matiere = new Matiere();
-//                matiere.setModule(module);
-//                matiere.setNomMatiere(m);
-//                matiere.setNbreHeures(40);
-//                matiere.setCoefficientTP(0.2);
-//                matiere.setCoefficientCC(0.3);
-//                matiere.setCoefficientExamen(0.5);
-//                matiereRepository.save(matiere);
-//            }
 
             // Adding SeanceClasse
 //            List<SeanceClasse> seanceClasses = new ArrayList<>();
@@ -717,8 +735,7 @@ public class LoadDatabase {
                     "yaoi",
                     "yellow showers",
                     "yiffy",
-                    "zoophilia",
-                    "🖕"
+                    "zoophilia"
             );
 
             for (String word : badWords) {
@@ -738,6 +755,11 @@ public class LoadDatabase {
 
     private String generateRandomGender() {
         String[] genders = {"Male", "Female"};
+        int randomIndex = ThreadLocalRandom.current().nextInt(genders.length);
+        return genders[randomIndex];
+    }
+    private Boolean generateRandomPresence() {
+        Boolean[] genders = {true,false};
         int randomIndex = ThreadLocalRandom.current().nextInt(genders.length);
         return genders[randomIndex];
     }

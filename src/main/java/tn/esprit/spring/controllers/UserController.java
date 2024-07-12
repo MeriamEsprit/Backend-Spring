@@ -168,6 +168,10 @@ public class UserController {
             if (!signUpRequest.getDateofbirth().isEmpty()) user.setDateofbirth(signUpRequest.getDateofbirth());
             if (!signUpRequest.getGender().isEmpty()) user.setGender(signUpRequest.getGender());
             if (!signUpRequest.getStarteducation().isEmpty()) user.setStarteducation(signUpRequest.getStarteducation());
+            if(!signUpRequest.getHidden().isEmpty())user.setHidden(Boolean.parseBoolean(signUpRequest.getHidden()));
+            if(user.isHidden()==false){
+                user.setDisabled(false);
+            }
 
             if (signUpRequest.getClasse() != null && !signUpRequest.getClasse().isEmpty()) {
                 Long classeId = Long.valueOf(signUpRequest.getClasse());

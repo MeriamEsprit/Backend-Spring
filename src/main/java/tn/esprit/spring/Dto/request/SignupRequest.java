@@ -18,5 +18,5 @@ public class SignupRequest {
     private String classe;
     private String competence;
     private String role;
-
+    private String hidden;
 }

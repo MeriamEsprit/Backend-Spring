@@ -142,5 +142,35 @@ public class PresenceServiceImpl implements IPresenceService{
         Optional<Presence> presence = presenceRepository.findByUtilisateurIdAndDatePresence(studentId, datePresence);
         return presence.isPresent();
     }
+
+    @Override
+    public Long getCountByEtatPresenceTrue() {
+        return presenceRepository.countByEtatPresenceTrue();
+    }
+
+    @Override
+    public Long getCountByEtatPresenceFalse() {
+        return presenceRepository.countByEtatPresenceFalse();
+    }
+
+    @Override
+    public Long getCountByEtatPresenceTrueAndClasseId(Long classeId) {
+        return presenceRepository.countByEtatPresenceTrueAndClasseId(classeId);
+    }
+
+    @Override
+    public Long getCountByEtatPresenceFalseAndClasseId(Long classeId) {
+        return presenceRepository.countByEtatPresenceFalseAndClasseId(classeId);
+    }
+
+    @Override
+    public Long getCountByEtatPresenceTrueAndMatiereId(Long matiereId) {
+        return presenceRepository.countByEtatPresenceTrueAndMatiereId(matiereId);
+    }
+
+    @Override
+    public Long getCountByEtatPresenceFalseAndMatiereId(Long matiereId) {
+        return presenceRepository.countByEtatPresenceFalseAndMatiereId(matiereId);
+    }
 }
 

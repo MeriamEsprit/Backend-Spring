@@ -25,6 +25,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -236,4 +237,42 @@ public class PresenceController {
         return hours;
     }
 
+    @GetMapping("/count-by-classe")
+    public ResponseEntity<Map<String, Long>> getCountByEtatPresenceAndClasse(@RequestParam Long classeId) {
+        Long countTrue = 0L;
+        Long countFalse = 0L;
+        if(classeId == 0){
+            countTrue = presenceService.getCountByEtatPresenceTrue();
+            countFalse = presenceService.getCountByEtatPresenceFalse();
+        }else{
+            countTrue = presenceService.getCountByEtatPresenceTrueAndClasseId(classeId);
+            countFalse = presenceService.getCountByEtatPresenceFalseAndClasseId(classeId);
+        }
+
+
+        Map<String, Long> response = new HashMap<>();
+        response.put("countTrue", countTrue);
+        response.put("countFalse", countFalse);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/count-by-matiere")
+    public ResponseEntity<Map<String, Long>> getCountByEtatPresenceAndMatiere(@RequestParam Long matiereId) {
+        Long countTrue = 0L;
+        Long countFalse = 0L;
+        if(matiereId == 0){
+            countTrue = presenceService.getCountByEtatPresenceTrue();
+            countFalse = presenceService.getCountByEtatPresenceFalse();
+        }else {
+            countTrue = presenceService.getCountByEtatPresenceTrueAndMatiereId(matiereId);
+            countFalse = presenceService.getCountByEtatPresenceFalseAndMatiereId(matiereId);
+        }
+
+        Map<String, Long> response = new HashMap<>();
+        response.put("countTrue", countTrue);
+        response.put("countFalse", countFalse);
+
+        return ResponseEntity.ok(response);
+    }
 }

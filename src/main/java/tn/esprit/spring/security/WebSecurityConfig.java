@@ -82,8 +82,8 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/database/**").permitAll()
-                .requestMatchers("/api/**").permitAll()
+//                .requestMatchers("/database/**").permitAll()
+//                .requestMatchers("/api/**").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/justifications/files/**").authenticated()
