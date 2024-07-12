@@ -70,17 +70,16 @@ public class NoteController {
         List<NoteDTO> updatedNotes = noteService.updateNotes(noteDTOs, userId);
         return ResponseEntity.ok(updatedNotes);
     }
-    @PostMapping("/upload/{classeId}")
+    @PutMapping("/upload/{classeId}")
     public ResponseEntity<String> uploadNotes(@RequestParam("file") MultipartFile file, @PathVariable Long classeId) {
         try {
             noteService.saveNotesFromCSV(file, classeId);
             return new ResponseEntity<>("Notes uploaded successfully.", HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error uploading notes: {}", e.getMessage());
-            return new ResponseEntity<>("Failed to upload notes.", HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("Error uploading notes for class {}: {}", classeId, e.getMessage(), e);
+            return new ResponseEntity<>("Failed to upload notes: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     @GetMapping("/user/{userId}/class")
     public ResponseEntity<ClasseDTO1> getClassByUserId(@PathVariable Long userId) {
         try {
@@ -138,4 +137,12 @@ public class NoteController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/total")
+    public ResponseEntity<Long> getTotalNotes() {
+        long total = noteService.count();
+        return ResponseEntity.ok(total);
+    }
+
+
 }

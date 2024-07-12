@@ -8,6 +8,7 @@ import tn.esprit.spring.Dto.MatiereDTO;
 import tn.esprit.spring.services.MatiereServicesImp;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -65,4 +66,29 @@ public class MatiereController {
         boolean isUnique = matiereService.isNomMatiereUniqueExceptCurrent(nomMatiere, id);
         return new ResponseEntity<>(isUnique, HttpStatus.OK);
     }
+
+    @GetMapping("/count-below-ten")
+    public ResponseEntity<Integer> countMatieresBelowTenForUser(@RequestParam Long userId) {
+        int count = matiereService.countMatieresBelowTenForUser(userId);
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
+    @GetMapping("/getMatieresBelowTenStats")
+    public ResponseEntity<Map<String, Long>> getMatieresBelowTenStatsForUser(@RequestParam Long userId) {
+        Map<String, Long> stats = matiereService.getMatieresBelowTenStatsForUser(userId);
+        return ResponseEntity.ok(stats);
+    }
+    @GetMapping("/total")
+    public ResponseEntity<Long> getTotalMatieres() {
+        long total = matiereService.count();
+        return ResponseEntity.ok(total);
+    }
+
+
+    @GetMapping("/grade-distribution")
+    public ResponseEntity<Map<String, Double>> getGradeDistribution() {
+        Map<String, Double> distribution = matiereService.calculateGradeDistribution();
+        return ResponseEntity.ok(distribution);
+    }
+
 }

@@ -25,6 +25,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import com.opencsv.CSVReader;
@@ -39,7 +40,7 @@ public class NoteServicesImpl implements INoteServices {
     @Autowired
     private UtilisateurRepository utilisateurRepository;
     @Autowired
-    private  ClasseRepository classeRepository;
+    private ClasseRepository classeRepository;
 
     @Autowired
     private MatiereRepository matiereRepository;
@@ -146,6 +147,7 @@ public class NoteServicesImpl implements INoteServices {
                 .map(ConversionUtil::convertToNoteDTO)
                 .collect(Collectors.toList());
     }
+
     public void saveNotesFromCSV(MultipartFile file, Long classeId) throws Exception {
         try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
             List<String[]> records = reader.readAll();
@@ -200,6 +202,7 @@ public class NoteServicesImpl implements INoteServices {
         Classe classe = user.getClasse();
         return ConversionUtil.convertToClasseDTO(classe);
     }
+
     public void generateNotesPdf(Long userId, OutputStream outputStream) {
         Optional<Utilisateur> utilisateurOpt = utilisateurRepository.findById(userId);
         if (utilisateurOpt.isEmpty()) {
@@ -254,6 +257,7 @@ public class NoteServicesImpl implements INoteServices {
 
         noteRepository.saveAll(notes);
     }
+
     public Double calculateOverallAverage(Long studentId) {
         List<Note> notes = noteRepository.findByUtilisateurId(studentId);
         Map<Long, List<Note>> notesByMatiere = notes.stream()
@@ -325,6 +329,7 @@ public class NoteServicesImpl implements INoteServices {
 
         return totalSum / totalCoefficient;
     }
+
     @Transactional
     public List<Module> getModulesByClasse(Long classeId) {
         Optional<Classe> classeOpt = classeRepository.findById(classeId);
@@ -345,5 +350,8 @@ public class NoteServicesImpl implements INoteServices {
         return new ArrayList<>(modules);
     }
 
+    public long count() {
+        return noteRepository.count();
+    }
 
 }

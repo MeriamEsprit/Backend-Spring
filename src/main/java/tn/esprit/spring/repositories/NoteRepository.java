@@ -14,5 +14,6 @@ public interface NoteRepository extends JpaRepository<Note,Long> {
     @Query("SELECT n FROM Note n WHERE n.utilisateur.id = :userId")
     List<Note> findByUtilisateurId(@Param("userId") Long userId);
     Optional<Note> findByUtilisateurIdAndMatiereId(Long utilisateurId, Long matiereId);
+    List<Note> findByMatiereId(Long matiereId);
 
 }
