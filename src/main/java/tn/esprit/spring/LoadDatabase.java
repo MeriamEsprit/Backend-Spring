@@ -144,7 +144,7 @@ public class LoadDatabase {
 //
 //            }
 
-              // Adding Matieres
+            // Adding Matieres
 //            List<String> matieres = new ArrayList<>();
 //            Module module = new Module();
 //            module.setNom("Informatique");
@@ -164,7 +164,7 @@ public class LoadDatabase {
 //                matiereRepository.save(matiere);
 //            }
 
-              // Adding SeanceClasse
+            // Adding SeanceClasse
 //            List<SeanceClasse> seanceClasses = new ArrayList<>();
 //            for (Classe classe : classeRepository.findAll()) {
 //                for (Matiere matiere : matiereRepository.findAll()) {

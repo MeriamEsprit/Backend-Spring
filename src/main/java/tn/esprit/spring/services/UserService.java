@@ -165,6 +165,10 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public List<Utilisateur> getDisabledUtilisateurs() {
+        return userRepository.findByIsDisabledTrue();
+    }
+
     public Object changePassword(ChangePwdDto changePwd) {
         Utilisateur user = getAuthenticatedUser();
         if (passwordEncoder.matches(changePwd.getOldPwd(), user.getMotDePasse())) {

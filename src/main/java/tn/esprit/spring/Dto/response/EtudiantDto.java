@@ -28,8 +28,6 @@ public class EtudiantDto {
     private String classeName;
     private Long competenceId;
     private String competenceName;
-<<<<<<< HEAD
-=======
 
     public static EtudiantDto convertToDto(Utilisateur utilisateur) {
         return new EtudiantDto(
@@ -52,5 +50,4 @@ public class EtudiantDto {
                 utilisateur.getCompetence() != null ? utilisateur.getCompetence().getNomCompetence() : null
         );
     }
->>>>>>> 0263fbc95d836694b770c83a9bd3175a22f122c4
 }

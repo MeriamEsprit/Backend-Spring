@@ -55,6 +55,7 @@ public class Utilisateur {
     private boolean isHidden;
 
     private ERole role;
+    private boolean isDisabled;
 
     @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
     @JsonBackReference(value = "user-notes")

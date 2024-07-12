@@ -62,6 +62,7 @@ public class UserController {
     private CompetenceRepository competenceRepository;
     @Autowired
     PasswordEncoder encoder;
+
     @PostMapping()
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
         try {
@@ -94,7 +95,7 @@ public class UserController {
                     }
                 }
                 user.setRole(ERole.ROLE_TEACHER);
-            } else if (signUpRequest.getRole().equals("STUDENT")){
+            } else if (signUpRequest.getRole().equals("STUDENT")) {
                 if (signUpRequest.getClasse() != null && !signUpRequest.getClasse().isEmpty()) {
                     Long classeId = Long.valueOf(signUpRequest.getClasse());
                     Optional<Classe> classeOpt = classeRepository.findById(classeId);
@@ -110,11 +111,11 @@ public class UserController {
             }
             userRepository.save(user);
 
-            user.setIdentifiant(generateIdentifiant(user.getId(),user.getRole()));
+            user.setIdentifiant(generateIdentifiant(user.getId(), user.getRole()));
             user.setMotDePasse(encoder.encode(user.getIdentifiant()));
             userRepository.save(user);
             try {
-                if(!user.getPrivateemail().isEmpty()){
+                if (!user.getPrivateemail().isEmpty()) {
                     String subject = "Bienvenue dans Esprit";
                     String content = String.format(
                             "Bonjour %s %s,\n\n" +
@@ -125,12 +126,12 @@ public class UserController {
                                     "Merci de vous être inscrit chez nous.\n\n" +
                                     "Cordialement,\n" +
                                     "L'équipe Esprit",
-                            user.getNom(), user.getPrenom(),user.getEmail(),user.getIdentifiant()
+                            user.getNom(), user.getPrenom(), user.getEmail(), user.getIdentifiant()
                     );
-                    emailService.sendEmail(user.getPrivateemail(),subject,content);
+                    emailService.sendEmail(user.getPrivateemail(), subject, content);
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 return ResponseEntity.ok(user);
             }
@@ -157,15 +158,16 @@ public class UserController {
                         .body(new MessageResponse("Email déjà utilisé!"));
             }
 
-            if(!signUpRequest.getCin().isEmpty())user.setCin(signUpRequest.getCin());
-            if(!signUpRequest.getNom().isEmpty())user.setNom(signUpRequest.getNom());
-            if(!signUpRequest.getPhoto().isEmpty()) user.setPhoto(signUpRequest.getPhoto()); else user.setPhoto("");
-            if(!signUpRequest.getPrenom().isEmpty())user.setPrenom(signUpRequest.getPrenom());
-            if(!signUpRequest.getEmail().isEmpty())user.setEmail(signUpRequest.getEmail());
-            if(!signUpRequest.getPrivateemail().isEmpty())user.setPrivateemail(signUpRequest.getPrivateemail());
-            if(!signUpRequest.getDateofbirth().isEmpty())user.setDateofbirth(signUpRequest.getDateofbirth());
-            if(!signUpRequest.getGender().isEmpty())user.setGender(signUpRequest.getGender());
-            if(!signUpRequest.getStarteducation().isEmpty())user.setStarteducation(signUpRequest.getStarteducation());
+            if (!signUpRequest.getCin().isEmpty()) user.setCin(signUpRequest.getCin());
+            if (!signUpRequest.getNom().isEmpty()) user.setNom(signUpRequest.getNom());
+            if (!signUpRequest.getPhoto().isEmpty()) user.setPhoto(signUpRequest.getPhoto());
+            else user.setPhoto("");
+            if (!signUpRequest.getPrenom().isEmpty()) user.setPrenom(signUpRequest.getPrenom());
+            if (!signUpRequest.getEmail().isEmpty()) user.setEmail(signUpRequest.getEmail());
+            if (!signUpRequest.getPrivateemail().isEmpty()) user.setPrivateemail(signUpRequest.getPrivateemail());
+            if (!signUpRequest.getDateofbirth().isEmpty()) user.setDateofbirth(signUpRequest.getDateofbirth());
+            if (!signUpRequest.getGender().isEmpty()) user.setGender(signUpRequest.getGender());
+            if (!signUpRequest.getStarteducation().isEmpty()) user.setStarteducation(signUpRequest.getStarteducation());
 
             if (signUpRequest.getClasse() != null && !signUpRequest.getClasse().isEmpty()) {
                 Long classeId = Long.valueOf(signUpRequest.getClasse());
@@ -198,12 +200,12 @@ public class UserController {
         }
     }
 
-    public String generateIdentifiant(Long userId,ERole role) {
+    public String generateIdentifiant(Long userId, ERole role) {
         int year = LocalDate.now().getYear() % 1000;
-        if(role == ERole.ROLE_STUDENT ){
+        if (role == ERole.ROLE_STUDENT) {
             return String.format("%dSMT%03d", year, userId);
         }
-        if(role == ERole.ROLE_TEACHER ){
+        if (role == ERole.ROLE_TEACHER) {
             return String.format("%dTMT%03d", year, userId);
         }
         return "0000";
@@ -309,7 +311,7 @@ public class UserController {
         }
     }
 
-     @GetMapping("/enseignant/{id}")
+    @GetMapping("/enseignant/{id}")
     // /user/all-enseignant
     public ResponseEntity<?> getEnseignant(@PathVariable Long id) {
         try {
@@ -386,6 +388,11 @@ public class UserController {
         return ResponseEntity.ok(notes);
     }
 
+    @GetMapping("/isDisabled")
+    public List<Utilisateur> getDisabledUtilisateurs() {
+        return userService.getDisabledUtilisateurs();
+    }
+
     @GetMapping("/search-etudiants")
     public ResponseEntity<?> searchEtudiants(
             @RequestParam String search,
@@ -395,6 +402,7 @@ public class UserController {
         List<EtudiantDto> etudiants = userService.searchUsers(ERole.ROLE_STUDENT, search, classeId);
         return ResponseEntity.ok(etudiants);
     }
+
     @GetMapping("/search-enseignants")
     public ResponseEntity<?> searchEnseignants(
             @RequestParam String search,

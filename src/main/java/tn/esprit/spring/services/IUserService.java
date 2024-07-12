@@ -23,5 +23,7 @@ public interface IUserService {
     String refreshAccessToken(String refreshToken);
     List<Note> getNotesByUser(Long userId);
     List<Utilisateur> getUtilisateursByRoleAndClasse(ERole role, Classe classe);
+
+    List<Utilisateur> getDisabledUtilisateurs();
     Object changePassword(ChangePwdDto changePwd);
 }

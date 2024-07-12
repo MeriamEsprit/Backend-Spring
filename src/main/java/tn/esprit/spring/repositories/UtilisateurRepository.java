@@ -39,4 +39,5 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
 
     List<Utilisateur> findByClasseId(Long classeId);
 
+    List<Utilisateur> findByIsDisabledTrue();
 }
