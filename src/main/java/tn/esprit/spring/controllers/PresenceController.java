@@ -131,52 +131,108 @@ public class PresenceController {
         }
     }
 
+//    @GetMapping("/dashboard/presenceByMatiere/{idMatiere}")
+//    public ArrayList<Double> dashboardPresence (@PathVariable Long idMatiere) {
+//        Utilisateur user = userService.getInfo();
+//        MatiereDTO matiere = new MatiereDTO();
+//
+//
+//        List<Presence> presences = presenceService.getAllPresencesByUserId(user.getId());
+//        long hoursListPresence = 0;
+//        long hoursListAbsence = 0;
+//        long hoursMatiere = 0;
+//        try {
+//            matiere =  matiereServices.getMatiereById(idMatiere);
+//            hoursMatiere = matiere.getNbreHeures();
+//            for (Presence p : presences) {
+//                LocalTime heureDebut = p.getHeureDebut();
+//                LocalTime heureFin = p.getHeureFin();
+//                long hours = Duration.between(heureDebut, heureFin).toHours();
+//                if(matiere.getId().equals(p.getMatiere().getId())){
+//                    if (p.getEtatPresence()==true){
+//                        hoursListPresence += hours;
+//                    }else{
+//                        hoursListAbsence+=hours;
+//                    }
+//                }
+//
+//            }
+//        }catch (Exception e){
+//            for (Presence p : presences) {
+//                LocalTime heureDebut = p.getHeureDebut();
+//                LocalTime heureFin = p.getHeureFin();
+//                long hours = Duration.between(heureDebut, heureFin).toHours();
+//                if (p.getEtatPresence()==true){
+//                    hoursListPresence += hours;
+//                }else{
+//                    hoursListAbsence+=hours;
+//                }
+//            }
+//            for (MatiereDTO m:matiereServices.getAllMatieres()) {
+//                hoursMatiere += m.getNbreHeures();
+//            }
+//        }
+//
+//        ArrayList<Double> hours = new ArrayList<>();
+//        hours.add((double)hoursListPresence / hoursMatiere * 100);
+//        hours.add((double)hoursListAbsence / hoursMatiere * 100);
+//        hours.add((double)hoursMatiere);
+//        return hours;
+//    }
+
     @GetMapping("/dashboard/presenceByMatiere/{idMatiere}")
-    public ArrayList<Double> dashboardPresence (@PathVariable Long idMatiere) {
+    public ArrayList<Double> dashboardPresence(@PathVariable Long idMatiere) {
         Utilisateur user = userService.getInfo();
         MatiereDTO matiere = new MatiereDTO();
-
 
         List<Presence> presences = presenceService.getAllPresencesByUserId(user.getId());
         long hoursListPresence = 0;
         long hoursListAbsence = 0;
         long hoursMatiere = 0;
         try {
-            matiere =  matiereServices.getMatiereById(idMatiere);
+            matiere = matiereServices.getMatiereById(idMatiere);
             hoursMatiere = matiere.getNbreHeures();
             for (Presence p : presences) {
                 LocalTime heureDebut = p.getHeureDebut();
                 LocalTime heureFin = p.getHeureFin();
                 long hours = Duration.between(heureDebut, heureFin).toHours();
-                if(matiere.getId().equals(p.getMatiere().getId())){
-                    if (p.getEtatPresence()==true){
+                if (matiere.getId().equals(p.getMatiere().getId())) {
+                    if (p.getEtatPresence()) {
                         hoursListPresence += hours;
-                    }else{
-                        hoursListAbsence+=hours;
+                    } else {
+                        hoursListAbsence += hours;
                     }
                 }
-
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             for (Presence p : presences) {
                 LocalTime heureDebut = p.getHeureDebut();
                 LocalTime heureFin = p.getHeureFin();
                 long hours = Duration.between(heureDebut, heureFin).toHours();
-                if (p.getEtatPresence()==true){
+                if (p.getEtatPresence()) {
                     hoursListPresence += hours;
-                }else{
-                    hoursListAbsence+=hours;
+                } else {
+                    hoursListAbsence += hours;
                 }
             }
-            for (MatiereDTO m:matiereServices.getAllMatieres()) {
+            for (MatiereDTO m : matiereServices.getAllMatieres()) {
                 hoursMatiere += m.getNbreHeures();
             }
         }
 
+        // Calculate absence percentage
+        double absencePercentage = (double) hoursListAbsence / hoursMatiere * 100;
+
+        // Check if absence percentage exceeds 30%
+        if (absencePercentage > 30) {
+            user.setDisabled(true);
+            utilisateurRepository.save(user);
+        }
+
         ArrayList<Double> hours = new ArrayList<>();
-        hours.add((double)hoursListPresence / hoursMatiere * 100);
-        hours.add((double)hoursListAbsence / hoursMatiere * 100);
-        hours.add((double)hoursMatiere);
+        hours.add((double) hoursListPresence / hoursMatiere * 100);
+        hours.add(absencePercentage);
+        hours.add((double) hoursMatiere);
         return hours;
     }
 

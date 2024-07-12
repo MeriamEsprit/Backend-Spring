@@ -11,17 +11,17 @@ import java.util.Map;
 @RequestMapping("/api")
 public class OpenAIController {
 
-   /* @Autowired
+    @Autowired
     private OpenAIService openAIService;
 
-    @PostMapping("/correct-text")
-    public String correctText(@RequestBody Map<String, String> request) {
-        String prompt = request.get("prompt");
-        try {
-            return openAIService.correctText(prompt);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
-        }
-    }*/
+//    @PostMapping("/correct-text")
+//    public String correctText(@RequestBody Map<String, String> request) {
+//        String prompt = request.get("prompt");
+//        try {
+//            return openAIService.correctText(prompt);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return "Error: " + e.getMessage();
+//        }
+//    }
 }

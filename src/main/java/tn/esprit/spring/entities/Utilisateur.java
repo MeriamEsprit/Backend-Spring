@@ -50,9 +50,12 @@ public class Utilisateur {
 
     private String motDePasse;
 
+    private String forgotpassword;
+
     private boolean isHidden;
 
     private ERole role;
+    private boolean isDisabled;
 
     @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
     @JsonBackReference(value = "user-notes")
