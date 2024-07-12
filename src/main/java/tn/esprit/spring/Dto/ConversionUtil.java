@@ -1,12 +1,8 @@
 package tn.esprit.spring.Dto;
 
-import org.aspectj.weaver.ast.Not;
-import tn.esprit.spring.entities.Matiere;
+import tn.esprit.spring.entities.*;
 import tn.esprit.spring.entities.Module;
-import tn.esprit.spring.entities.Note;
-import tn.esprit.spring.entities.Utilisateur;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class ConversionUtil {
@@ -15,6 +11,7 @@ public class ConversionUtil {
         dto.setId(module.getId());
         dto.setNom(module.getNom());
         dto.setDescription(module.getDescription());
+        dto.setMatieres(module.getMatieres().stream().map(ConversionUtil::convertToMatiereDTO).collect(Collectors.toList())); // Add this line
         return dto;
     }
 
@@ -22,8 +19,10 @@ public class ConversionUtil {
         Module module = new Module();
         module.setNom(dto.getNom());
         module.setDescription(dto.getDescription());
+        // Convert MatiereDTO to Matiere if needed
         return module;
     }
+
     public static MatiereDTO convertToMatiereDTO(Matiere matiere) {
         MatiereDTO dto = new MatiereDTO();
         dto.setId(matiere.getId());
@@ -32,9 +31,12 @@ public class ConversionUtil {
         dto.setCoefficientTP(matiere.getCoefficientTP());
         dto.setCoefficientCC(matiere.getCoefficientCC());
         dto.setCoefficientExamen(matiere.getCoefficientExamen());
-        dto.setModuleId(matiere.getModule() != null ? matiere.getModule().getId() : null);
+        dto.setCoefficient(matiere.getCoefficient());
+        dto.setModuleId(matiere.getModule() != null ? matiere.getModule().getId() : null); // Ensure moduleId is set
+        dto.setType(matiere.getType() != null ? matiere.getType().name() : null);
         return dto;
     }
+
 
     public static Matiere convertToMatiereEntity(MatiereDTO dto, Module module) {
         Matiere matiere = new Matiere();
@@ -43,7 +45,11 @@ public class ConversionUtil {
         matiere.setCoefficientTP(dto.getCoefficientTP());
         matiere.setCoefficientCC(dto.getCoefficientCC());
         matiere.setCoefficientExamen(dto.getCoefficientExamen());
+        matiere.setCoefficient(dto.getCoefficient()); // Add this line
         matiere.setModule(module);
+        if (dto.getType() != null) {
+            matiere.setType(TypeMatiere.valueOf(dto.getType())); // Add this line
+        }
         return matiere;
     }
 
@@ -58,7 +64,7 @@ public class ConversionUtil {
         dto.setMoyennePrincipale(note.getMoyennePrincipale());
         dto.setMoyenneControle(note.getMoyenneControle());
         dto.setUtilisateurId(note.getUtilisateur() != null ? note.getUtilisateur().getId() : null);
-        dto.setMatiere(note.getMatiere()); // Set the Matiere object directly
+        dto.setMatiereId(note.getMatiere() != null ? note.getMatiere().getId() : null); // Ensure matiereId is set
         return dto;
     }
 
@@ -76,4 +82,16 @@ public class ConversionUtil {
         return note;
     }
 
+    public static ClasseDTO1 convertToClasseDTO(Classe classe) {
+        ClasseDTO1 dto = new ClasseDTO1();
+        dto.setId(classe.getId());
+        dto.setNomClasse(classe.getNomClasse());
+        return dto;
+    }
+
+    public static Classe convertToClasseEntity(ClasseDTO1 dto) {
+        Classe classe = new Classe();
+        classe.setNomClasse(dto.getNomClasse());
+        return classe;
+    }
 }

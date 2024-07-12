@@ -1,5 +1,7 @@
 package tn.esprit.spring;
+import java.util.*;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -8,9 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import tn.esprit.spring.entities.*;
 import tn.esprit.spring.entities.Module;
 import tn.esprit.spring.repositories.*;
-
-
-import java.time.Instant;
+import tn.esprit.spring.utils.ModuleService;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -24,8 +24,10 @@ public class LoadDatabase {
 
     @Autowired
     PasswordEncoder encoder;
+
     @Autowired
     ModuleRepository moduleRepository;
+
     @Autowired
     CompetenceRepository competenceRepository;
     @Autowired
@@ -157,49 +159,6 @@ public class LoadDatabase {
                     }
                 }
             }
-
-
-
-
-//            List<String> salles = new ArrayList<>();
-//            salles.add("Salle A");
-//            salles.add("Salle B");
-//            salles.add("Salle C");
-//            salles.add("Salle D");
-//            salles.add("Salle F");
-//            salles.add("Salle G");
-//            salles.add("Salle H");
-//            salles.add("Salle I");
-//            salles.add("Salle G");
-//            for (String s : salles) {
-//                if(salleRepository.findByNom_salle(s)==null){
-//                    Salle salleA = new Salle();
-//                    salleA.setNom_salle(s);
-//                    salleA.setCapacite(30);
-//                    salleRepository.save(salleA);
-//                }
-//
-//            }
-
-
-            // Adding SeanceClasse
-//            List<SeanceClasse> seanceClasses = new ArrayList<>();
-//            for (Classe classe : classeRepository.findAll()) {
-//                for (Matiere matiere : matiereRepository.findAll()) {
-//                    for (Salle salle : salleRepository.findAll()) {
-//                        for (Utilisateur enseignant : userRepository.findAllByRole(ERole.ROLE_TEACHER)) {
-//                            SeanceClasse seanceClasse = new SeanceClasse();
-//                            seanceClasse.setHeureDebut(Instant.now());
-//                            seanceClasse.setHeureFin(Instant.now().plusSeconds(3600));
-//                            seanceClasse.setClasse(classe);
-//                            seanceClasse.setMatiere(matiere);
-//                            seanceClasse.setSalle(salle);
-//                            seanceClasse.setEnseignant(enseignant);
-//                            seanceclasseRepository.save(seanceClasse);
-//                        }
-//                    }
-//                }
-//            }
 
             List<String> badWords = Arrays.asList(
                     "badword1",
@@ -738,13 +697,55 @@ public class LoadDatabase {
                     "zoophilia"
             );
 
-            for (String word : badWords) {
-                BadWord badWord = new BadWord();
-                badWord.setWord(word);
-                badWordRepository.save(badWord);
-            }
+//            for (String word : badWords) {
+//                BadWord badWord = new BadWord();
+//                badWord.setWord(word);
+//                badWordRepository.save(badWord);
+//            }
+
+
+
+//            Salle salleA = new Salle();
+//            salleA.setNom_salle("Salle A");
+//            salleA.setCapacite(30);
+//            salleRepository.save(salleA);
+//
+//            Salle salleB = new Salle();
+//            salleB.setNom_salle("Salle B");
+//            salleB.setCapacite(25);
+//            salleRepository.save(salleB);
+//
+//            Salle salleC = new Salle();
+//            salleC.setNom_salle("Salle C");
+//            salleC.setCapacite(20);
+//            salleRepository.save(salleC);
+//
+
+//            // Adding SeanceClasse
+//            List<SeanceClasse> seanceClasses = new ArrayList<>();
+//            for (Classe classe : classeRepository.findAll()) {
+//                for (Matiere matiere : matiereRepository.findAll()) {
+//                    for (Salle salle : salleRepository.findAll()) {
+//                        for (Utilisateur enseignant : userRepository.findAllByRole(ERole.ROLE_TEACHER)) {
+//                            SeanceClasse seanceClasse = new SeanceClasse();
+//                            seanceClasse.setHeureDebut(Instant.now());
+//                            seanceClasse.setHeureFin(Instant.now().plusSeconds(3600));
+//                            seanceClasse.setClasse(classe);
+//                            seanceClasse.setMatiere(matiere);
+//                            seanceClasse.setSalle(salle);
+//                            seanceClasse.setEnseignant(enseignant);
+//                            seanceclasseRepository.save(seanceClasse);
+//                        }
+//                    }
+//                }
+//            }
+
         };
+
     }
+
+
+
 
     private String generateRandomDateOfBirth() {
         long minDay = LocalDate.of(1997, 1, 1).toEpochDay();

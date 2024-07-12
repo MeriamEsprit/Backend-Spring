@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@ToString(exclude = {"notes", "module", "classes"})
+@ToString(exclude = {"notes", "classes"})
 
 public class Matiere {
     @Id
@@ -33,6 +33,8 @@ public class Matiere {
     @Column(name = "nbreHeures")
     Integer nbreHeures;
 
+    Integer coefficient;
+
     @Column(name = "coefficientTP")
     Double coefficientTP;
 
@@ -42,7 +44,10 @@ public class Matiere {
     @Column(name = "coefficientExamen")
     Double coefficientExamen;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    TypeMatiere type;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "module_id")
     @JsonBackReference("module-matieres")
     Module module;

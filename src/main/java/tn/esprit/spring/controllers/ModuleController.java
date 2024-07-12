@@ -8,6 +8,7 @@ import tn.esprit.spring.Dto.ModuleDTO;
 import tn.esprit.spring.services.ModuleServicesImpl;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -51,10 +52,27 @@ public class ModuleController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/check-nom-unique")
+    public boolean checkModuleNameUnique(@RequestParam String nom) {
+        return moduleService.isModuleNameUnique(nom);
+    }
+
+    @GetMapping("/check-nom-unique-except-current")
+    public boolean checkModuleNameUniqueExceptCurrent(@RequestParam String nom, @RequestParam Long id) {
+        return moduleService.isModuleNameUniqueExceptCurrent(nom, id);
+    }
 
     @GetMapping
     public ResponseEntity<List<ModuleDTO>> getAllModules() {
         List<ModuleDTO> modules = moduleService.getAllModules();
         return new ResponseEntity<>(modules, HttpStatus.OK);
     }
+
+    @GetMapping("/total")
+    public ResponseEntity<Long> getTotalModules() {
+        long total = moduleService.count();
+        return ResponseEntity.ok(total);
+    }
+
+
 }
