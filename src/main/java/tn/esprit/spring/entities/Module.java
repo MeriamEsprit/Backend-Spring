@@ -32,6 +32,6 @@ public class Module {
     String description;
 
     @OneToMany(mappedBy = "module",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonManagedReference("module-matieres")
     List<Matiere> matieres = new ArrayList<>();
 }

@@ -12,6 +12,7 @@ import tn.esprit.spring.Dto.ClasseDTO1;
 import tn.esprit.spring.Dto.NoteDTO;
 import tn.esprit.spring.Dto.emploiDuTemps.ClasseDTO;
 import tn.esprit.spring.entities.Classe;
+import tn.esprit.spring.entities.Module;
 import tn.esprit.spring.services.NoteServicesImpl;
 
 import java.io.IOException;
@@ -114,5 +115,27 @@ public class NoteController {
     public ResponseEntity<Double> getOverallAverage(@PathVariable Long studentId) {
         Double overallAverage = noteService.calculateOverallAverage(studentId);
         return ResponseEntity.ok(overallAverage);
+    }
+
+    @GetMapping("/class/{classeId}/module-average")
+    public ResponseEntity<Double> getModuleAverage(@PathVariable Long classeId) {
+        try {
+            Double moduleAverage = noteService.calculateModuleAverage(classeId);
+            return ResponseEntity.ok(moduleAverage);
+        } catch (Exception e) {
+            logger.error("Error calculating module average for class {}: {}", classeId, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/class/{classeId}/modules")
+    public ResponseEntity<List<Module>> getModulesByClasse(@PathVariable Long classeId) {
+        try {
+            List<Module> modules = noteService.getModulesByClasse(classeId);
+            return ResponseEntity.ok(modules);
+        } catch (Exception e) {
+            logger.error("Error fetching modules for class {}: {}", classeId, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

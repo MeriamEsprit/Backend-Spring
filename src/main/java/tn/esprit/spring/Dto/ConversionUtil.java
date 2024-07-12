@@ -31,11 +31,12 @@ public class ConversionUtil {
         dto.setCoefficientTP(matiere.getCoefficientTP());
         dto.setCoefficientCC(matiere.getCoefficientCC());
         dto.setCoefficientExamen(matiere.getCoefficientExamen());
-        dto.setCoefficient(matiere.getCoefficient()); // Add this line
-        dto.setModuleId(matiere.getModule() != null ? matiere.getModule().getId() : null);
-        dto.setType(matiere.getType() != null ? matiere.getType().name() : null); // Add this line
+        dto.setCoefficient(matiere.getCoefficient());
+        dto.setModuleId(matiere.getModule() != null ? matiere.getModule().getId() : null); // Ensure moduleId is set
+        dto.setType(matiere.getType() != null ? matiere.getType().name() : null);
         return dto;
     }
+
 
     public static Matiere convertToMatiereEntity(MatiereDTO dto, Module module) {
         Matiere matiere = new Matiere();

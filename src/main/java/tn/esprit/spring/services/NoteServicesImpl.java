@@ -8,6 +8,7 @@ import tn.esprit.spring.Dto.ClasseDTO1;
 import tn.esprit.spring.Dto.ConversionUtil;
 import tn.esprit.spring.Dto.NoteDTO;
 import tn.esprit.spring.entities.Classe;
+import tn.esprit.spring.entities.Module;
 import tn.esprit.spring.entities.Note;
 import tn.esprit.spring.entities.Utilisateur;
 import tn.esprit.spring.entities.Matiere;
@@ -285,5 +286,64 @@ public class NoteServicesImpl implements INoteServices {
 
         return totalSum / totalCoefficient;
     }
+
+    public Double calculateModuleAverage(Long classeId) {
+        List<Utilisateur> students = utilisateurRepository.findByClasseId(classeId);
+        Map<Long, List<Note>> notesByMatiere = new HashMap<>();
+
+        for (Utilisateur student : students) {
+            List<Note> notes = noteRepository.findByUtilisateurId(student.getId());
+            for (Note note : notes) {
+                notesByMatiere.computeIfAbsent(note.getMatiere().getId(), k -> new ArrayList<>()).add(note);
+            }
+        }
+
+        double totalSum = 0.0;
+        double totalCoefficient = 0.0;
+
+        for (Map.Entry<Long, List<Note>> entry : notesByMatiere.entrySet()) {
+            List<Note> matiereNotes = entry.getValue();
+            boolean allHaveNoteExamen = matiereNotes.stream().allMatch(note -> note.getNoteExamen() != null);
+            if (allHaveNoteExamen) {
+                double average = matiereNotes.stream()
+                        .mapToDouble(note -> note.getNoteTp() * note.getMatiere().getCoefficientTP() +
+                                note.getNoteCc() * note.getMatiere().getCoefficientCC() +
+                                note.getNoteExamen() * note.getMatiere().getCoefficientExamen())
+                        .average()
+                        .orElse(0.0);
+
+                double coefficient = matiereNotes.get(0).getMatiere().getCoefficient();
+
+                totalSum += average * coefficient;
+                totalCoefficient += coefficient;
+            }
+        }
+
+        if (totalCoefficient == 0) {
+            return null; // Or any other indication that the overall average cannot be calculated
+        }
+
+        return totalSum / totalCoefficient;
+    }
+    @Transactional
+    public List<Module> getModulesByClasse(Long classeId) {
+        Optional<Classe> classeOpt = classeRepository.findById(classeId);
+        if (!classeOpt.isPresent()) {
+            throw new IllegalArgumentException("Classe not found with id: " + classeId);
+        }
+
+        Classe classe = classeOpt.get();
+        List<Matiere> matieres = classe.getMatieres();
+        Set<tn.esprit.spring.entities.Module> modules = new HashSet<>();
+
+        for (Matiere matiere : matieres) {
+            if (matiere.getModule() != null) {
+                modules.add(matiere.getModule());
+            }
+        }
+
+        return new ArrayList<>(modules);
+    }
+
 
 }

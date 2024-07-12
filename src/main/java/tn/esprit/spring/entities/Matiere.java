@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@ToString(exclude = {"notes", "module", "classes"})
+@ToString(exclude = {"notes", "classes"})
 
 public class Matiere {
     @Id
@@ -47,7 +47,7 @@ public class Matiere {
     @Enumerated(EnumType.STRING)
     TypeMatiere type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "module_id")
     @JsonBackReference("module-matieres")
     Module module;

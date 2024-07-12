@@ -92,6 +92,7 @@ public class ModuleService {
         List<Matiere> allMatieres = matiereRepository.findAll();
 
         for (Classe classe : classeRepository.findAll()) {
+            Set<Module> assignedModules = new HashSet<>();
             Set<Matiere> assignedMatieresToClass = new HashSet<>();
             int projectCount = 0;
 
@@ -104,6 +105,13 @@ public class ModuleService {
 
                 assignedMatieresToClass.add(matiere);
                 if (matiere.getType() == TypeMatiere.PROJET) projectCount++;
+
+                // Assign all matieres from the same module
+                Module module = matiere.getModule();
+                if (module != null && !assignedModules.contains(module)) {
+                    assignedModules.add(module);
+                    assignedMatieresToClass.addAll(module.getMatieres());
+                }
             }
 
             classe.setMatieres(new ArrayList<>(assignedMatieresToClass));
