@@ -25,9 +25,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import tn.esprit.spring.security.jwt.AuthEntryPointJwt;
 import tn.esprit.spring.security.jwt.AuthTokenFilter;
 import tn.esprit.spring.security.services.UserDetailsServiceImpl;
-
 import java.util.Arrays;
-
 
 @Configuration
 @EnableWebSecurity
@@ -38,57 +36,47 @@ import java.util.Arrays;
 public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
-
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
-
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
-
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
-
         return authProvider;
     }
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
 
-
-
     @Bean
     public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-
-                           // .requestMatchers("/auth/**", "/error", "/api/seanceClasses/summaries","/api/salle", "/api/classe", "/api/matieres", "/api/user/all-enseignant", "/api/seanceClasses", "/api/salle", "/api/seanceClasses/**","/api/jourFerie/**").permitAll()
-
-                        .requestMatchers("/auth/**", "/error").permitAll()
-
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/database/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/api/classe/matieres").permitAll()
+                        .requestMatchers("/api/classe").permitAll()
+                        .requestMatchers("/api/joursFeries").permitAll()
+                        .requestMatchers("api/assignerMatieres/1 ").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/justifications/files/**").authenticated()
@@ -100,7 +88,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                         .frameOptions(frameOptions -> frameOptions.sameOrigin()));
         return http.build();
     }
-
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -121,5 +108,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         firewall.setAllowUrlEncodedDoubleSlash(true);  // Allow double slashes
         return firewall;
     }
-
 }
+
+

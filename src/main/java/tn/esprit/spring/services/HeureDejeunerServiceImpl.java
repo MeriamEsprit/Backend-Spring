@@ -17,6 +17,8 @@ public class HeureDejeunerServiceImpl implements IHeureDejeunerService {
     public List<HeureDejeuner> getAllHeuresDejeuner() {
         return heureDejeunerRepository.findAll();
     }
+
+
     @Override
     public HeureDejeuner addHeureDejeuner(HeureDejeuner heureDejeuner) {
         return heureDejeunerRepository.save(heureDejeuner);

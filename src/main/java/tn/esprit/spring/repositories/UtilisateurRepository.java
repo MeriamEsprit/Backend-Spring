@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tn.esprit.spring.Dto.response.EtudiantDto;
 import tn.esprit.spring.entities.Classe;
+import tn.esprit.spring.entities.Competence;
 import tn.esprit.spring.entities.ERole;
 import tn.esprit.spring.entities.Utilisateur;
 import java.util.List;
@@ -19,7 +20,7 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
     List<Utilisateur> findAllByRole(ERole role);
 
     Utilisateur findUtilisateurByIdAndRole(Long id , ERole role);
-    
+
     Utilisateur getUtilisateurByEmail(String email);
     Boolean existsByEmail(String email);
 
@@ -36,4 +37,7 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
     List<Utilisateur> findByClasseId(Long classeId);
 
 
+    List<Utilisateur> findByCompetence(Competence competence);
+
+    int countByRole(ERole eRole);
 }

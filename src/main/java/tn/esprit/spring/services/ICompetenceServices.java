@@ -11,5 +11,9 @@ public interface ICompetenceServices {
     Competence getCompetenceById(Long id);
     List<Competence> getAllCompetences();
 
-    void assignCompetenceToMatieres(Long competenceId, List<Long> matiereIds);
+   // void assignCompetenceToMatieres(Long competenceId, List<Long> matiereIds);
+
+    //Competence assignerCompetenceToMatiers(Long idCompetence, List<Long> idMatieres);
+
+    Competence assignerCompetenceAMatiers(Long idCompetence, List<Long> idMatieres);
 }

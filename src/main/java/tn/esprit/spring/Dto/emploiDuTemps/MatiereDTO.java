@@ -11,5 +11,9 @@ import lombok.Setter;
 
 public class MatiereDTO {
     private Long idMatiere;
+    public MatiereDTO(Long idMatiere) {
+        this.idMatiere = idMatiere;
+    }
+
 
 }

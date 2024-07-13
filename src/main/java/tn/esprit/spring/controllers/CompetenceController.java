@@ -40,9 +40,9 @@ public class CompetenceController {
         return competenceService.getAllCompetences();
     }
 
-    @PostMapping("/{competenceId}/assign")
-    public ResponseEntity<Void> assignCompetenceToMatieres(@PathVariable Long competenceId, @RequestBody List<Long> matiereIds) {
-        competenceService.assignCompetenceToMatieres(competenceId, matiereIds);
-        return ResponseEntity.ok().build();
+    @PostMapping("/assignerMatieres/{idCompetence}")
+    public ResponseEntity<Competence> assignerCompetenceAMatiers(@PathVariable Long idCompetence, @RequestBody List<Long> idMatieres) {
+        Competence competence = competenceService.assignerCompetenceAMatiers(idCompetence, idMatieres);
+        return ResponseEntity.ok(competence);
     }
 }

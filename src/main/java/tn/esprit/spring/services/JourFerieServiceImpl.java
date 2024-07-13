@@ -1,12 +1,20 @@
 package tn.esprit.spring.services;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import tn.esprit.spring.entities.JourFerie;
 import tn.esprit.spring.repositories.JourFerieRepository;
+import tn.esprit.spring.repositories.UtilisateurRepository;
+
 
 import java.util.List;
 
 @Service
 public class JourFerieServiceImpl implements IJourFerieService {
+
+    @Autowired
+    private UserService userService;
+
     private final JourFerieRepository jourFerieRepository;
 
     public JourFerieServiceImpl(JourFerieRepository jourFerieRepository) {
@@ -15,6 +23,9 @@ public class JourFerieServiceImpl implements IJourFerieService {
 
     @Override
     public List<JourFerie> getAllJourFeries() {
+
+
+
         return jourFerieRepository.findAll();
     }
 

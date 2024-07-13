@@ -1,6 +1,5 @@
 package tn.esprit.spring.services;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tn.esprit.spring.entities.Competence;
@@ -15,6 +14,7 @@ public class CompetenceServicesImpl implements ICompetenceServices {
 
     @Autowired
     private CompetenceRepository competenceRepository;
+    @Autowired
     private MatiereRepository matiereRepository;
 
     @Override
@@ -42,16 +42,17 @@ public class CompetenceServicesImpl implements ICompetenceServices {
     public List<Competence> getAllCompetences() {
         return competenceRepository.findAll();
     }
-    @Override
-    public void assignCompetenceToMatieres(Long competenceId, List<Long> matiereIds) {
-        Competence competence = competenceRepository.findById(competenceId)
-                .orElseThrow(() -> new EntityNotFoundException("Competence not found"));
+    public Competence assignerCompetenceAMatiers(Long idCompetence, List<Long> idMatieres) {
+        System.out.println(idMatieres);
+        Competence competence = competenceRepository.findById(idCompetence).orElseThrow(() -> new RuntimeException("Competence not found"));
+        List<Matiere> matieres = matiereRepository.findAllById(idMatieres);
 
-        List<Matiere> matieres = matiereRepository.findAllById(matiereIds);
         for (Matiere matiere : matieres) {
             matiere.setCompetence(competence);
+            matiereRepository.save(matiere);
         }
-        matiereRepository.saveAll(matieres);
+
+        return competence;
     }
 }
 

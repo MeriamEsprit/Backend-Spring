@@ -27,6 +27,10 @@ public class SeanceclasseServicesImpl implements ISeanceclasseServices {
     @Autowired
     private MatiereRepository matiereRepository;
 
+    @Autowired
+    private UserService userService;
+
+
 
     @Override
     public SeanceClasse saveSeanceclasse(SeanceClasse seanceClasse) {
@@ -103,8 +107,21 @@ public class SeanceclasseServicesImpl implements ISeanceclasseServices {
 
     @Override
     public List<SeanceClasse> getAllSeanceclasses() {
-        return seanceClasseRepository.findAll();
-    }
 
+        Utilisateur utilisateur = this.userService.getInfo();
+
+        if (utilisateur.getRole() == ERole.ROLE_STUDENT) {
+            Classe ccc = userService.getClasseByUserId(utilisateur.getId());
+
+            System.out.println(ccc);
+            System.out.println(utilisateur);
+            return getSeanceClassesByClasse(ccc.getId());
+        } else if (utilisateur.getRole() == ERole.ROLE_TEACHER) {
+
+            return getSeanceClassesByEnseignant(utilisateur.getId());
+        } else {
+            return seanceClasseRepository.findAll();
+        }
+    }
 }
 

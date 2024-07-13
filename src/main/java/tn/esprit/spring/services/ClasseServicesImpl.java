@@ -2,6 +2,7 @@ package tn.esprit.spring.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tn.esprit.spring.Dto.emploiDuTemps.ClasseDTO;
 import tn.esprit.spring.entities.Classe;
 import tn.esprit.spring.entities.Matiere;
 import tn.esprit.spring.entities.Utilisateur;
@@ -21,8 +22,12 @@ public class ClasseServicesImpl implements IClasseServices {
     @Autowired
     private MatiereRepository matiereRepository;
 
-    @Override
-    public Classe saveClasse(Classe classe) {
+@Override
+    public Classe saveClasse(ClasseDTO classeDTO) {
+        Classe classe = new Classe();
+        classe.setNomClasse(classeDTO.getNom());
+
+
         return classeRepository.save(classe);
     }
 
@@ -46,6 +51,7 @@ public class ClasseServicesImpl implements IClasseServices {
         return classeRepository.findAll();
     }
 
+    @Override
     public List<Utilisateur> getUsersByClass(Long classeId) {
         return utilisateurRepository.findByClasseId(classeId);
     }
@@ -53,16 +59,20 @@ public class ClasseServicesImpl implements IClasseServices {
         Classe classe = classeRepository.findById(classeId).orElseThrow(() -> new RuntimeException("Classe not found"));
         return classe.getMatieres();
     }
-    public Classe assignerMatieres(Long classeId, List<Long> matiereIds) {
-        Classe classe = classeRepository.findById(classeId)
-                .orElseThrow(() -> new RuntimeException("Classe non trouvée"));
 
-        List<Matiere> matieres = matiereRepository.findAllById(matiereIds);
-        matieres.forEach(matiere -> matiere.setClasse(classe));
-        matiereRepository.saveAll(matieres);
-        return classe;
+    @Override
+    public Classe assignerMatieresAClasse(Long idClasse, List<Long> idMatieres) {
+        Classe classe = classeRepository.findById(idClasse)
+                .orElseThrow(() -> new RuntimeException("Classe not found"));
+
+        List<Matiere> matieres = matiereRepository.findAllById(idMatieres);
+
+        classe.setMatieres(matieres);
+
+        return classeRepository.save(classe);
     }
 
+    @Override
     public List<Matiere> getMatieresByClasse(Long classeId) {
         Classe classe = classeRepository.findById(classeId).orElseThrow(() -> new RuntimeException("Classe non trouvée"));
         return classe.getMatieres();

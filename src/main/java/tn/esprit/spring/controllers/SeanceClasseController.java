@@ -4,8 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.Dto.emploiDuTemps.SeanceClasseDTO;
+import tn.esprit.spring.entities.Classe;
+import tn.esprit.spring.entities.ERole;
 import tn.esprit.spring.entities.SeanceClasse;
+import tn.esprit.spring.entities.Utilisateur;
 import tn.esprit.spring.services.SeanceclasseServicesImpl;
+import tn.esprit.spring.services.UserService;
 
 
 import java.util.List;
@@ -16,6 +20,9 @@ public class SeanceClasseController {
 
     @Autowired
     private SeanceclasseServicesImpl seanceClasseService;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping
     /*public SeanceClasse saveSeanceClasse(@RequestBody SeanceClasse seanceclasse) {

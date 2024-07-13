@@ -5,13 +5,12 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Data
-
-public class EnseignantDTO {
-    private Long idEnseignant;
-    public EnseignantDTO(Long idEnseignant) {
-        this.idEnseignant = idEnseignant;
-    }
+public class ClasseMatiereDTO {
+        private Long idClasse;
+        private List<Long> idMatieres;
 }

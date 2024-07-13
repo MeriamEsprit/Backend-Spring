@@ -30,8 +30,8 @@ public class Competence {
     @JsonBackReference(value = "competence-users")
     List<Utilisateur> utilisateurs;
 
-//    @OneToMany(mappedBy = "competence")
-//    @JsonIgnore
-//    List<Matiere> matieres;
+    @OneToMany(mappedBy = "competence")
+    @JsonIgnore
+    List<Matiere> matieres;
 
 }

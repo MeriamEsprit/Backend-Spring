@@ -29,7 +29,7 @@ public class Classe {
 
     @ManyToMany
     @JoinTable(
-            name = "classe_matiere", // Added JoinTable annotation
+            name = "classe_matiere", // Nom de la table intermédiaire
             joinColumns = @JoinColumn(name = "classe_id"),
             inverseJoinColumns = @JoinColumn(name = "matiere_id"))
     @JsonManagedReference(value = "classe-matieres")

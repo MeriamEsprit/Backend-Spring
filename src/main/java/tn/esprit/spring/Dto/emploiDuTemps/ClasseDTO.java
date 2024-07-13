@@ -11,4 +11,8 @@ import lombok.Setter;
 
 public class ClasseDTO {
     private Long idClasse;
+    private String nom;
+    public ClasseDTO(Long idClasse) {
+        this.idClasse = idClasse;
+    }
 }

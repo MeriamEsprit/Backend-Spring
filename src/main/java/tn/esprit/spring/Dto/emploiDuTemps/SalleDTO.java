@@ -11,4 +11,7 @@ import lombok.Setter;
 
 public class SalleDTO {
     private Long idSalle;
+    public SalleDTO(Long idSalle) {
+        this.idSalle = idSalle;
+    }
     }
