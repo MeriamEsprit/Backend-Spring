@@ -46,24 +46,24 @@ public class LoadDatabase {
             }
 
             // Adding Matieres
-            List<String> matieres = new ArrayList<>();
-            Module module = new Module();
-            module.setNom("Informatique");
-            module.setDescription("Informatique Esprit");
-            moduleRepository.save(module);
-            matieres.add("Devops");
-            matieres.add("Angular");
-            matieres.add("Spring");
-            for (String m : matieres) {
-                Matiere matiere = new Matiere();
-                matiere.setModule(module);
-                matiere.setNomMatiere(m);
-                matiere.setNbreHeures(40);
-                matiere.setCoefficientTP(0.2);
-                matiere.setCoefficientCC(0.3);
-                matiere.setCoefficientExamen(0.5);
-                matiereRepository.save(matiere);
-            }
+//            List<String> matieres = new ArrayList<>();
+//            Module module = new Module();
+//            module.setNom("Informatique");
+//            module.setDescription("Informatique Esprit");
+//            moduleRepository.save(module);
+//            matieres.add("Devops");
+//            matieres.add("Angular");
+//            matieres.add("Spring");
+//            for (String m : matieres) {
+//                Matiere matiere = new Matiere();
+//                matiere.setModule(module);
+//                matiere.setNomMatiere(m);
+//                matiere.setNbreHeures(40);
+//                matiere.setCoefficientTP(0.2);
+//                matiere.setCoefficientCC(0.3);
+//                matiere.setCoefficientExamen(0.5);
+//                matiereRepository.save(matiere);
+//            }
 
             List<String> classes = new ArrayList<>();
             classes.add("1CINFO1");
